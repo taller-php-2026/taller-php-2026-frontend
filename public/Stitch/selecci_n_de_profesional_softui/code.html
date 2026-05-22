@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AgendaPro - Selecciona un Profesional</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#dce0e4",
+                        "on-tertiary-fixed": "#201c00",
+                        "surface-dim": "#cbdbf5",
+                        "on-secondary-fixed-variant": "#43474b",
+                        "outline-variant": "#bcc9c6",
+                        "on-secondary-container": "#5e6367",
+                        "tertiary-container": "#baad3e",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#89f5e7",
+                        "primary": "#00685f",
+                        "outline": "#6d7a77",
+                        "primary-fixed-dim": "#6bd8cb",
+                        "on-primary-fixed": "#00201d",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface": "#f8f9ff",
+                        "surface-container": "#e5eeff",
+                        "inverse-surface": "#213145",
+                        "on-primary-container": "#f4fffc",
+                        "on-tertiary-container": "#474000",
+                        "secondary-fixed": "#dfe3e7",
+                        "error": "#ba1a1a",
+                        "on-background": "#0b1c30",
+                        "tertiary-fixed-dim": "#d7c957",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#dce9ff",
+                        "on-primary-fixed-variant": "#005049",
+                        "surface-bright": "#f8f9ff",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#4f4800",
+                        "on-surface-variant": "#3d4947",
+                        "secondary": "#5a5f62",
+                        "inverse-primary": "#6bd8cb",
+                        "surface-container-low": "#eff4ff",
+                        "background": "#f8f9ff",
+                        "surface-tint": "#006a61",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#c3c7cb",
+                        "tertiary-fixed": "#f4e570",
+                        "on-surface": "#0b1c30",
+                        "surface-container-highest": "#d3e4fe",
+                        "tertiary": "#695f00",
+                        "on-error": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "surface-variant": "#d3e4fe",
+                        "primary-container": "#008378",
+                        "on-secondary-fixed": "#171c1f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "container-padding": "24px",
+                        "unit": "4px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "caption": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "title-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "caption": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "label-bold": ["14px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "display-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "title-sm": ["18px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .soft-elevation {
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.04);
+        }
+        .soft-elevation-hover:hover {
+            box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface min-h-screen">
+<!-- TopAppBar Component -->
+<header class="bg-surface-container-lowest shadow-sm flex justify-between items-center px-lg py-md w-full sticky top-0 z-50">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined">content_cut</span>
+</div>
+<div class="flex flex-col">
+<span class="text-headline-md font-display-lg font-bold text-primary">AgendaPro</span>
+<span class="font-caption text-caption text-on-surface-variant">Sistema de Reservas</span>
+</div>
+</div>
+<nav class="hidden md:flex items-center gap-lg">
+<a class="font-label-bold text-label-bold text-on-surface-variant hover:bg-primary-container/10 transition-colors px-md py-sm rounded-lg" href="#">Explorar</a>
+<a class="font-label-bold text-label-bold text-primary border-b-2 border-primary px-md py-sm" href="#">Mis Citas</a>
+<a class="font-label-bold text-label-bold text-on-surface-variant hover:bg-primary-container/10 transition-colors px-md py-sm rounded-lg" href="#">Ayuda</a>
+</nav>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined p-sm rounded-full text-on-surface-variant hover:bg-primary-container/10">settings</button>
+<button class="material-symbols-outlined p-sm rounded-full text-on-surface-variant hover:bg-primary-container/10">notifications</button>
+<button class="bg-primary text-on-primary font-label-bold text-label-bold px-lg py-md rounded-lg active:scale-95 transition-transform duration-150">
+                Volver al Inicio
+            </button>
+</div>
+</header>
+<!-- Hero Header Context -->
+<section class="bg-primary-container text-on-primary-container py-xl px-lg">
+<div class="max-w-7xl mx-auto">
+<div class="flex items-center gap-md mb-md">
+<button class="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-display-lg text-display-lg">Jem Peluquería</h1>
+</div>
+<div class="flex flex-wrap gap-lg items-center text-primary-fixed">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-bold">4.9</span>
+<span class="text-caption">(328 valoraciones)</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span class="font-body-sm">Madrid, España</span>
+</div>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+<span class="font-body-sm">Horario: L-S 9:00-20:00</span>
+</div>
+</div>
+</div>
+</section>
+<main class="max-w-7xl mx-auto px-lg py-xl">
+<!-- Progress Stepper -->
+<div class="flex justify-center items-center gap-md mb-xl overflow-x-auto pb-md">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-bold">1</div>
+<span class="font-label-bold text-on-surface-variant whitespace-nowrap">Servicio</span>
+</div>
+<div class="w-12 h-[2px] bg-outline-variant"></div>
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary ring-4 ring-primary-container/30 flex items-center justify-center font-label-bold">2</div>
+<span class="font-label-bold text-primary whitespace-nowrap">Profesional</span>
+</div>
+<div class="w-12 h-[2px] bg-outline-variant"></div>
+<div class="flex items-center gap-sm opacity-50">
+<div class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-label-bold">3</div>
+<span class="font-label-bold text-on-surface-variant whitespace-nowrap">Fecha y Hora</span>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-xl">
+<!-- Professional Selection Area -->
+<div class="lg:col-span-8">
+<h2 class="font-headline-md text-headline-md mb-lg">Selecciona un Profesional</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Professional Card 1 -->
+<button class="group bg-surface-container-lowest p-lg rounded-xl soft-elevation soft-elevation-hover transition-all text-left flex items-center gap-lg border-2 border-transparent hover:border-primary-container">
+<div class="relative">
+<img class="w-20 h-20 rounded-full object-cover ring-2 ring-primary-container/20" data-alt="A professional hair stylist woman with a warm and friendly smile, wearing a modern salon uniform, set against a blurred high-end hair studio background with soft bokeh. The lighting is flattering and bright, reflecting a clean light-mode UI aesthetic. The color palette features soft teals and neutral grays, emphasizing professional expertise and approachability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCd59BPLdtQsg9gBqjNQmuUd-98asSUtg4mY4zETdLKA120yotugojjLOvUuhZRTH3uFkZiIi65qTD4dWtb9CS1zliBUUITAoLRxd0qlVtWOcE9dB2fLH084iDZemqUgkhNlueFuBRJa5w4dEDHOAYjf77P8TskmS2UBljZEzpocEBrvhYYf3kPLw4Y9wPTi979i4V6-hKycbyX-SuQU_iZBmUcVR96q646ThxnHNdighR1albaJLUXw9JIlucXiir_rtS-m_kCPMX5"/>
+<div class="absolute bottom-0 right-0 w-6 h-6 bg-green-500 border-2 border-white rounded-full"></div>
+</div>
+<div class="flex-1">
+<p class="font-title-sm text-title-sm text-on-surface group-hover:text-primary transition-colors">Ana Martínez</p>
+<p class="text-on-surface-variant text-body-sm mb-xs">Especialista en Coloración</p>
+<div class="flex items-center gap-xs text-primary">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-bold">5.0</span>
+<span class="text-caption text-on-surface-variant">(124 reseñas)</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary group-hover:translate-x-1 transition-all">chevron_right</span>
+</button>
+<!-- Professional Card 2 -->
+<button class="group bg-surface-container-lowest p-lg rounded-xl soft-elevation soft-elevation-hover transition-all text-left flex items-center gap-lg border-2 border-transparent hover:border-primary-container">
+<div class="relative">
+<img class="w-20 h-20 rounded-full object-cover ring-2 ring-primary-container/20" data-alt="A male hair professional with a groomed beard and sharp styling, standing in a contemporary salon environment. The portrait is captured with professional studio lighting that highlights textures and depth, maintaining a sophisticated minimalist vibe. The atmosphere is professional and modern, perfectly aligning with a soft, tactile SaaS interface design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAy6EIgyvwvTcDn_7_jOY9-MYXi13Rqd4ERznGrvDO7cxchEpmRgDDbCimDjhS5dJKFCLQTeIYa3qCLg6XarFJkF7a1wYGGl_5S65rD-uTwkmTBxliToS6MbWzMXpiFc_3xMNg0ljZd3d8cL_yFVuwi3RkyVTBXcoh3LRVyeSxutoArKntSQiqBX6hHV_Y0a8Ewc2OGVTKRtqfMT-ehmvCSBIOYO5hY6A_jGC5Cq2ugGHZgpI4gW7D4luP89-lOdEjE-1rcmHkj7ScE"/>
+<div class="absolute bottom-0 right-0 w-6 h-6 bg-green-500 border-2 border-white rounded-full"></div>
+</div>
+<div class="flex-1">
+<p class="font-title-sm text-title-sm text-on-surface group-hover:text-primary transition-colors">Carlos Ruiz</p>
+<p class="text-on-surface-variant text-body-sm mb-xs">Master Barber &amp; Styling</p>
+<div class="flex items-center gap-xs text-primary">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-bold">4.8</span>
+<span class="text-caption text-on-surface-variant">(89 reseñas)</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary group-hover:translate-x-1 transition-all">chevron_right</span>
+</button>
+<!-- Professional Card 3 -->
+<button class="group bg-surface-container-lowest p-lg rounded-xl soft-elevation soft-elevation-hover transition-all text-left flex items-center gap-lg border-2 border-transparent hover:border-primary-container">
+<div class="relative">
+<img class="w-20 h-20 rounded-full object-cover ring-2 ring-primary-container/20" data-alt="A portrait of a stylish female hair technician with vibrant accessories, posing in a brightly lit professional salon. The lighting is diffused and soft, creating a high-key look consistent with modern UI standards. The background includes subtle hints of a premium hair treatment area. The overall mood is creative and reliable." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfp6CJXPGtrMg1Y-_fHU1nrS2SB1J2eoCrfXsnsUEPeDJz_iQieabyBjB7gL1ZxHMV8yCy5L16x7z4WP8PNtVA-FymatPcmb2nnWZTCakT7J7E_SL3JO03KUom6WWud0HrqiyF3Hwv7pT-iknC3Q88CzQtHNPSa-eXw6IIztI9-9zS_xrjNV9gXM7VbUmRQ5Faf0OdEkGX0bjOWxnLkNg-o9ldWnAH0U0no070qPSWRnBMjAdiTwzq14ByaGo8Fyr_jwbNgt2efpRn"/>
+</div>
+<div class="flex-1">
+<p class="font-title-sm text-title-sm text-on-surface group-hover:text-primary transition-colors">Elena Soler</p>
+<p class="text-on-surface-variant text-body-sm mb-xs">Tratamientos Capilares</p>
+<div class="flex items-center gap-xs text-primary">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-bold">4.9</span>
+<span class="text-caption text-on-surface-variant">(56 reseñas)</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary group-hover:translate-x-1 transition-all">chevron_right</span>
+</button>
+<!-- Professional Card 4 (Any professional) -->
+<button class="group bg-surface-container-lowest p-lg rounded-xl soft-elevation soft-elevation-hover transition-all text-left flex items-center gap-lg border-2 border-transparent hover:border-primary-container">
+<div class="w-20 h-20 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container ring-2 ring-primary-container/20">
+<span class="material-symbols-outlined text-[32px]">group</span>
+</div>
+<div class="flex-1">
+<p class="font-title-sm text-title-sm text-on-surface group-hover:text-primary transition-colors">Cualquiera disponible</p>
+<p class="text-on-surface-variant text-body-sm mb-xs">Asignación automática</p>
+<span class="text-caption text-primary font-label-bold">Selección rápida</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary group-hover:translate-x-1 transition-all">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Booking Summary Side Bar -->
+<aside class="lg:col-span-4">
+<div class="bg-surface-container-lowest p-lg rounded-2xl soft-elevation sticky top-28 border border-outline-variant/30">
+<h3 class="font-title-sm text-title-sm mb-md flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">receipt_long</span>
+                        Resumen de Reserva
+                    </h3>
+<div class="space-y-lg">
+<!-- Service info -->
+<div class="flex justify-between items-start">
+<div>
+<p class="font-label-bold text-on-surface">Corte de Cabello</p>
+<p class="text-caption text-on-surface-variant flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 30 min
+                                </p>
+</div>
+<span class="font-title-sm text-primary">25€</span>
+</div>
+<div class="h-[1px] bg-outline-variant/30"></div>
+<!-- Empty States for the rest -->
+<div class="space-y-md">
+<div class="flex items-center gap-md text-on-surface-variant">
+<div class="w-8 h-8 rounded-full border border-dashed border-outline flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">person</span>
+</div>
+<span class="text-body-sm italic">Profesional no seleccionado</span>
+</div>
+<div class="flex items-center gap-md text-on-surface-variant">
+<div class="w-8 h-8 rounded-full border border-dashed border-outline flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">event</span>
+</div>
+<span class="text-body-sm italic">Fecha y hora pendientes</span>
+</div>
+</div>
+<div class="bg-primary-container/10 p-md rounded-xl border border-primary-container/20">
+<div class="flex justify-between items-center mb-xs">
+<span class="text-body-sm text-on-surface-variant">Total Estimado</span>
+<span class="font-headline-md text-primary">25€</span>
+</div>
+<p class="text-caption text-on-surface-variant">El precio final puede variar según servicios adicionales.</p>
+</div>
+<button class="w-full bg-secondary-container text-on-secondary-container font-label-bold py-md rounded-xl cursor-not-allowed opacity-60" disabled="">
+                            Confirmar Profesional
+                        </button>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Footer Component -->
+<footer class="w-full bg-surface-container py-xl px-lg flex flex-col md:flex-row justify-between items-center border-t border-outline-variant">
+<div class="flex flex-col items-center md:items-start mb-md md:mb-0">
+<span class="font-bold text-on-surface-variant text-title-sm">AgendaPro</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant opacity-80">© 2024 AgendaPro. Todos los derechos reservados.</p>
+</div>
+<div class="flex gap-lg">
+<a class="text-on-surface-variant font-caption text-caption hover:text-primary transition-colors" href="#">Privacidad</a>
+<a class="text-on-surface-variant font-caption text-caption hover:text-primary transition-colors" href="#">Términos</a>
+<a class="text-on-surface-variant font-caption text-caption hover:text-primary transition-colors" href="#">Contacto</a>
+</div>
+</footer>
+</body></html>

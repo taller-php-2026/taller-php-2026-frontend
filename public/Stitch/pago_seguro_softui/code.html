@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#dce0e4",
+                        "on-tertiary-fixed": "#201c00",
+                        "surface-dim": "#cbdbf5",
+                        "on-secondary-fixed-variant": "#43474b",
+                        "outline-variant": "#bcc9c6",
+                        "on-secondary-container": "#5e6367",
+                        "tertiary-container": "#baad3e",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#89f5e7",
+                        "primary": "#00685f",
+                        "outline": "#6d7a77",
+                        "primary-fixed-dim": "#6bd8cb",
+                        "on-primary-fixed": "#00201d",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface": "#f8f9ff",
+                        "surface-container": "#e5eeff",
+                        "inverse-surface": "#213145",
+                        "on-primary-container": "#f4fffc",
+                        "on-tertiary-container": "#474000",
+                        "secondary-fixed": "#dfe3e7",
+                        "error": "#ba1a1a",
+                        "on-background": "#0b1c30",
+                        "tertiary-fixed-dim": "#d7c957",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#dce9ff",
+                        "on-primary-fixed-variant": "#005049",
+                        "surface-bright": "#f8f9ff",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#4f4800",
+                        "on-surface-variant": "#3d4947",
+                        "secondary": "#5a5f62",
+                        "inverse-primary": "#6bd8cb",
+                        "surface-container-low": "#eff4ff",
+                        "background": "#f8f9ff",
+                        "surface-tint": "#006a61",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#c3c7cb",
+                        "tertiary-fixed": "#f4e570",
+                        "on-surface": "#0b1c30",
+                        "surface-container-highest": "#d3e4fe",
+                        "tertiary": "#695f00",
+                        "on-error": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "surface-variant": "#d3e4fe",
+                        "primary-container": "#008378",
+                        "on-secondary-fixed": "#171c1f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "container-padding": "24px",
+                        "unit": "4px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "caption": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "title-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "caption": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "label-bold": ["14px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "display-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "title-sm": ["18px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .soft-elevation-l1 { box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.04); }
+        .soft-elevation-l2 { box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.06); }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-effect { backdrop-filter: blur(8px); background: rgba(255, 255, 255, 0.8); }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col font-body-md text-body-md">
+<header class="bg-surface-container-lowest shadow-sm flex justify-between items-center px-lg py-md w-full max-w-full sticky top-0 z-50">
+<div class="flex items-center gap-sm">
+<div class="p-xs bg-primary/10 rounded-lg">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
+</div>
+<div>
+<h1 class="text-headline-md font-display-lg font-bold text-primary">AgendaPro</h1>
+<p class="text-caption font-caption text-on-surface-variant">Proceso de Pago</p>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant hover:bg-primary-container/10 p-sm rounded-full cursor-pointer transition-colors">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:bg-primary-container/10 p-sm rounded-full cursor-pointer transition-colors">settings</span>
+<div class="h-10 w-10 rounded-full overflow-hidden border-2 border-outline-variant">
+<img alt="User avatar" class="h-full w-full object-cover" data-alt="Close up portrait of a professional man in his 30s with a clean haircut and modern glasses, looking directly at the camera with a subtle, friendly smile. The lighting is soft and even, highlighting clear skin and a professional yet approachable demeanor. The background is a minimalist, slightly blurred office space with soft teal accents and warm wood tones, consistent with a modern SaaS light-mode aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBl-DlZUhs905fm0_uqNzT4_SQ25mFNbxhmvOOm1UpgXC0EQ1GDNBQhVcX-Hl8dKpJ3Lnu5g2MjE2yiW8bv06T82vZYfM-No2xLTlPk5wOjSy8za74QwvwHiS6j5u3mSZX887IijhMKk6aGjL9JhPTn7Qlld8-QTG5pXYo502dW1q1cZBZYCTrJZgWV7RzlN5XAmd08klA4xGyEiWxBMOpGryqsxQKiXTvBJRdR2JrGMWFaWxL0QTqD-DZn_T40sMHYvp9lctubq7VE"/>
+</div>
+</div>
+</header>
+<main class="flex-grow w-full max-w-6xl mx-auto px-lg py-xl flex flex-col lg:flex-row gap-xl items-start">
+<section class="w-full lg:w-3/5 space-y-lg">
+<div class="bg-surface-container-lowest rounded-xl p-lg soft-elevation-l1 border border-outline-variant/30">
+<div class="flex items-center gap-sm mb-xl">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">credit_card</span>
+<h2 class="text-headline-md font-headline-md text-on-surface">Información de Pago</h2>
+</div>
+<form class="space-y-lg">
+<div class="space-y-xs">
+<label class="text-label-bold font-label-bold text-on-surface-variant">Nombre del Titular</label>
+<input class="w-full bg-white border border-outline-variant rounded-lg px-md py-sm focus:ring-2 focus:ring-primary/15 focus:border-primary transition-all outline-none" placeholder="Juan Pérez" type="text"/>
+</div>
+<div class="space-y-xs">
+<label class="text-label-bold font-label-bold text-on-surface-variant">Número de Tarjeta</label>
+<div class="relative">
+<input class="w-full bg-white border border-outline-variant rounded-lg px-md py-sm focus:ring-2 focus:ring-primary/15 focus:border-primary transition-all outline-none pl-xl" placeholder="1234 5678 9012 3456" type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">credit_card</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-lg">
+<div class="space-y-xs">
+<label class="text-label-bold font-label-bold text-on-surface-variant">Fecha de Expiración</label>
+<input class="w-full bg-white border border-outline-variant rounded-lg px-md py-sm focus:ring-2 focus:ring-primary/15 focus:border-primary transition-all outline-none text-center" placeholder="MM/AA" type="text"/>
+</div>
+<div class="space-y-xs">
+<label class="text-label-bold font-label-bold text-on-surface-variant">CVV</label>
+<input class="w-full bg-white border border-outline-variant rounded-lg px-md py-sm focus:ring-2 focus:ring-primary/15 focus:border-primary transition-all outline-none text-center" placeholder="123" type="password"/>
+</div>
+</div>
+<div class="bg-surface-container p-md rounded-xl flex items-start gap-sm border border-primary/20">
+<span class="material-symbols-outlined text-primary text-[20px]">info</span>
+<div class="space-y-xs">
+<p class="text-label-bold font-label-bold text-primary">Modo de Prueba - MercadoPago</p>
+<p class="text-caption font-caption text-on-surface-variant">Este es un entorno de prueba. No se realizarán cargos reales.</p>
+<p class="text-caption font-caption font-semibold text-primary">Tarjeta de prueba: 5031 7557 3453 0604</p>
+</div>
+</div>
+<div class="pt-lg flex flex-col gap-md">
+<button class="w-full bg-primary-container text-on-primary-container py-md rounded-lg font-label-bold text-label-bold hover:soft-elevation-l2 active:scale-[0.98] transition-all flex justify-center items-center gap-sm" type="submit">
+                            Pagar Ahora
+                        </button>
+<button class="w-full border border-outline-variant text-on-surface-variant py-md rounded-lg font-label-bold text-label-bold hover:bg-surface-container transition-colors" type="button">
+                            Cancelar
+                        </button>
+</div>
+</form>
+</div>
+</section>
+<section class="w-full lg:w-2/5">
+<div class="bg-surface-container-lowest rounded-xl p-lg soft-elevation-l1 border border-outline-variant/30 sticky top-28">
+<h2 class="text-title-sm font-title-sm text-on-surface mb-lg">Resumen de la Reserva</h2>
+<div class="space-y-lg">
+<div class="flex items-center gap-md">
+<div class="h-12 w-12 bg-surface-container rounded-xl flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">content_cut</span>
+</div>
+<div>
+<p class="text-caption font-caption text-on-surface-variant">Servicio</p>
+<p class="text-label-bold font-label-bold">Corte de Cabello</p>
+<p class="text-caption font-caption text-outline">30 min</p>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="h-12 w-12 bg-surface-container rounded-xl flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+</div>
+<div>
+<p class="text-caption font-caption text-on-surface-variant">Profesional</p>
+<p class="text-label-bold font-label-bold">Carlos Ruiz</p>
+<p class="text-caption font-caption text-outline">Estilista</p>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="h-12 w-12 bg-surface-container rounded-xl flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">schedule</span>
+</div>
+<div>
+<p class="text-caption font-caption text-on-surface-variant">Fecha y Hora</p>
+<p class="text-label-bold font-label-bold">15 de Mayo 2026</p>
+<p class="text-caption font-caption text-outline">16:00</p>
+</div>
+</div>
+<hr class="border-outline-variant/30"/>
+<div class="space-y-sm">
+<div class="flex justify-between items-center">
+<p class="text-body-sm font-body-sm text-on-surface-variant">Subtotal</p>
+<p class="text-body-sm font-body-sm text-on-surface font-semibold">25€</p>
+</div>
+<div class="flex justify-between items-center">
+<p class="text-body-sm font-body-sm text-on-surface-variant">IVA (21%)</p>
+<p class="text-body-sm font-body-sm text-on-surface font-semibold">5.25€</p>
+</div>
+</div>
+<div class="pt-md border-t border-primary/10 flex justify-between items-end">
+<p class="text-headline-md font-headline-md text-on-surface">Total</p>
+<p class="text-display-lg font-display-lg text-primary">30.25€</p>
+</div>
+</div>
+</div>
+<div class="mt-lg p-md rounded-xl bg-gradient-to-br from-primary/5 to-surface-container flex items-center gap-md border border-primary/10">
+<img alt="Secure payment icon" class="h-16 w-16 rounded-lg object-cover flex-shrink-0 grayscale opacity-60" data-alt="A macro photograph of a sleek, brushed metal credit card chip and the texture of high-quality white plastic. The lighting is cool and professional, creating soft reflections that imply security and premium financial technology. The depth of field is shallow, focusing on the intricate gold circuits of the EMV chip against a soft, clean white background, conveying trust and modern digital safety." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUvWgM32woerG-M0_E9Ubz6Rei2NlpsDRHYFYns1OXYMHPYSIj8Xi5RDMsE3nG668Sraq7jUXuWkfXU9KKGxYrPtPXj4FWHtp3p6BVL2xFJ6UzDmKoJDa-6w1gLGTG0VK-jNy7qsCluEPTeWmqqD6XYMtbjdCKgKh8BMDecwxvtlUI0A7qY4TYdSOF5oT1CrBLCRQzRN4MUSIVazQemKUwpDp8-j1Ay1AhpMBlywdlYYGu75UR6EwsV9PnSUyl-dN6GW3JnNgGPNIv"/>
+<p class="text-caption font-caption text-on-surface-variant">Tus transacciones están protegidas con encriptación SSL de nivel bancario y cumplen con los estándares PCI-DSS.</p>
+</div>
+</section>
+</main>
+<footer class="w-full py-xl px-lg flex flex-col md:flex-row justify-between items-center bg-surface-container border-t border-outline-variant">
+<div class="flex flex-col items-center md:items-start gap-xs mb-lg md:mb-0">
+<p class="font-bold text-on-surface-variant text-body-sm">AgendaPro</p>
+<p class="text-caption font-caption text-on-surface-variant">© 2024 AgendaPro. Todos los derechos reservados.</p>
+</div>
+<div class="flex gap-lg">
+<a class="text-on-surface-variant hover:text-primary transition-colors text-caption font-caption" href="#">Privacidad</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-caption font-caption" href="#">Términos</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-caption font-caption" href="#">Contacto</a>
+</div>
+</footer>
+</body></html>

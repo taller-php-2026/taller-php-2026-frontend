@@ -1,0 +1,239 @@
+<!DOCTYPE html><html class="light" lang="es"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary": "#695f00",
+                      "primary-fixed-dim": "#6bd8cb",
+                      "primary-container": "#008378",
+                      "tertiary-container": "#baad3e",
+                      "surface-dim": "#cbdbf5",
+                      "surface-bright": "#f8f9ff",
+                      "on-tertiary": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "primary": "#00685f",
+                      "on-error": "#ffffff",
+                      "background": "#f8f9ff",
+                      "surface-variant": "#d3e4fe",
+                      "secondary-fixed-dim": "#c3c7cb",
+                      "outline": "#6d7a77",
+                      "on-primary-fixed-variant": "#005049",
+                      "on-primary": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "surface-container-highest": "#d3e4fe",
+                      "surface": "#f8f9ff",
+                      "error": "#ba1a1a",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-fixed": "#f4e570",
+                      "on-tertiary-container": "#474000",
+                      "on-secondary-fixed-variant": "#43474b",
+                      "on-tertiary-fixed-variant": "#4f4800",
+                      "on-secondary-container": "#5e6367",
+                      "inverse-on-surface": "#eaf1ff",
+                      "inverse-surface": "#213145",
+                      "surface-container": "#e5eeff",
+                      "surface-container-low": "#eff4ff",
+                      "primary-fixed": "#89f5e7",
+                      "secondary": "#5a5f62",
+                      "on-primary-fixed": "#00201d",
+                      "on-background": "#0b1c30",
+                      "on-surface": "#0b1c30",
+                      "secondary-container": "#dce0e4",
+                      "on-tertiary-fixed": "#201c00",
+                      "secondary-fixed": "#dfe3e7",
+                      "outline-variant": "#bcc9c6",
+                      "tertiary-fixed-dim": "#d7c957",
+                      "on-secondary-fixed": "#171c1f",
+                      "surface-tint": "#006a61",
+                      "on-secondary": "#ffffff",
+                      "on-primary-container": "#f4fffc",
+                      "on-surface-variant": "#3d4947",
+                      "surface-container-high": "#dce9ff",
+                      "inverse-primary": "#6bd8cb"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-padding": "24px",
+                      "md": "16px",
+                      "gutter": "16px",
+                      "sm": "8px",
+                      "lg": "24px",
+                      "xs": "4px",
+                      "xl": "32px",
+                      "unit": "4px"
+              },
+              "fontFamily": {
+                      "display-lg": ["Inter"],
+                      "label-bold": ["Inter"],
+                      "caption": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "body-md": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "title-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "display-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-bold": ["14px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                      "caption": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "title-sm": ["18px", {"lineHeight": "1.4", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .soft-shadow {
+            shadow: 0px 4px 20px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-24 md:pb-0" data-mode="connect">
+<!-- TopAppBar Shell -->
+<header class="bg-surface w-full sticky top-0 shadow-[0px_4px_20px_rgba(0,0,0,0.04)] z-40">
+<div class="flex items-center justify-between px-lg py-md w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary text-headline-md" data-icon="grid_view">grid_view</span>
+<h1 class="font-display-lg text-display-lg text-primary">Estética Pro</h1>
+</div>
+<div class="flex items-center gap-md">
+<div class="hidden md:flex items-center gap-lg mr-lg">
+<span class="text-primary font-label-bold cursor-pointer transition-colors hover:bg-primary-container/10 px-md py-sm rounded-lg">Escritorio</span>
+<span class="text-on-surface-variant font-body-md cursor-pointer transition-colors hover:bg-primary-container/10 px-md py-sm rounded-lg">Agenda</span>
+<span class="text-on-surface-variant font-body-md cursor-pointer transition-colors hover:bg-primary-container/10 px-md py-sm rounded-lg">Profesionales</span>
+<span class="text-on-surface-variant font-body-md cursor-pointer transition-colors hover:bg-primary-container/10 px-md py-sm rounded-lg">Ajustes</span>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden border border-outline-variant">
+<img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZihm85fiaa9LzoGb6QJWM9O1bgOyYQpn9HvlL3q0weYEMrTCxaZzoe8AlGtQh4Smqxu9Pg0qZY2lAfDlmlpND8leaNKAvTW6DxdJD6ERZQfUE6ts3zbOJQWMip-v_Ipbqcc3g0V9cCqQd6vtRbsL96g-ysAoLi-4xC5e20KVL3AJEpgxcWeGoGoQQgtcHv0lXx5BFC4ayV5et6gBGTkrOx4S-FyTAcKDIiQzdzrvZ9-btp40tUFg3SQnu__Nt_Z5R-sapk-qE3iVr">
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-lg py-xl">
+<!-- Welcoming Header -->
+<section class="mb-xl">
+<h2 class="font-display-lg text-display-lg text-on-background mb-xs">Bienvenido</h2>
+<p class="font-body-md text-on-surface-variant">Aquí tienes el resumen de tu negocio para hoy.</p>
+</section>
+<!-- Stats Bento Grid -->
+<!-- Quick Action Cards -->
+<h3 class="font-title-sm text-title-sm text-on-surface-variant mb-md">Acciones Rápidas</h3>
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-lg">
+<!-- Crear Agenda -->
+<button class="flex flex-col items-start text-left bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-surface-container transition-all active:scale-95 hover:shadow-md group">
+<div class="w-12 h-12 rounded-lg bg-primary-fixed flex items-center justify-center text-primary mb-md group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+</div>
+<span class="font-label-bold text-label-bold text-on-surface mb-xs">Crear Turno</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Define nuevos bloques de atención para tus servicios.</p>
+</button>
+<!-- Gestionar Profesionales -->
+<button class="flex flex-col items-start text-left bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-surface-container transition-all active:scale-95 hover:shadow-md group">
+<div class="w-12 h-12 rounded-lg bg-primary-fixed flex items-center justify-center text-primary mb-md group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+</div>
+<span class="font-label-bold text-label-bold text-on-surface mb-xs">Gestionar Profesionales</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Administra el staff, sus roles y sus especialidades.</p>
+</button>
+<!-- Configurar Horarios -->
+<button class="flex flex-col items-start text-left bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-surface-container transition-all active:scale-95 hover:shadow-md group">
+<div class="w-12 h-12 rounded-lg bg-primary-fixed flex items-center justify-center text-primary mb-md group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+</div>
+<span class="font-label-bold text-label-bold text-on-surface mb-xs">Configurar Horarios</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Ajusta los horarios de apertura y cierres especiales.</p>
+</button>
+<button class="flex flex-col items-start text-left bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-surface-container transition-all active:scale-95 hover:shadow-md group">
+<div class="w-12 h-12 rounded-lg bg-primary-fixed flex items-center justify-center text-primary mb-md group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</div>
+<span class="font-label-bold text-label-bold text-on-surface mb-xs">Configurar Servicios</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Administra tu catálogo de tratamientos y precios.</p>
+</button></section>
+<!-- Featured Section (Summary Detail) -->
+<section class="mt-xl grid grid-cols-1 lg:grid-cols-2 gap-lg">
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-surface-container">
+<div class="p-lg flex justify-between items-center border-b border-surface-container-low">
+<h3 class="font-title-sm text-title-sm">Próximos Turnos</h3>
+<button class="text-primary font-label-bold text-sm">Ver todos</button>
+</div>
+<div class="divide-y divide-surface-container-low">
+<div class="p-md flex items-center gap-md">
+<div class="w-12 h-12 rounded-full overflow-hidden">
+<img alt="Client" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAq2-N-8rFt85xxPz4LHjMgNjGDd_WKl0WiEzRtAzAUgl3cUQkYS0gDh4EKExGJjOy_2ihVYFHbnEfCWPIdYwaVjedDpkx-a4mlsdDpKtSHayGqP3j5HH2AzS8R-8Ih4wpncIjLRxFAOAJ0dw81TVf59HTFteuyyXkfAGZU2k3Ducan339pL88iA4EA0pOFpph0PG0sngEXs8LM8fSsEg6QCQkl7L4KCrs6X7wJYuG6SenHe8K0ETmc0eac_oiSnx1VNV24gfljX32P">
+</div>
+<div class="flex-1">
+<p class="font-label-bold text-on-surface">María García</p>
+<p class="font-caption text-on-surface-variant">Limpieza Facial Profunda</p>
+</div>
+<div class="text-right">
+<p class="font-label-bold text-primary">14:30</p>
+<span class="bg-primary-fixed text-on-primary-fixed text-[10px] uppercase tracking-wider px-sm py-0.5 rounded-full font-bold">Confirmado</span>
+</div>
+</div>
+<div class="p-md flex items-center gap-md">
+<div class="w-12 h-12 rounded-full overflow-hidden">
+<img alt="Client" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFaD15gjw_knRM-gWHQxu5JMl_Bq3ZOJlJddC1tnKICpdZk3DKP-GRn78FQAjbT7aL1g0Ipy4LjCF50w_9ly5HAuzCPpx53jjJbYBkiBDeAM4pyVxBPLyRidEyhuVBqARwxPg_LsfxYnOTt_P9A_oiepn2yA9g1ArkeyPhzf4XGdiVhahzy74JS0TO6KD2Pjd3jb7SwS7yFwlYkFqOB8sYcGTmrDJAnCucojKMnR49TcofaG6VmJr8fz99tDBZfvgUuHwUq3lonukC">
+</div>
+<div class="flex-1">
+<p class="font-label-bold text-on-surface">Lucía Torres</p>
+<p class="font-caption text-on-surface-variant">Manicuría Soft Gel</p>
+</div>
+<div class="text-right">
+<p class="font-label-bold text-primary">15:15</p>
+<span class="bg-secondary-container text-on-secondary-container text-[10px] uppercase tracking-wider px-sm py-0.5 rounded-full font-bold">Pendiente</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar Shell -->
+<nav class="lg:hidden fixed bottom-0 w-full z-50 bg-surface-container-lowest rounded-t-xl shadow-[0px_-4px_20px_rgba(0,0,0,0.04)] flex justify-around items-center px-md py-sm">
+<!-- Home (Active) -->
+<a class="flex flex-col items-center justify-center text-primary bg-primary-container/20 rounded-xl px-4 py-1 active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: &quot;FILL&quot; 1;">home</span>
+<span class="font-caption text-caption">Inicio</span>
+</a>
+<!-- Calendar -->
+<a class="flex flex-col items-center justify-center text-secondary hover:opacity-80 active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="event">event</span>
+<span class="font-caption text-caption">Agenda</span>
+</a>
+<!-- Team -->
+<a class="flex flex-col items-center justify-center text-secondary hover:opacity-80 active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="badge">badge</span>
+<span class="font-caption text-caption">Equipo</span>
+</a>
+<!-- Settings -->
+<a class="flex flex-col items-center justify-center text-secondary hover:opacity-80 active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings_account_box">settings_account_box</span>
+<span class="font-caption text-caption">Ajustes</span>
+</a>
+</nav>
+
+
+</body></html>

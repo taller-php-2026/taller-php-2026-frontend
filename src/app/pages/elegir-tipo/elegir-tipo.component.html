@@ -1,0 +1,96 @@
+<div class="flex-grow w-full max-w-2xl mx-auto px-lg py-xl space-y-xl">
+  <!-- Welcome Header -->
+  <div class="text-center space-y-sm">
+    <h2 class="font-headline-md text-headline-md text-on-surface">Casi listo</h2>
+    <p class="font-body-md text-on-surface-variant">Personaliza tu experiencia seleccionando tu rol principal.</p>
+  </div>
+
+  <form (submit)="completarRegistro(); $event.preventDefault()">
+    <!-- Role Selection Bento -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+      <!-- Soy Cliente -->
+      <label class="cursor-pointer group">
+        <input class="hidden peer" name="role" type="radio" value="cliente" [(ngModel)]="selectedRole"/>
+        <div class="soft-ui-card bg-surface-container-lowest rounded-xl p-lg border-2 border-transparent peer-checked:border-primary transition-all duration-200 h-full flex flex-col items-center text-center space-y-md">
+          <div class="w-16 h-16 rounded-full bg-primary-container/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-[32px]" data-icon="person">person</span>
+          </div>
+          <div class="space-y-xs">
+            <h3 class="font-title-sm text-title-sm text-on-surface">Soy Cliente</h3>
+            <p class="font-body-sm text-on-surface-variant leading-snug">Busco servicios y gestionar mis citas</p>
+          </div>
+        </div>
+      </label>
+
+      <!-- Soy Empresa -->
+      <label class="cursor-pointer group">
+        <input class="hidden peer" name="role" type="radio" value="profesional" [(ngModel)]="selectedRole"/>
+        <div class="soft-ui-card bg-surface-container-lowest rounded-xl p-lg border-2 border-transparent peer-checked:border-primary transition-all duration-200 h-full flex flex-col items-center text-center space-y-md">
+          <div class="w-16 h-16 rounded-full bg-secondary-container/30 flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
+            <span class="material-symbols-outlined text-[32px]" data-icon="store">store</span>
+          </div>
+          <div class="space-y-xs">
+            <h3 class="font-title-sm text-title-sm text-on-surface">Soy Empresa</h3>
+            <p class="font-body-sm text-on-surface-variant leading-snug">Ofrezco servicios y gestiono mi negocio</p>
+          </div>
+        </div>
+      </label>
+    </div>
+
+    <!-- Client Details Section -->
+    <div class="space-y-lg pt-md">
+      <div class="space-y-md">
+        <label class="font-label-bold text-label-bold text-on-surface-variant ml-1" for="phone">Número de Teléfono</label>
+        <div class="soft-ui-input flex items-center bg-surface-container-lowest border border-outline-variant rounded-lg px-md h-14 transition-all">
+          <span class="material-symbols-outlined text-outline mr-md" data-icon="phone">phone</span>
+          <input class="bg-transparent border-none focus:ring-0 w-full text-on-surface font-body-md placeholder:text-outline-variant" id="phone" placeholder="+56 9 1234 5678" type="tel" name="phone" [(ngModel)]="phone" required/>
+        </div>
+        <div class="flex items-center gap-sm px-1">
+          <span class="material-symbols-outlined text-primary text-[18px]" data-icon="info">info</span>
+          <p class="font-caption text-caption text-on-surface-variant">Necesario para enviar recordatorios de tus citas.</p>
+        </div>
+      </div>
+
+      <!-- Business Details (Conditional) -->
+      @if(selectedRole === 'profesional') {
+      <div class="space-y-md">
+        <label class="font-label-bold text-label-bold text-on-surface-variant ml-1" for="nombreNegocio">Nombre del Negocio</label>
+        <div class="soft-ui-input flex items-center bg-surface-container-lowest border border-outline-variant rounded-lg px-md h-14 transition-all">
+          <span class="material-symbols-outlined text-outline mr-md" data-icon="storefront">storefront</span>
+          <input class="bg-transparent border-none focus:ring-0 w-full text-on-surface font-body-md placeholder:text-outline-variant" id="nombreNegocio" placeholder="Ej. Estética Pro" type="text" name="nombreNegocio" [(ngModel)]="nombreNegocio" required/>
+        </div>
+      </div>
+      <div class="space-y-md">
+        <label class="font-label-bold text-label-bold text-on-surface-variant ml-1" for="descripcion">Descripción Breve</label>
+        <div class="soft-ui-input flex items-center bg-surface-container-lowest border border-outline-variant rounded-lg px-md h-24 transition-all">
+          <span class="material-symbols-outlined text-outline mr-md" data-icon="description">description</span>
+          <textarea class="bg-transparent border-none focus:ring-0 w-full text-on-surface font-body-md placeholder:text-outline-variant h-full resize-none py-2" id="descripcion" placeholder="¿Qué servicios ofreces?" name="descripcion" [(ngModel)]="descripcion" required></textarea>
+        </div>
+      </div>
+      }
+
+      <!-- Image/Visual Anchor -->
+      <div class="rounded-xl overflow-hidden soft-ui-card h-48 relative">
+        <img alt="Dashboard Preview" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFMCloEKprmN4wEvhyPQy5DfE6EoBPn3Qb7FqMYYbcM2XiHMBIgDl5mW-Iy_8RUBssyDBddfGIUcDCKpNN7LWZb3wUjM_tyaACPyLswOi2jNOaXM0QeCNTl9-d8_hytnHrXLAtnBW5IZshhhcUKwNrIKUTpBpfQP_n14kULB52s9VrLSQNzOSvE59yJ-8HocofDfjTpCECM7kdE7VsEwFwUUHw20DJ1RRyY2Io-Xwk4UbV96onloJyqv-l3c1AReyHfXvZux2-Axfn"/>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+      </div>
+
+      <!-- Terms and Action -->
+      <div class="space-y-xl pt-sm">
+        <label class="flex items-start gap-md cursor-pointer group">
+          <div class="relative flex items-center pt-1">
+            <input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" type="checkbox" required/>
+          </div>
+          <span class="font-body-sm text-on-surface-variant select-none">
+            Acepto los <a class="text-primary font-bold hover:underline" href="#">Términos de Servicio</a> y la <a class="text-primary font-bold hover:underline" href="#">Política de Privacidad</a>
+          </span>
+        </label>
+        
+        <button type="submit" class="w-full bg-primary hover:bg-primary-container text-on-primary h-14 rounded-lg font-label-bold text-label-bold flex items-center justify-center gap-sm shadow-lg active:scale-[0.98] transition-all duration-200">
+          Completar Registro
+          <span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

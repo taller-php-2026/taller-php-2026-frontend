@@ -1,0 +1,337 @@
+<!DOCTYPE html><html class="light" lang="es"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-container": "#dce0e4",
+                      "surface-container": "#e5eeff",
+                      "on-surface-variant": "#3d4947",
+                      "on-secondary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "surface-bright": "#f8f9ff",
+                      "on-secondary-fixed-variant": "#43474b",
+                      "tertiary": "#695f00",
+                      "primary": "#00685f",
+                      "surface-dim": "#cbdbf5",
+                      "tertiary-fixed": "#f4e570",
+                      "error": "#ba1a1a",
+                      "tertiary-container": "#baad3e",
+                      "surface-container-high": "#dce9ff",
+                      "background": "#f8f9ff",
+                      "outline": "#6d7a77",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary": "#5a5f62",
+                      "on-primary": "#ffffff",
+                      "secondary-fixed": "#dfe3e7",
+                      "inverse-surface": "#213145",
+                      "on-tertiary": "#ffffff",
+                      "primary-fixed-dim": "#6bd8cb",
+                      "on-primary-container": "#f4fffc",
+                      "inverse-primary": "#6bd8cb",
+                      "on-tertiary-container": "#474000",
+                      "surface-tint": "#006a61",
+                      "surface": "#f8f9ff",
+                      "error-container": "#ffdad6",
+                      "outline-variant": "#bcc9c6",
+                      "on-tertiary-fixed": "#201c00",
+                      "on-primary-fixed-variant": "#005049",
+                      "tertiary-fixed-dim": "#d7c957",
+                      "surface-container-highest": "#d3e4fe",
+                      "surface-variant": "#d3e4fe",
+                      "on-surface": "#0b1c30",
+                      "on-secondary-fixed": "#171c1f",
+                      "secondary-fixed-dim": "#c3c7cb",
+                      "on-secondary-container": "#5e6367",
+                      "primary-fixed": "#89f5e7",
+                      "inverse-on-surface": "#eaf1ff",
+                      "on-background": "#0b1c30",
+                      "on-error-container": "#93000a",
+                      "surface-container-low": "#eff4ff",
+                      "on-primary-fixed": "#00201d",
+                      "primary-container": "#008378",
+                      "on-tertiary-fixed-variant": "#4f4800"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "lg": "24px",
+                      "xl": "32px",
+                      "md": "16px",
+                      "unit": "4px",
+                      "xs": "4px",
+                      "gutter": "16px",
+                      "sm": "8px",
+                      "container-padding": "24px"
+              },
+              "fontFamily": {
+                      "display-lg": ["Inter"],
+                      "caption": ["Inter"],
+                      "title-sm": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-bold": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "display-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "caption": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "title-sm": ["18px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "label-bold": ["14px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .soft-shadow {
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}[type='text'],input:where(:not([type])),[type='email'],[type='url'],[type='password'],[type='number'],[type='date'],[type='datetime-local'],[type='month'],[type='search'],[type='tel'],[type='time'],[type='week'],[multiple],textarea,select{-webkit-appearance:none;appearance:none;background-color:#fff;border-color:#6b7280;border-width:1px;border-radius:0px;padding-top:0.5rem;padding-right:0.75rem;padding-bottom:0.5rem;padding-left:0.75rem;font-size:1rem;line-height:1.5rem;--tw-shadow:0 0 #0000;}[type='text']:focus, input:where(:not([type])):focus, [type='email']:focus, [type='url']:focus, [type='password']:focus, [type='number']:focus, [type='date']:focus, [type='datetime-local']:focus, [type='month']:focus, [type='search']:focus, [type='tel']:focus, [type='time']:focus, [type='week']:focus, [multiple]:focus, textarea:focus, select:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);border-color:#2563eb}input::placeholder,textarea::placeholder{color:#6b7280;opacity:1}::-webkit-datetime-edit-fields-wrapper{padding:0}::-webkit-date-and-time-value{min-height:1.5em;text-align:inherit}::-webkit-datetime-edit{display:inline-flex}::-webkit-datetime-edit,::-webkit-datetime-edit-year-field,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute-field,::-webkit-datetime-edit-second-field,::-webkit-datetime-edit-millisecond-field,::-webkit-datetime-edit-meridiem-field{padding-top:0;padding-bottom:0}select{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");background-position:right 0.5rem center;background-repeat:no-repeat;background-size:1.5em 1.5em;padding-right:2.5rem;print-color-adjust:exact}[multiple],[size]:where(select:not([size="1"])){background-image:initial;background-position:initial;background-repeat:unset;background-size:initial;padding-right:0.75rem;print-color-adjust:unset}[type='checkbox'],[type='radio']{-webkit-appearance:none;appearance:none;padding:0;print-color-adjust:exact;display:inline-block;vertical-align:middle;background-origin:border-box;-webkit-user-select:none;user-select:none;flex-shrink:0;height:1rem;width:1rem;color:#2563eb;background-color:#fff;border-color:#6b7280;border-width:1px;--tw-shadow:0 0 #0000}[type='checkbox']{border-radius:0px}[type='radio']{border-radius:100%}[type='checkbox']:focus,[type='radio']:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:2px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}[type='checkbox']:checked,[type='radio']:checked{border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat}[type='checkbox']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='checkbox']:checked{-webkit-appearance:auto;appearance:auto}}[type='radio']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='radio']:checked{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:checked:hover,[type='checkbox']:checked:focus,[type='radio']:checked:hover,[type='radio']:checked:focus{border-color:transparent;background-color:currentColor}[type='checkbox']:indeterminate{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 16 16'%3e%3cpath stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 8h8'/%3e%3c/svg%3e");border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat;}@media (forced-colors: active) {[type='checkbox']:indeterminate{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:indeterminate:hover,[type='checkbox']:indeterminate:focus{border-color:transparent;background-color:currentColor}[type='file']{background:unset;border-color:inherit;border-width:0;border-radius:0;padding:0;font-size:unset;line-height:inherit}[type='file']:focus{outline:1px solid ButtonText;outline:1px auto -webkit-focus-ring-color}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0px}.bottom-0{bottom:0px}.left-md{left:16px}.top-0{top:0px}.top-1\/2{top:50%}.z-10{z-index:10}.z-20{z-index:20}.z-50{z-index:50}.z-\[100\]{z-index:100}.mx-2{margin-left:0.5rem;margin-right:0.5rem}.mx-4{margin-left:1rem;margin-right:1rem}.mx-auto{margin-left:auto;margin-right:auto}.mb-lg{margin-bottom:24px}.mb-md{margin-bottom:16px}.mb-xl{margin-bottom:32px}.ml-1{margin-left:0.25rem}.mt-auto{margin-top:auto}.mt-sm{margin-top:8px}.mt-xs{margin-top:4px}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.h-10{height:2.5rem}.h-16{height:4rem}.h-4{height:1rem}.h-6{height:1.5rem}.h-\[884px\]{height:884px}.h-full{height:100%}.min-h-\[884px\]{min-height:884px}.w-10{width:2.5rem}.w-16{width:4rem}.w-4{width:1rem}.w-64{width:16rem}.w-full{width:100%}.max-w-5xl{max-width:64rem}.max-w-7xl{max-width:80rem}.max-w-md{max-width:28rem}.flex-1{flex:1 1 0%}.-translate-y-1\/2{--tw-translate-y:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.cursor-pointer{cursor:pointer}.appearance-none{-webkit-appearance:none;appearance:none}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-start{justify-content:flex-start}.justify-end{justify-content:flex-end}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.justify-around{justify-content:space-around}.gap-lg{gap:24px}.gap-md{gap:16px}.gap-sm{gap:8px}.gap-xs{gap:4px}.space-y-lg > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(24px * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(24px * var(--tw-space-y-reverse))}.space-y-xs > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(4px * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(4px * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-y-auto{overflow-y:auto}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.rounded-r-xl{border-top-right-radius:0.75rem;border-bottom-right-radius:0.75rem}.rounded-t-xl{border-top-left-radius:0.75rem;border-top-right-radius:0.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-t{border-top-width:1px}.border-outline-variant{--tw-border-opacity:1;border-color:rgb(188 201 198 / var(--tw-border-opacity, 1))}.border-outline-variant\/10{border-color:rgb(188 201 198 / 0.1)}.border-outline-variant\/20{border-color:rgb(188 201 198 / 0.2)}.border-primary\/10{border-color:rgb(0 104 95 / 0.1)}.bg-background{--tw-bg-opacity:1;background-color:rgb(248 249 255 / var(--tw-bg-opacity, 1))}.bg-on-surface\/20{background-color:rgb(11 28 48 / 0.2)}.bg-primary{--tw-bg-opacity:1;background-color:rgb(0 104 95 / var(--tw-bg-opacity, 1))}.bg-primary-container{--tw-bg-opacity:1;background-color:rgb(0 131 120 / var(--tw-bg-opacity, 1))}.bg-primary-container\/20{background-color:rgb(0 131 120 / 0.2)}.bg-primary-fixed\/20{background-color:rgb(137 245 231 / 0.2)}.bg-secondary-fixed-dim{--tw-bg-opacity:1;background-color:rgb(195 199 203 / var(--tw-bg-opacity, 1))}.bg-surface{--tw-bg-opacity:1;background-color:rgb(248 249 255 / var(--tw-bg-opacity, 1))}.bg-surface-bright{--tw-bg-opacity:1;background-color:rgb(248 249 255 / var(--tw-bg-opacity, 1))}.bg-surface-container{--tw-bg-opacity:1;background-color:rgb(229 238 255 / var(--tw-bg-opacity, 1))}.bg-surface-container-lowest{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.object-cover{object-fit:cover}.p-0\.5{padding:0.125rem}.p-1{padding:0.25rem}.p-lg{padding:24px}.p-sm{padding:8px}.p-xs{padding:4px}.px-4{padding-left:1rem;padding-right:1rem}.px-lg{padding-left:24px;padding-right:24px}.px-md{padding-left:16px;padding-right:16px}.px-sm{padding-left:8px;padding-right:8px}.px-xl{padding-left:32px;padding-right:32px}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-lg{padding-top:24px;padding-bottom:24px}.py-md{padding-top:16px;padding-bottom:16px}.py-sm{padding-top:8px;padding-bottom:8px}.py-xl{padding-top:32px;padding-bottom:32px}.py-xs{padding-top:4px;padding-bottom:4px}.pb-32{padding-bottom:8rem}.pl-xl{padding-left:32px}.pr-md{padding-right:16px}.pt-md{padding-top:16px}.font-body-md{font-family:Inter}.font-caption{font-family:Inter}.font-headline-md{font-family:Inter}.font-label-bold{font-family:Inter}.font-title-sm{font-family:Inter}.text-\[14px\]{font-size:14px}.text-caption{font-size:12px;line-height:1.2;letter-spacing:0.01em;font-weight:500}.text-headline-md{font-size:24px;line-height:1.3;letter-spacing:-0.01em;font-weight:600}.text-label-bold{font-size:14px;line-height:1.2;font-weight:600}.text-title-sm{font-size:18px;line-height:1.4;font-weight:600}.font-bold{font-weight:700}.text-error{--tw-text-opacity:1;color:rgb(186 26 26 / var(--tw-text-opacity, 1))}.text-on-background{--tw-text-opacity:1;color:rgb(11 28 48 / var(--tw-text-opacity, 1))}.text-on-primary{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-on-primary-container{--tw-text-opacity:1;color:rgb(244 255 252 / var(--tw-text-opacity, 1))}.text-on-primary-fixed-variant{--tw-text-opacity:1;color:rgb(0 80 73 / var(--tw-text-opacity, 1))}.text-on-surface{--tw-text-opacity:1;color:rgb(11 28 48 / var(--tw-text-opacity, 1))}.text-on-surface-variant{--tw-text-opacity:1;color:rgb(61 73 71 / var(--tw-text-opacity, 1))}.text-primary{--tw-text-opacity:1;color:rgb(0 104 95 / var(--tw-text-opacity, 1))}.text-secondary{--tw-text-opacity:1;color:rgb(90 95 98 / var(--tw-text-opacity, 1))}.shadow-\[0px_-4px_20px_rgba\(0\2c 0\2c 0\2c 0\.04\)\]{--tw-shadow:0px -4px 20px rgba(0,0,0,0.04);--tw-shadow-colored:0px -4px 20px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-\[0px_4px_20px_rgba\(0\2c 0\2c 0\2c 0\.04\)\]{--tw-shadow:0px 4px 20px rgba(0,0,0,0.04);--tw-shadow-colored:0px 4px 20px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.backdrop-blur-sm{--tw-backdrop-blur:blur(4px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-200{transition-duration:200ms}.duration-300{transition-duration:300ms}.hover\:bg-error-container\/20:hover{background-color:rgb(255 218 214 / 0.2)}.hover\:bg-primary-container\/10:hover{background-color:rgb(0 131 120 / 0.1)}.hover\:bg-primary\/10:hover{background-color:rgb(0 104 95 / 0.1)}.hover\:bg-primary\/5:hover{background-color:rgb(0 104 95 / 0.05)}.hover\:bg-surface-variant:hover{--tw-bg-opacity:1;background-color:rgb(211 228 254 / var(--tw-bg-opacity, 1))}.hover\:bg-surface-variant\/50:hover{background-color:rgb(211 228 254 / 0.5)}.hover\:opacity-80:hover{opacity:0.8}.hover\:opacity-90:hover{opacity:0.9}.hover\:shadow-md:hover{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.focus\:border-primary:focus{--tw-border-opacity:1;border-color:rgb(0 104 95 / var(--tw-border-opacity, 1))}.focus\:ring-primary:focus{--tw-ring-opacity:1;--tw-ring-color:rgb(0 104 95 / var(--tw-ring-opacity, 1))}.active\:translate-x-1:active{--tw-translate-x:0.25rem;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.active\:scale-90:active{--tw-scale-x:.9;--tw-scale-y:.9;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.active\:scale-95:active{--tw-scale-x:.95;--tw-scale-y:.95;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.active\:scale-\[0\.98\]:active{--tw-scale-x:0.98;--tw-scale-y:0.98;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:flex-row{flex-direction:row}.md\:items-center{align-items:center}}@media (min-width: 1024px){.lg\:flex{display:flex}.lg\:hidden{display:none}.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}}</style></head>
+<body class="bg-background text-on-background min-h-[884px] font-body-md" data-stitch-vh="min-h-[884px]===min-h-screen" data-mode="connect">
+<div class="flex h-[884px] overflow-hidden" data-stitch-vh="h-[884px]===h-screen">
+<!-- Navigation Drawer (Desktop) -->
+<aside class="hidden lg:flex flex-col h-full py-lg bg-surface-container-lowest shadow-md w-64 rounded-r-xl z-20">
+<div class="px-lg mb-xl flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">grid_view</span>
+</div>
+<div>
+<h2 class="font-label-bold text-label-bold text-on-surface">Main St. Clinic</h2>
+<p class="text-caption font-caption text-on-surface-variant">Administrator</p>
+</div>
+</div>
+<nav class="flex-1 space-y-xs">
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-variant/50 rounded-lg mx-2 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-bold text-label-bold">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-variant/50 rounded-lg mx-2 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="font-label-bold text-label-bold">Schedule</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm bg-primary-container text-on-primary-container rounded-lg mx-2 active:translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="font-label-bold text-label-bold">Professionals</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-variant/50 rounded-lg mx-2 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-bold text-label-bold">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-full overflow-y-auto pb-32">
+<!-- TopAppBar -->
+<header class="w-full sticky top-0 bg-surface shadow-[0px_4px_20px_rgba(0,0,0,0.04)] z-10">
+<div class="flex items-center justify-between px-lg py-md w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-md">
+<button class="p-sm rounded-full hover:bg-primary-container/10 active:scale-95 transition-all text-primary">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md text-on-surface">Gestionar Profesionales</h1>
+</div>
+</div>
+</header>
+<div class="w-full max-w-5xl mx-auto px-lg py-xl">
+<!-- Action Header Section -->
+<div class="mb-xl flex flex-col md:flex-row md:items-center justify-between gap-md">
+<div>
+<p class="font-body-md text-on-surface-variant">Administra el equipo de especialistas y sus estados de disponibilidad.</p>
+</div>
+<button class="flex items-center justify-center gap-sm bg-primary text-on-primary px-xl py-md rounded-lg shadow-sm hover:opacity-90 active:scale-95 transition-all" onclick="document.getElementById('add-professional-modal').classList.remove('hidden')">
+<span class="material-symbols-outlined">add</span>
+<span class="font-label-bold text-label-bold">Añadir Nuevo Profesional</span>
+</button>
+</div>
+<!-- Bento Grid / Asymmetric List -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
+<!-- Team Member Card 1 -->
+<div class="bg-surface-container-lowest soft-shadow rounded-xl p-lg flex flex-col border border-outline-variant/10 hover:shadow-md transition-all duration-300">
+<div class="flex justify-between items-start mb-md">
+<div class="w-16 h-16 rounded-full overflow-hidden border-2 border-primary/10">
+<img alt="Julian Rivera" class="w-full h-full object-cover" data-alt="Close-up portrait of a male master barber with a styled beard and professional attire, set against a blurred high-end barbershop background. The lighting is warm and cinematic, emphasizing textures of hair and skin. The atmosphere is sophisticated and modern, fitting a luxury service environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZkGuQNM2Uk2kbAlLrF0VFUG6A5Wmj-XBHy2gYIBDNV0_xk6dLTbhnXUtSIS8adyUq2DvlPDAGfVIE_afMYQWy0zYtk1MocRlH0hhCrHfZWdsZ03lxlkVfjksNf205OeQ1uwz9V8FifIy_M8xlizvGwIYXPXFy9IHMSNaH8UZfdVpmui6TlOKJVFZc8SkX-Zcuw8AhlA2suDvugyWOvX66RkYRfau4UpHMO-hwl9c-vZMADX7DhuaA0eXqDXjiuwFq-OM8GfFyn6kp">
+</div>
+<div class="flex items-center gap-xs">
+<span class="text-caption font-caption text-on-surface-variant">Activo</span>
+<div class="w-10 h-6 bg-primary rounded-full relative p-1 flex items-center justify-end cursor-pointer">
+<div class="w-4 h-4 bg-white rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="mb-lg">
+<h3 class="font-title-sm text-title-sm text-on-surface">Julian Rivera</h3>
+<span class="inline-flex items-center px-sm py-xs bg-surface-container rounded-full text-caption font-caption text-primary mt-xs">Master Barber</span>
+</div>
+<div class="mt-auto pt-md border-t border-outline-variant/20 flex gap-sm">
+<button class="flex-1 py-sm bg-surface-container text-primary rounded-lg font-label-bold text-label-bold hover:bg-primary/5 transition-colors" onclick="document.getElementById('add-professional-modal').classList.remove('hidden')">Editar</button>
+<button class="px-md py-sm text-error rounded-lg hover:bg-error-container/20 transition-colors">
+<span class="material-symbols-outlined"></span>
+</button>
+</div>
+</div>
+<!-- Team Member Card 2 -->
+<div class="bg-surface-container-lowest soft-shadow rounded-xl p-lg flex flex-col border border-outline-variant/10 hover:shadow-md transition-all duration-300">
+<div class="flex justify-between items-start mb-md">
+<div class="w-16 h-16 rounded-full overflow-hidden border-2 border-primary/10">
+<img alt="Elena Santos" class="w-full h-full object-cover" data-alt="A professional headshot of a woman with vibrant colored hair, representing a senior colorist. She is smiling in a bright, modern salon setting with soft, diffused lighting that highlights her professional expertise. The color palette is clean and airy, with a soft-focus background of a high-end beauty clinic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD80KYPBAQOW91GYDG04ABW8bqA2e0kjle_MCXO0gpleLnZnxODj8by_yt1QQ6qep3oA3OTtTzqyKz1D22bh8Wqk1Tvlqrhoi-cwodizBTBv9cCmdhXzfzK1Oz0FRtP_rmwsfh0a9UApDl-dVceXLG1vvhVKngNJDFj38hi-E2Uvl3yq9n_gYj2XyK6sUR21V90TGZRvMK5MvAv6u2CwtJ7ODI_WYgGDU2Q-Ivg1tsivsGdmkD6h6Nc7sZNZcIEbAUfOidjCFAhccxH">
+</div>
+<div class="flex items-center gap-xs">
+<span class="text-caption font-caption text-on-surface-variant">Activo</span>
+<div class="w-10 h-6 bg-primary rounded-full relative p-1 flex items-center justify-end cursor-pointer">
+<div class="w-4 h-4 bg-white rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="mb-lg">
+<h3 class="font-title-sm text-title-sm text-on-surface">Elena Santos</h3>
+<span class="inline-flex items-center px-sm py-xs bg-surface-container rounded-full text-caption font-caption text-primary mt-xs">Colorista Senior</span>
+</div>
+<div class="mt-auto pt-md border-t border-outline-variant/20 flex gap-sm">
+<button class="flex-1 py-sm bg-surface-container text-primary rounded-lg font-label-bold text-label-bold hover:bg-primary/5 transition-colors" onclick="document.getElementById('add-professional-modal').classList.remove('hidden')">Editar</button>
+<button class="px-md py-sm text-error rounded-lg hover:bg-error-container/20 transition-colors">
+<span class="material-symbols-outlined"></span>
+</button>
+</div>
+</div>
+<!-- Team Member Card 3 -->
+<div class="bg-surface-container-lowest soft-shadow rounded-xl p-lg flex flex-col border border-outline-variant/10 hover:shadow-md transition-all duration-300">
+<div class="flex justify-between items-start mb-md">
+<div class="w-16 h-16 rounded-full overflow-hidden border-2 border-primary/10">
+<img alt="Marcos Vega" class="w-full h-full object-cover" data-alt="A professional male health and beauty consultant in a minimalist office. He is wearing a crisp white shirt, looking directly at the camera with confidence. The lighting is high-key and soft, creating a calm and professional atmosphere. The background is a clean studio-like setting with soft shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmZQGkd8eezlt0I9poDzawyhpUT0cskaNbXDFo4bpl-w-EKElRaciI4XV8IssBAIaVA55DwqkcAkyyhH_9unf1YMRRvZpTIsrG6wr66A7zaJff4RNaETcDnCW2h_G2BOuk_55q1o8BHTDfFwPB6167au71e775Ec6LntPcj1jK8AKWas-8LRhU-LQK2wG26afGIDWJAplGOg27SXbpI-NFPVsthZydk3sZcjKHI67CukuSrYfwEnFfDW6NaTyByWPPdKXRH6obxYqZ">
+</div>
+<div class="flex items-center gap-xs">
+<span class="text-caption font-caption text-on-surface-variant">Inactivo</span>
+<div class="w-10 h-6 bg-secondary-fixed-dim rounded-full relative p-1 flex items-center justify-start cursor-pointer">
+<div class="w-4 h-4 bg-white rounded-full shadow-sm"></div>
+</div>
+</div>
+</div>
+<div class="mb-lg">
+<h3 class="font-title-sm text-title-sm text-on-surface">Marcos Vega</h3>
+<span class="inline-flex items-center px-sm py-xs bg-surface-container rounded-full text-caption font-caption text-primary mt-xs">Estilista</span>
+</div>
+<div class="mt-auto pt-md border-t border-outline-variant/20 flex gap-sm">
+<button class="flex-1 py-sm bg-surface-container text-primary rounded-lg font-label-bold text-label-bold hover:bg-primary/5 transition-colors" onclick="document.getElementById('add-professional-modal').classList.remove('hidden')">Editar</button>
+<button class="px-md py-sm text-error rounded-lg hover:bg-error-container/20 transition-colors"><br></button>
+</div>
+</div>
+<!-- Team Member Card 4 -->
+<div class="bg-surface-container-lowest soft-shadow rounded-xl p-lg flex flex-col border border-outline-variant/10 hover:shadow-md transition-all duration-300">
+<div class="flex justify-between items-start mb-md">
+<div class="w-16 h-16 rounded-full overflow-hidden border-2 border-primary/10">
+<img alt="Sofía Mendez" class="w-full h-full object-cover" data-alt="Professional woman of color in a modern office, smiling warmly. She embodies a senior therapist or beauty consultant. The light is soft and wraps around her features, creating a high-end corporate lifestyle aesthetic. The background is a minimalist medical spa setting with soft teal accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRlsh76ViNBkHwNzGBQWg3H8ZRBNiamMDe_mtJqZK25EbHwgQfqn7HKdxYQ0TOxwlCDdEIx5UMtKlTvE9dcxYlKFp4PsLscV_VQaHMaW2VeNrCywVkC8sQRKyuynmlORMBV6lndHe7J5YZDsuZPj1Ef9kmtkWQA1QbwNjo9aG1RivkWUtrR-JT_-o8Fz-O0LsBPxo8Ts_-bV5RePvkL43GYWVrzHwtNVwAHyRoaJm_WE8P58kckloFncJYKMBTUaZrOyQFS17Q1utB">
+</div>
+<div class="flex items-center gap-xs">
+<span class="text-caption font-caption text-on-surface-variant">Activo</span>
+<div class="w-10 h-6 bg-primary rounded-full relative p-1 flex items-center justify-end cursor-pointer">
+<div class="w-4 h-4 bg-white rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="mb-lg">
+<h3 class="font-title-sm text-title-sm text-on-surface">Sofía Mendez</h3>
+<span class="inline-flex items-center px-sm py-xs bg-surface-container rounded-full text-caption font-caption text-primary mt-xs">Dermatóloga</span>
+</div>
+<div class="mt-auto pt-md border-t border-outline-variant/20 flex gap-sm">
+<button class="flex-1 py-sm bg-surface-container text-primary rounded-lg font-label-bold text-label-bold hover:bg-primary/5 transition-colors" onclick="document.getElementById('add-professional-modal').classList.remove('hidden')">Editar</button>
+<button class="px-md py-sm text-error rounded-lg hover:bg-error-container/20 transition-colors">
+<span class="material-symbols-outlined"></span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Mobile) -->
+<nav class="lg:hidden fixed bottom-0 w-full z-50 flex justify-around items-center px-md py-sm bg-surface-container-lowest shadow-[0px_-4px_20px_rgba(0,0,0,0.04)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-secondary active:scale-90 transition-all hover:opacity-80" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-caption text-caption">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary active:scale-90 transition-all hover:opacity-80" href="#">
+<span class="material-symbols-outlined">event</span>
+<span class="font-caption text-caption">Calendar</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary bg-primary-container/20 rounded-xl px-4 py-1 active:scale-90 transition-all hover:opacity-80" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">badge</span>
+<span class="font-caption text-caption">Team</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary active:scale-90 transition-all hover:opacity-80" href="#">
+<span class="material-symbols-outlined">settings_account_box</span>
+<span class="font-caption text-caption">Settings</span>
+</a>
+</nav>
+</div>
+<div class="fixed inset-0 z-[100] flex items-center justify-center bg-on-surface/20 backdrop-blur-sm hidden" id="add-professional-modal">
+<div class="bg-surface-container-lowest w-full max-w-md mx-4 rounded-xl soft-shadow p-lg border border-outline-variant/10">
+<div class="flex justify-between items-center mb-lg">
+<h2 class="font-headline-md text-headline-md text-on-surface">Nuevo Profesional</h2>
+<button class="p-xs rounded-full hover:bg-surface-variant transition-colors" onclick="document.getElementById('add-professional-modal').classList.add('hidden')">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<form class="space-y-lg">
+<div class="space-y-xs">
+<label class="font-label-bold text-label-bold text-on-surface-variant">Nombre Completo</label>
+<input class="w-full px-md py-sm rounded-lg border-outline-variant bg-surface-bright focus:ring-primary focus:border-primary" placeholder="Ej. Julian Rivera" type="text">
+</div>
+<div class="space-y-xs">
+<label class="font-label-bold text-label-bold text-on-surface-variant">Especialidad / Cargo</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<select class="w-full pl-xl pr-md py-sm rounded-lg border-outline-variant bg-surface-bright focus:ring-primary focus:border-primary appearance-none cursor-pointer" id="specialty-select">
+<option disabled="" selected="" value="">Selecciona especialidades...</option>
+<option value="barber">Master Barber</option>
+<option value="colorist">Colorista Senior</option>
+<option value="stylist">Estilista</option>
+<option value="dermatologist">Dermatóloga</option>
+<option value="aesthetician">Esteticista</option>
+</select>
+</div>
+<!-- Tags Container -->
+<div class="flex flex-wrap gap-xs mt-sm" id="specialty-tags"><!-- Selected Tag Example -->
+<div class="inline-flex items-center gap-xs px-sm py-1 bg-primary-fixed/20 text-on-primary-fixed-variant border border-primary/10 rounded-full text-caption font-caption">
+<span>Master Barber</span>
+<button class="hover:bg-primary/10 rounded-full p-0.5 flex items-center ml-1" type="button">
+<span class="material-symbols-outlined text-[14px] font-bold">close</span>
+</button>
+</div>
+<div class="inline-flex items-center gap-xs px-sm py-1 bg-primary-fixed/20 text-on-primary-fixed-variant border border-primary/10 rounded-full text-caption font-caption">
+<span>Colorista Senior</span>
+<button class="hover:bg-primary/10 rounded-full p-0.5 flex items-center ml-1" type="button">
+<span class="material-symbols-outlined text-[14px] font-bold">close</span>
+</button>
+</div></div>
+</div>
+<div class="pt-md">
+<button class="w-full py-md bg-primary text-on-primary rounded-lg font-label-bold shadow-sm hover:opacity-90 active:scale-[0.98] transition-all" type="button">
+          Guardar Profesional
+        </button>
+</div>
+</form>
+</div>
+</div></body></html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#43474b",
+                    "on-secondary-container": "#5e6367",
+                    "tertiary-fixed-dim": "#d7c957",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed": "#f4e570",
+                    "primary-fixed-dim": "#6bd8cb",
+                    "on-primary-fixed": "#00201d",
+                    "surface-container-highest": "#d3e4fe",
+                    "on-primary-fixed-variant": "#005049",
+                    "on-tertiary-container": "#474000",
+                    "on-secondary-fixed": "#171c1f",
+                    "inverse-on-surface": "#eaf1ff",
+                    "outline-variant": "#bcc9c6",
+                    "on-surface-variant": "#3d4947",
+                    "error": "#ba1a1a",
+                    "surface": "#f8f9ff",
+                    "on-tertiary-fixed": "#201c00",
+                    "on-tertiary-fixed-variant": "#4f4800",
+                    "inverse-primary": "#6bd8cb",
+                    "secondary-fixed": "#dfe3e7",
+                    "surface-container": "#e5eeff",
+                    "surface-bright": "#f8f9ff",
+                    "secondary-fixed-dim": "#c3c7cb",
+                    "secondary": "#5a5f62",
+                    "primary": "#00685f",
+                    "outline": "#6d7a77",
+                    "primary-container": "#008378",
+                    "on-surface": "#0b1c30",
+                    "background": "#f8f9ff",
+                    "surface-tint": "#006a61",
+                    "surface-variant": "#d3e4fe",
+                    "on-background": "#0b1c30",
+                    "on-error": "#ffffff",
+                    "surface-container-low": "#eff4ff",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#baad3e",
+                    "secondary-container": "#dce0e4",
+                    "on-secondary": "#ffffff",
+                    "surface-dim": "#cbdbf5",
+                    "surface-container-high": "#dce9ff",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed": "#89f5e7",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "tertiary": "#695f00",
+                    "on-primary-container": "#f4fffc",
+                    "inverse-surface": "#213145"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "unit": "4px",
+                    "xs": "4px",
+                    "xl": "32px",
+                    "md": "16px",
+                    "gutter": "16px",
+                    "container-padding": "24px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Inter"],
+                    "label-bold": ["Inter"],
+                    "title-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "caption": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "display-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-bold": ["14px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "title-sm": ["18px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "caption": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+        .soft-ui-card {
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.04);
+            transition: all 0.2s ease-in-out;
+        }
+        .soft-ui-card:hover {
+            box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.06);
+            transform: translateY(-2px);
+        }
+        .soft-ui-input:focus-within {
+            box-shadow: 0 0 0 4px rgba(0, 104, 95, 0.15);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex flex-col">
+<!-- TopAppBar Shell -->
+<header class="w-full top-0 sticky z-50 shadow-[0px_4px_20px_rgba(0,0,0,0.04)] bg-surface">
+<div class="flex items-center justify-between px-lg py-md w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-md">
+<button class="active:scale-95 transition-transform duration-200 text-primary">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-display-lg text-display-lg text-primary tracking-tight">AgendaPro</h1>
+</div>
+<button class="active:scale-95 transition-transform duration-200 text-primary">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow w-full max-w-2xl mx-auto px-lg py-xl space-y-xl">
+<!-- Welcome Header -->
+<div class="text-center space-y-sm">
+<h2 class="font-headline-md text-headline-md text-on-surface">Casi listo</h2>
+<p class="font-body-md text-on-surface-variant">Personaliza tu experiencia seleccionando tu rol principal.</p>
+</div>
+<!-- Role Selection Bento -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Soy Cliente -->
+<label class="cursor-pointer group">
+<input checked="" class="hidden peer" name="role" type="radio"/>
+<div class="soft-ui-card bg-surface-container-lowest rounded-xl p-lg border-2 border-transparent peer-checked:border-primary transition-all duration-200 h-full flex flex-col items-center text-center space-y-md">
+<div class="w-16 h-16 rounded-full bg-primary-container/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[32px]" data-icon="person">person</span>
+</div>
+<div class="space-y-xs">
+<h3 class="font-title-sm text-title-sm text-on-surface">Soy Cliente</h3>
+<p class="font-body-sm text-on-surface-variant leading-snug">Busco servicios y gestionar mis citas</p>
+</div>
+</div>
+</label>
+<!-- Soy Empresa -->
+<label class="cursor-pointer group">
+<input class="hidden peer" name="role" type="radio"/>
+<div class="soft-ui-card bg-surface-container-lowest rounded-xl p-lg border-2 border-transparent peer-checked:border-primary transition-all duration-200 h-full flex flex-col items-center text-center space-y-md">
+<div class="w-16 h-16 rounded-full bg-secondary-container/30 flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[32px]" data-icon="store">store</span>
+</div>
+<div class="space-y-xs">
+<h3 class="font-title-sm text-title-sm text-on-surface">Soy Empresa</h3>
+<p class="font-body-sm text-on-surface-variant leading-snug">Ofrezco servicios y gestiono mi negocio</p>
+</div>
+</div>
+</label>
+</div>
+<!-- Client Details Section -->
+<div class="space-y-lg pt-md">
+<div class="space-y-md">
+<label class="font-label-bold text-label-bold text-on-surface-variant ml-1" for="phone">Número de Teléfono</label>
+<div class="soft-ui-input flex items-center bg-surface-container-lowest border border-outline-variant rounded-lg px-md h-14 transition-all">
+<span class="material-symbols-outlined text-outline mr-md" data-icon="phone">phone</span>
+<input class="bg-transparent border-none focus:ring-0 w-full text-on-surface font-body-md placeholder:text-outline-variant" id="phone" placeholder="+56 9 1234 5678" type="tel"/>
+</div>
+<div class="flex items-center gap-sm px-1">
+<span class="material-symbols-outlined text-primary text-[18px]" data-icon="info">info</span>
+<p class="font-caption text-caption text-on-surface-variant">Necesario para enviar recordatorios de tus citas.</p>
+</div>
+</div>
+<!-- Image/Visual Anchor -->
+<div class="rounded-xl overflow-hidden soft-ui-card h-48 relative">
+<img alt="Dashboard Preview" class="w-full h-full object-cover" data-alt="A clean, minimalist dashboard interface displayed on a high-resolution tablet screen, featuring soft teal accents and elegant scheduling widgets. The scene is set in a bright, sunlit modern home office with soft shadows and a professional, calm atmosphere. The lighting is high-key and airy, emphasizing a light-mode UI aesthetic that feels efficient yet approachable." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFMCloEKprmN4wEvhyPQy5DfE6EoBPn3Qb7FqMYYbcM2XiHMBIgDl5mW-Iy_8RUBssyDBddfGIUcDCKpNN7LWZb3wUjM_tyaACPyLswOi2jNOaXM0QeCNTl9-d8_hytnHrXLAtnBW5IZshhhcUKwNrIKUTpBpfQP_n14kULB52s9VrLSQNzOSvE59yJ-8HocofDfjTpCECM7kdE7VsEwFwUUHw20DJ1RRyY2Io-Xwk4UbV96onloJyqv-l3c1AReyHfXvZux2-Axfn"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+</div>
+<!-- Terms and Action -->
+<div class="space-y-xl pt-sm">
+<label class="flex items-start gap-md cursor-pointer group">
+<div class="relative flex items-center pt-1">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer" type="checkbox"/>
+</div>
+<span class="font-body-sm text-on-surface-variant select-none">
+                        Acepto los <a class="text-primary font-bold hover:underline" href="#">Términos de Servicio</a> y la <a class="text-primary font-bold hover:underline" href="#">Política de Privacidad</a>
+</span>
+</label>
+<button class="w-full bg-primary hover:bg-primary-container text-on-primary h-14 rounded-lg font-label-bold text-label-bold flex items-center justify-center gap-sm shadow-lg active:scale-[0.98] transition-all duration-200">
+                    Completar Registro
+                    <span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Footer Space -->
+<footer class="py-xl text-center">
+<p class="font-caption text-caption text-outline-variant">© 2024 AgendaPro. Todos los derechos reservados.</p>
+</footer>
+</body></html>

@@ -1,0 +1,113 @@
+<div class="w-full max-w-md mx-auto flex flex-col items-center py-xl px-gutter">
+  <!-- Brand Logo Area -->
+  <div class="mb-xl flex flex-col items-center">
+    <div class="w-16 h-16 bg-primary-container rounded-xl flex items-center justify-center mb-md soft-shadow">
+      <span class="material-symbols-outlined text-on-primary-container text-[32px]">calendar_today</span>
+    </div>
+    <h1 class="font-display-lg text-display-lg text-primary tracking-tight">AgendaPro</h1>
+  </div>
+
+  <!-- Card Section -->
+  <div class="w-full bg-surface-container-lowest rounded-[16px] p-xl soft-shadow border border-outline-variant/20">
+    <header class="mb-xl text-center">
+      <h2 class="font-headline-md text-headline-md text-on-surface mb-xs">Sign In</h2>
+      <p class="font-body-sm text-body-sm text-on-surface-variant">Manage your appointments with ease.</p>
+    </header>
+
+    <!-- Google Sign-In Oficial Container (Sustituye al botón estático del Stitch de forma responsiva) -->
+    <div class="w-full mb-md">
+      <div id="google-btn-container" class="w-full flex justify-center min-h-[44px]"></div>
+    </div>
+
+    <!-- Divider -->
+    <div class="relative flex py-md items-center">
+      <div class="flex-grow border-t border-outline-variant/30"></div>
+      <span class="flex-shrink mx-md text-caption font-caption text-outline-variant uppercase tracking-wider">o</span>
+      <div class="flex-grow border-t border-outline-variant/30"></div>
+    </div>
+
+    <!-- Error Message -->
+    @if (errorMsg()) {
+      <div class="p-sm bg-error-container text-on-error-container rounded-lg text-body-sm text-center mb-lg border border-error/20 animate-pulse">
+        {{ errorMsg() }}
+      </div>
+    }
+
+    <!-- Login Form -->
+    <form (submit)="onSubmit($event)" class="space-y-lg">
+      <!-- Username Input -->
+      <div class="space-y-sm">
+        <label class="font-label-bold text-label-bold text-on-surface-variant ml-xs" for="username">Usuario</label>
+        <div class="relative">
+          <input 
+            class="w-full h-12 px-md bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md focus:ring-2 focus:ring-primary/15 focus:border-primary outline-none transition-all duration-200" 
+            id="username" 
+            placeholder="juan.perez" 
+            type="text"
+            [ngModel]="username()"
+            (ngModelChange)="username.set($event)"
+            name="username"
+            required
+          />
+        </div>
+      </div>
+
+      <!-- Password Input -->
+      <div class="space-y-sm">
+        <label class="font-label-bold text-label-bold text-on-surface-variant ml-xs" for="password">Contraseña</label>
+        <div class="relative">
+          <input 
+            class="w-full h-12 px-md bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md focus:ring-2 focus:ring-primary/15 focus:border-primary outline-none transition-all duration-200" 
+            id="password" 
+            placeholder="••••••••" 
+            [type]="showPassword() ? 'text' : 'password'"
+            [ngModel]="password()"
+            (ngModelChange)="password.set($event)"
+            name="password"
+            required
+          />
+          <button 
+            class="absolute right-md top-1/2 -translate-y-1/2 text-on-surface-variant/70 hover:text-primary transition-colors flex items-center" 
+            type="button"
+            (click)="togglePasswordVisibility()"
+          >
+            <span class="material-symbols-outlined select-none">
+              {{ showPassword() ? 'visibility_off' : 'visibility' }}
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Forgot Password -->
+      <div class="flex justify-end mt-sm">
+        <a class="font-body-sm text-body-sm text-primary hover:underline transition-all" href="#">¿Olvidaste tu contraseña?</a>
+      </div>
+
+      <!-- Submit Button -->
+      <button 
+        class="w-full h-12 bg-gradient-to-b from-primary to-[#005049] text-on-primary font-label-bold text-label-bold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95 flex items-center justify-center disabled:opacity-50" 
+        type="submit"
+        [disabled]="loading()"
+      >
+        @if (loading()) {
+          <span class="animate-spin mr-sm h-5 w-5 border-2 border-on-primary border-t-transparent rounded-full"></span>
+          Iniciando...
+        } @else {
+          Iniciar Sesión
+        }
+      </button>
+    </form>
+  </div>
+
+  <!-- Footer Section -->
+  <footer class="mt-xl text-center">
+    <p class="font-body-sm text-body-sm text-on-surface-variant">
+      ¿No tienes una cuenta? 
+      <a class="font-label-bold text-label-bold text-primary ml-xs hover:underline" href="#">Registrarse</a>
+    </p>
+  </footer>
+</div>
+
+<!-- Background Decoration (SoftUI depth) -->
+<div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary-fixed-dim/10 blur-[120px] rounded-full -z-10"></div>
+<div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-tertiary-fixed/10 blur-[120px] rounded-full -z-10"></div>

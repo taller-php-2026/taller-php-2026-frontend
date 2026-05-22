@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .soft-shadow {
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.04);
+        }
+        .soft-shadow-hover:hover {
+            box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.06);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#dce0e4",
+                        "on-tertiary-fixed": "#201c00",
+                        "surface-dim": "#cbdbf5",
+                        "on-secondary-fixed-variant": "#43474b",
+                        "outline-variant": "#bcc9c6",
+                        "on-secondary-container": "#5e6367",
+                        "tertiary-container": "#baad3e",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#89f5e7",
+                        "primary": "#00685f",
+                        "outline": "#6d7a77",
+                        "primary-fixed-dim": "#6bd8cb",
+                        "on-primary-fixed": "#00201d",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface": "#f8f9ff",
+                        "surface-container": "#e5eeff",
+                        "inverse-surface": "#213145",
+                        "on-primary-container": "#f4fffc",
+                        "on-tertiary-container": "#474000",
+                        "secondary-fixed": "#dfe3e7",
+                        "error": "#ba1a1a",
+                        "on-background": "#0b1c30",
+                        "tertiary-fixed-dim": "#d7c957",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#dce9ff",
+                        "on-primary-fixed-variant": "#005049",
+                        "surface-bright": "#f8f9ff",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#4f4800",
+                        "on-surface-variant": "#3d4947",
+                        "secondary": "#5a5f62",
+                        "inverse-primary": "#6bd8cb",
+                        "surface-container-low": "#eff4ff",
+                        "background": "#f8f9ff",
+                        "surface-tint": "#006a61",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#c3c7cb",
+                        "tertiary-fixed": "#f4e570",
+                        "on-surface": "#0b1c30",
+                        "surface-container-highest": "#d3e4fe",
+                        "tertiary": "#695f00",
+                        "on-error": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "surface-variant": "#d3e4fe",
+                        "primary-container": "#008378",
+                        "on-secondary-fixed": "#171c1f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "container-padding": "24px",
+                        "unit": "4px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "caption": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "title-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "caption": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "label-bold": ["14px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "display-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "title-sm": ["18px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background font-body-md text-on-surface">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 z-50 w-full bg-surface-container-lowest shadow-sm flex justify-between items-center px-lg py-md">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
+<span class="text-headline-md font-display-lg font-bold text-primary">AgendaPro</span>
+</div>
+<nav class="hidden md:flex items-center gap-lg">
+<a class="text-on-surface-variant font-medium hover:bg-primary-container/10 transition-colors px-sm py-xs rounded-lg" href="#">Explorar</a>
+<a class="text-primary font-bold border-b-2 border-primary px-sm py-xs" href="#">Mis Citas</a>
+<a class="text-on-surface-variant font-medium hover:bg-primary-container/10 transition-colors px-sm py-xs rounded-lg" href="#">Ayuda</a>
+</nav>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-primary-container/10 p-sm rounded-full transition-colors">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-primary-container/10 p-sm rounded-full transition-colors">settings</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant">
+<img alt="User avatar" data-alt="A professional high-resolution close-up portrait of a friendly male professional with a warm smile, set against a blurred, clean office background. The lighting is soft and natural, contributing to a modern SaaS aesthetic with a clean, light-mode palette and minimal distractions." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZ9Ri8RS7FHR38aTBejSxnrWeEFO3ZztF0BSvWsZZsu1Hv9V2zgfBydoTqB0EYy8zo4nZHHewNcYgo6by4j11q--wVHhiYO4GA8Uz0U0OLM7hnk_K54rSZGcUk7E5vrFTsYx21AbJWIjHUYi1SyEDUs5PF87mzg9bU8KpvF6TVCS4zP26FcQcQXv21CVn3POqjkrnrSiSOLOWGuKVmM_pgTwR7n3UMKO1mJ4rG0zIRz0ye7Y7Th_olw1A4q-k0HdF6eNM9N1W-pmBC"/>
+</div>
+</div>
+</header>
+<main class="pt-[88px] pb-xl px-lg max-w-7xl mx-auto min-h-screen">
+<div class="flex items-center mb-xl">
+<button class="flex items-center text-primary font-medium hover:underline transition-all">
+<span class="material-symbols-outlined mr-xs">arrow_back</span>
+                Volver al Inicio
+            </button>
+</div>
+<h1 class="text-display-lg font-display-lg text-on-surface mb-lg">Selecciona Fecha y Hora</h1>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg">
+<!-- Calendar Section -->
+<section class="lg:col-span-5 bg-surface-container-lowest rounded-xl p-lg soft-shadow">
+<div class="flex justify-between items-center mb-lg px-xs">
+<h2 class="text-title-sm font-title-sm text-on-surface">Mayo 2026</h2>
+<div class="flex gap-sm">
+<button class="material-symbols-outlined text-outline p-xs hover:bg-surface-container rounded-lg transition-colors">chevron_left</button>
+<button class="material-symbols-outlined text-outline p-xs hover:bg-surface-container rounded-lg transition-colors">chevron_right</button>
+</div>
+</div>
+<div class="grid grid-cols-7 gap-y-md text-center">
+<!-- Day Labels -->
+<div class="text-caption font-label-bold text-outline">L</div>
+<div class="text-caption font-label-bold text-outline">M</div>
+<div class="text-caption font-label-bold text-outline">X</div>
+<div class="text-caption font-label-bold text-outline">J</div>
+<div class="text-caption font-label-bold text-outline">V</div>
+<div class="text-caption font-label-bold text-outline">S</div>
+<div class="text-caption font-label-bold text-outline">D</div>
+<!-- Empty spaces for start of month -->
+<div class="h-10"></div>
+<div class="h-10"></div>
+<div class="h-10"></div>
+<div class="h-10"></div>
+<!-- Calendar Days -->
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">1</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">2</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-outline-variant bg-surface-container-low rounded-lg cursor-not-allowed">3</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">4</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">5</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">6</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">7</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">8</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">9</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-outline-variant bg-surface-container-low rounded-lg cursor-not-allowed">10</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">11</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">12</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">13</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">14</div>
+<!-- Selected Day -->
+<div class="h-10 flex items-center justify-center text-body-sm font-bold text-on-primary-container bg-primary-container rounded-lg shadow-sm">15</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">16</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-outline-variant bg-surface-container-low rounded-lg cursor-not-allowed">17</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">18</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">19</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">20</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">21</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">22</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">23</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-outline-variant bg-surface-container-low rounded-lg cursor-not-allowed">24</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">25</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">26</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">27</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">28</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">29</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-on-surface hover:bg-primary-container/10 rounded-lg cursor-pointer transition-all">30</div>
+<div class="h-10 flex items-center justify-center text-body-sm font-medium text-outline-variant bg-surface-container-low rounded-lg cursor-not-allowed">31</div>
+</div>
+<div class="mt-xl pt-lg border-t border-outline-variant/30 space-y-sm">
+<div class="flex items-center gap-sm">
+<div class="w-3 h-3 bg-surface-container-low rounded-full"></div>
+<span class="text-caption text-on-surface-variant">Días en gris: no disponibles</span>
+</div>
+<div class="flex items-center gap-sm">
+<div class="w-3 h-3 bg-primary-fixed-dim rounded-full"></div>
+<span class="text-caption text-on-surface-variant">Días disponibles según horario del profesional</span>
+</div>
+</div>
+</section>
+<!-- Time Slots & Summary Section -->
+<div class="lg:col-span-7 flex flex-col gap-lg">
+<!-- Time Selection Grid -->
+<section class="bg-surface-container-lowest rounded-xl p-lg soft-shadow">
+<h2 class="text-title-sm font-title-sm text-on-surface mb-lg">Horarios Disponibles - 15 Mayo</h2>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-md">
+<!-- Time Chip -->
+<button class="py-sm px-md border border-outline-variant rounded-lg text-body-sm font-medium text-on-surface hover:border-primary hover:bg-primary-container/5 transition-all text-center">09:00</button>
+<button class="py-sm px-md border border-outline-variant rounded-lg text-body-sm font-medium text-on-surface hover:border-primary hover:bg-primary-container/5 transition-all text-center">09:30</button>
+<button class="py-sm px-md border border-outline-variant rounded-lg text-body-sm font-medium text-on-surface hover:border-primary hover:bg-primary-container/5 transition-all text-center">10:00</button>
+<button class="py-sm px-md border border-outline-variant rounded-lg text-body-sm font-medium text-on-surface hover:border-primary hover:bg-primary-container/5 transition-all text-center">10:30</button>
+<button class="py-sm px-md border border-outline-variant rounded-lg text-body-sm font-medium text-on-surface hover:border-primary hover:bg-primary-container/5 transition-all text-center">11:00</button>
+<button class="py-sm px-md border border-outline-variant rounded-lg text-body-sm font-medium text-on-surface hover:border-primary hover:bg-primary-container/5 transition-all text-center">11:30</button>
+<button class="py-sm px-md border border-outline-variant rounded-lg text-body-sm font-medium text-on-surface hover:border-primary hover:bg-primary-container/5 transition-all text-center">12:00</button>
+<button class="py-sm px-md border border-outline-variant rounded-lg text-body-sm font-medium text-on-surface hover:border-primary hover:bg-primary-container/5 transition-all text-center">12:30</button>
+<!-- Selected Time -->
+<button class="py-sm px-md bg-primary-container text-on-primary-container rounded-lg text-body-sm font-bold shadow-md text-center">16:00</button>
+<button class="py-sm px-md border border-outline-variant rounded-lg text-body-sm font-medium text-on-surface hover:border-primary hover:bg-primary-container/5 transition-all text-center">16:30</button>
+<button class="py-sm px-md border border-outline-variant rounded-lg text-body-sm font-medium text-on-surface hover:border-primary hover:bg-primary-container/5 transition-all text-center">17:00</button>
+<button class="py-sm px-md border border-outline-variant rounded-lg text-body-sm font-medium text-on-surface hover:border-primary hover:bg-primary-container/5 transition-all text-center">17:30</button>
+<button class="py-sm px-md border border-outline-variant rounded-lg text-body-sm font-medium text-on-surface hover:border-primary hover:bg-primary-container/5 transition-all text-center">18:00</button>
+<button class="py-sm px-md border border-outline-variant rounded-lg text-body-sm font-medium text-on-surface hover:border-primary hover:bg-primary-container/5 transition-all text-center">18:30</button>
+<button class="py-sm px-md border border-outline-variant rounded-lg text-body-sm font-medium text-on-surface hover:border-primary hover:bg-primary-container/5 transition-all text-center">19:00</button>
+</div>
+</section>
+<!-- Reservation Summary Card -->
+<section class="bg-surface-container-low rounded-xl p-lg soft-shadow-hover transition-all border border-primary/10">
+<h2 class="text-title-sm font-title-sm text-on-surface mb-md">Resumen de la Reserva</h2>
+<div class="space-y-md mb-xl">
+<div class="flex justify-between items-center">
+<span class="text-body-sm text-on-surface-variant">Servicio:</span>
+<span class="text-label-bold text-on-surface">Corte de Cabello</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-body-sm text-on-surface-variant">Profesional:</span>
+<span class="text-label-bold text-on-surface">Carlos Ruiz</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-body-sm text-on-surface-variant">Fecha:</span>
+<span class="text-label-bold text-on-surface">15 de Mayo 2026</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-body-sm text-on-surface-variant">Hora:</span>
+<span class="text-label-bold text-on-surface">16:00</span>
+</div>
+<div class="pt-md border-t border-outline-variant/30 flex justify-between items-center">
+<span class="text-title-sm font-bold text-on-surface">Precio:</span>
+<span class="text-title-sm font-bold text-primary">25€</span>
+</div>
+</div>
+<button class="w-full py-md bg-primary text-on-primary font-display-lg text-headline-md rounded-xl shadow-lg hover:shadow-xl active:scale-[0.98] transition-all flex items-center justify-center gap-md">
+                        Confirmar Reserva
+                        <span class="material-symbols-outlined">check_circle</span>
+</button>
+</section>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full bg-surface-container py-xl px-lg border-t border-outline-variant flex flex-col md:flex-row justify-between items-center gap-md mt-xl">
+<div class="flex flex-col items-center md:items-start">
+<span class="font-bold text-on-surface-variant mb-xs">AgendaPro</span>
+<p class="text-caption text-on-surface-variant">© 2024 AgendaPro. Todos los derechos reservados.</p>
+</div>
+<div class="flex gap-lg">
+<a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacidad</a>
+<a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Términos</a>
+<a class="text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contacto</a>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,5 @@
+/* Estilos específicos para la barra de navegación SoftUI */
+.active-link {
+  background-color: rgba(0, 104, 95, 0.1);
+  color: #00685f !important;
+}

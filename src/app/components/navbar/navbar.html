@@ -1,0 +1,52 @@
+<header class="bg-surface w-full sticky top-0 shadow-[0px_4px_20px_rgba(0,0,0,0.04)] z-40">
+  <div class="flex items-center justify-between px-lg py-md w-full max-w-7xl mx-auto">
+    <!-- Logo y Título -->
+    <a routerLink="/" class="flex items-center gap-md active:scale-95 transition-transform">
+      <span class="material-symbols-outlined text-primary text-headline-md" data-icon="calendar_today">calendar_today</span>
+      <h1 class="font-display-lg text-display-lg text-primary tracking-tight">AgendaPro</h1>
+    </a>
+
+    <!-- Enlaces y Sección de Usuario -->
+    <div class="flex items-center gap-md">
+      <!-- Navegación de Escritorio -->
+      <div class="hidden md:flex items-center gap-lg mr-lg">
+        <a routerLink="/" class="text-primary font-label-bold cursor-pointer transition-colors hover:bg-primary-container/10 px-md py-sm rounded-lg">Inicio</a>
+        
+        @if (authService.isAuthenticated()) {
+          <a class="text-on-surface-variant font-body-md cursor-pointer transition-colors hover:bg-primary-container/10 px-md py-sm rounded-lg">Agenda</a>
+          <a class="text-on-surface-variant font-body-md cursor-pointer transition-colors hover:bg-primary-container/10 px-md py-sm rounded-lg">Servicios</a>
+        }
+      </div>
+
+      <!-- Control de Sesión -->
+      @if (authService.isAuthenticated()) {
+        <div class="flex items-center gap-md">
+          <!-- Datos del usuario logueado -->
+          <div class="hidden sm:flex flex-col text-right">
+            <span class="font-label-bold text-sm text-on-surface">{{ authService.currentUser()?.name }}</span>
+            <span class="text-xs text-on-surface-variant">{{ authService.currentUser()?.email }}</span>
+          </div>
+
+          <!-- Avatar del perfil -->
+          <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden border border-outline-variant">
+            @if (authService.currentUser()?.picture) {
+              <img [src]="authService.currentUser()?.picture" alt="User Profile" class="w-full h-full object-cover">
+            } @else {
+              <span class="material-symbols-outlined text-on-surface-variant">person</span>
+            }
+          </div>
+
+          <!-- Botón de Cerrar Sesión -->
+          <button (click)="logout()" class="flex items-center justify-center p-sm rounded-lg hover:bg-error-container/30 text-error active:scale-95 transition-all" title="Cerrar sesión">
+            <span class="material-symbols-outlined">logout</span>
+          </button>
+        </div>
+      } @else {
+        <!-- Botón para ir al Login si no está autenticado -->
+        <a routerLink="/login" class="px-md py-sm bg-primary text-on-primary font-label-bold rounded-lg shadow-md hover:shadow-lg hover:bg-primary/90 transition-all duration-200 active:scale-95">
+          Iniciar Sesión
+        </a>
+      }
+    </div>
+  </div>
+</header>

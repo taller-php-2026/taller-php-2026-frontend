@@ -1,0 +1,116 @@
+<main class="max-w-7xl mx-auto px-lg py-xl">
+  <!-- Welcoming Header -->
+  <section class="mb-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md">
+    <div>
+      <h2 class="font-display-lg text-display-lg text-on-background mb-xs">
+        ¡Bienvenido, {{ authService.currentUser()?.name }}!
+      </h2>
+      <p class="font-body-md text-on-surface-variant">Aquí tienes el resumen de tu negocio para hoy.</p>
+    </div>
+    <span class="bg-primary/10 text-primary font-label-bold px-md py-sm rounded-lg flex items-center gap-xs">
+      <span class="material-symbols-outlined">today</span>
+      Hoy: {{ todayDate }}
+    </span>
+  </section>
+
+  <!-- Quick Action Cards (Stitch-inspired) -->
+  <h3 class="font-title-sm text-title-sm text-on-surface-variant mb-md">Acciones Rápidas</h3>
+  <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg mb-xl">
+    <!-- Crear Turno -->
+    <button class="flex flex-col items-start text-left bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 transition-all active:scale-95 hover:shadow-md group w-full">
+      <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-md group-hover:bg-primary group-hover:text-on-primary transition-colors">
+        <span class="material-symbols-outlined">calendar_month</span>
+      </div>
+      <span class="font-label-bold text-label-bold text-on-surface mb-xs">Crear Turno</span>
+      <p class="font-body-sm text-body-sm text-on-surface-variant">Define nuevos bloques de atención para tus servicios.</p>
+    </button>
+
+    <!-- Gestionar Profesionales -->
+    <button class="flex flex-col items-start text-left bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 transition-all active:scale-95 hover:shadow-md group w-full">
+      <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-md group-hover:bg-primary group-hover:text-on-primary transition-colors">
+        <span class="material-symbols-outlined">groups</span>
+      </div>
+      <span class="font-label-bold text-label-bold text-on-surface mb-xs">Gestionar Profesionales</span>
+      <p class="font-body-sm text-body-sm text-on-surface-variant">Administra el staff, sus roles y sus especialidades.</p>
+    </button>
+
+    <!-- Configurar Horarios -->
+    <button class="flex flex-col items-start text-left bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 transition-all active:scale-95 hover:shadow-md group w-full">
+      <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-md group-hover:bg-primary group-hover:text-on-primary transition-colors">
+        <span class="material-symbols-outlined">schedule</span>
+      </div>
+      <span class="font-label-bold text-label-bold text-on-surface mb-xs">Configurar Horarios</span>
+      <p class="font-body-sm text-body-sm text-on-surface-variant">Ajusta los horarios de apertura y cierres especiales.</p>
+    </button>
+
+    <!-- Configurar Servicios -->
+    <button class="flex flex-col items-start text-left bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 transition-all active:scale-95 hover:shadow-md group w-full">
+      <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-md group-hover:bg-primary group-hover:text-on-primary transition-colors">
+        <span class="material-symbols-outlined">settings</span>
+      </div>
+      <span class="font-label-bold text-label-bold text-on-surface mb-xs">Configurar Servicios</span>
+      <p class="font-body-sm text-body-sm text-on-surface-variant">Administra tu catálogo de tratamientos y precios.</p>
+    </button>
+  </section>
+
+  <!-- Featured Section (Summary Detail / Bento style) -->
+  <section class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+    <!-- Próximos Turnos (Stitch styled card) -->
+    <div class="lg:col-span-2 bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10">
+      <div class="p-lg flex justify-between items-center border-b border-outline-variant/10 bg-surface-container-lowest">
+        <h3 class="font-title-sm text-title-sm text-on-surface">Próximos Turnos</h3>
+        <button class="text-primary font-label-bold text-sm hover:underline">Ver todos</button>
+      </div>
+      <div class="divide-y divide-outline-variant/10">
+        @for (turn of upcomingTurns; track turn.id) {
+          <div class="p-md flex items-center gap-md hover:bg-surface transition-colors">
+            <div class="w-12 h-12 rounded-full overflow-hidden border border-outline-variant/20 bg-surface-container-high flex items-center justify-center">
+              @if (turn.clientPicture) {
+                <img [src]="turn.clientPicture" alt="Client" class="w-full h-full object-cover">
+              } @else {
+                <span class="material-symbols-outlined text-on-surface-variant">person</span>
+              }
+            </div>
+            <div class="flex-1">
+              <p class="font-label-bold text-on-surface">{{ turn.clientName }}</p>
+              <p class="font-caption text-on-surface-variant">{{ turn.service }}</p>
+            </div>
+            <div class="text-right">
+              <p class="font-label-bold text-primary">{{ turn.time }}</p>
+              <span [class]="turn.status === 'Confirmado' ? 'bg-primary/10 text-primary' : 'bg-secondary-container text-on-secondary-container'" class="text-[10px] uppercase tracking-wider px-sm py-0.5 rounded-full font-bold">
+                {{ turn.status }}
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Stats / Resumen del Día -->
+    <div class="bg-surface-container-lowest rounded-xl p-lg shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 flex flex-col justify-between">
+      <div>
+        <h3 class="font-title-sm text-title-sm text-on-surface mb-lg">Resumen de Hoy</h3>
+        
+        <div class="space-y-md">
+          <div class="flex items-center justify-between p-sm rounded-lg bg-surface">
+            <span class="text-on-surface-variant font-body-sm">Turnos Totales</span>
+            <span class="font-label-bold text-primary text-lg">12</span>
+          </div>
+          <div class="flex items-center justify-between p-sm rounded-lg bg-surface">
+            <span class="text-on-surface-variant font-body-sm">Confirmados</span>
+            <span class="font-label-bold text-[#2e7d32] text-lg">8</span>
+          </div>
+          <div class="flex items-center justify-between p-sm rounded-lg bg-surface">
+            <span class="text-on-surface-variant font-body-sm">Pendientes</span>
+            <span class="font-label-bold text-[#ed6c02] text-lg">4</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-xl pt-lg border-t border-outline-variant/10 text-center">
+        <p class="text-caption font-caption text-on-surface-variant mb-xs">Ingresos Estimados</p>
+        <p class="text-display-lg font-display-lg text-primary">$14,500</p>
+      </div>
+    </div>
+  </section>
+</main>
