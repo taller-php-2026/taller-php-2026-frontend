@@ -8,7 +8,7 @@
 }
 
 * {
-    @apply m-0 box-border font-roboto select-none cursor-default;
+    @apply box-border font-roboto select-none cursor-default;
 }
 
 body {
