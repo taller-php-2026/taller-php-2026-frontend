@@ -1,1 +1,24 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import "tailwindcss";
+
+@theme {
+    --font-roboto: 'Roboto', sans-serif;
+    --color-primary: #0E9488;
+    --color-secondary: #F1F5F9;
+}
+
+* {
+    @apply box-border font-roboto select-none cursor-default;
+}
+
+body {
+    @apply bg-secondary;
+}
+
+button {
+    @apply outline-none border-none cursor-pointer;
+}
+
+input {
+    @apply outline-none border-none;
+}

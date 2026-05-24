@@ -7,7 +7,6 @@ import { FooterComponent } from './components/footer/footer';
   selector: 'app-root',
   imports: [RouterOutlet, NavbarComponent, FooterComponent],
   templateUrl: './app.html',
-  styleUrl: './app.css'
 })
 export class App {
   protected readonly title = signal('taller-php-2026-frontend');
