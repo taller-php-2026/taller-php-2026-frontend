@@ -12,19 +12,25 @@ export interface UserProfile {
 export class AuthService {
   // Estado reactivo del usuario logueado
   currentUser = signal<UserProfile | null>(null);
-  
-  // Señal que indica si el usuario está autenticado
+
+  // Solo true cuando hay sesión Y tipo elegido
   isAuthenticated = signal<boolean>(false);
+
   // Señal del tipo de usuario (cliente o profesional)
-  userType = signal<'cliente'|'profesional'|null>(null);
+  userType = signal<'cliente' | 'profesional' | null>(null);
+
+  // Usuario pendiente (registrado/google pero sin tipo elegido aún)
+  pendingUser = signal<UserProfile | null>(null);
 
   constructor() {
     // Restaurar sesión desde localStorage al inicializar
     const savedUser = localStorage.getItem('user_session');
-    if (savedUser) {
+    const savedType = localStorage.getItem('user_type') as 'cliente' | 'profesional' | null;
+    if (savedUser && savedType) {
       try {
         const user = JSON.parse(savedUser);
         this.currentUser.set(user);
+        this.userType.set(savedType);
         this.isAuthenticated.set(true);
       } catch (e) {
         this.logout();
@@ -32,28 +38,33 @@ export class AuthService {
     }
   }
 
-  // Definir tipo de usuario tras registro o login con Google
-  setUserType(type: 'cliente' | 'profesional') {
-    this.userType.set(type);
-    localStorage.setItem('user_type', type);
+  // Guardar usuario pendiente (antes de elegir tipo)
+  setPendingUser(user: UserProfile) {
+    this.pendingUser.set(user);
   }
 
-  // Obtener tipo de usuario guardado al iniciar la app
-  private loadUserType() {
-    const saved = localStorage.getItem('user_type');
-    if (saved === 'cliente' || saved === 'profesional') {
-      this.userType.set(saved);
-    }
-  }
-
-  // Iniciar sesión
+  // Completar login: usuario + tipo elegido
   login(user: UserProfile) {
     this.currentUser.set(user);
     this.isAuthenticated.set(true);
     localStorage.setItem('user_session', JSON.stringify(user));
-    // Si el tipo ya está definido en el objeto user, guardarlo
     if ((user as any).type) {
       this.setUserType((user as any).type);
+    }
+  }
+
+  // Definir tipo de usuario y completar sesión
+  setUserType(type: 'cliente' | 'profesional') {
+    this.userType.set(type);
+    localStorage.setItem('user_type', type);
+
+    // Si hay un pending, completar login ahora
+    const pending = this.pendingUser();
+    if (pending && !this.isAuthenticated()) {
+      this.currentUser.set(pending);
+      this.isAuthenticated.set(true);
+      localStorage.setItem('user_session', JSON.stringify(pending));
+      this.pendingUser.set(null);
     }
   }
 
@@ -62,6 +73,7 @@ export class AuthService {
     this.currentUser.set(null);
     this.isAuthenticated.set(false);
     this.userType.set(null);
+    this.pendingUser.set(null);
     localStorage.removeItem('user_session');
     localStorage.removeItem('user_type');
   }

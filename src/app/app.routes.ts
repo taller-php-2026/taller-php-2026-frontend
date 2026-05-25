@@ -1,15 +1,20 @@
-import { Routes } from '@angular/router';
+import { inject } from '@angular/core';
+import { Router, Routes } from '@angular/router';
+import { AuthService } from './services/auth.service';
+
+const authGuard = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+  return authService.isAuthenticated() ? true : router.createUrlTree(['/login']);
+};
 
 export const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('@pages/home/home.routes').then((m) => m.HOME_ROUTES),
+    canActivate: [authGuard],
   },
-  {
-    path: 'empresa/:id/seleccionar-servicio',
-    loadChildren: () =>
-      import('@pages/select-service/select-service.routes').then((m) => m.SERVICIO_ROUTES),
-  },
+
   {
     path: 'login',
     loadComponent: () => import('./pages/login/login').then((m) => m.LoginComponent),
@@ -19,13 +24,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/elegir-tipo/elegir-tipo.component').then((m) => m.ElegirTipoComponent),
   },
   {
-    path: 'home-cliente',
-    loadComponent: () => import('./pages/home-cliente/home-cliente.component').then((m) => m.HomeClienteComponent),
+    path: 'registro',
+    loadComponent: () => import('./pages/registro/registro.component').then((m) => m.RegistroComponent),
   },
-  {
-    path: 'home-profesional',
-    loadComponent: () => import('./pages/home-profesional/home-profesional.component').then((m) => m.HomeProfesionalComponent),
-  },
+
   {
     path: '**',
     redirectTo: 'login',

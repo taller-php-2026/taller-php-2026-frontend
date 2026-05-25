@@ -1,5 +1,5 @@
-import { Component, inject, signal, OnInit, AfterViewInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, inject, signal, computed, OnInit, AfterViewInit } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 
@@ -8,7 +8,7 @@ declare var google: any;
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
@@ -16,19 +16,25 @@ export class LoginComponent implements OnInit, AfterViewInit {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  // Campos para login manual
-  username = signal('');
+  email = signal('');
   password = signal('');
   errorMsg = signal('');
   loading = signal(false);
   showPassword = signal(false);
+  touched = signal({ email: false, password: false });
 
-  togglePasswordVisibility() {
-    this.showPassword.update(val => !val);
+  // Validaciones
+  emailValid = computed(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email()));
+  passwordMinLength = computed(() => this.password().length >= 6);
+  formValid = computed(() => this.emailValid() && this.passwordMinLength());
+
+  togglePasswordVisibility() { this.showPassword.update(val => !val); }
+
+  touch(field: 'email' | 'password') {
+    this.touched.update(t => ({ ...t, [field]: true }));
   }
 
   ngOnInit() {
-    // Si ya está logueado, redirigir al inicio
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/']);
     }
@@ -38,7 +44,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.initializeGoogleSignIn();
   }
 
-  // Inicializa Google Sign-In con el Client ID del usuario
   private initializeGoogleSignIn() {
     if (typeof google !== 'undefined') {
       google.accounts.id.initialize({
@@ -48,63 +53,60 @@ export class LoginComponent implements OnInit, AfterViewInit {
         cancel_on_tap_outside: true
       });
 
-      // Renderiza el botón oficial de Google con diseño personalizado
       google.accounts.id.renderButton(
         document.getElementById('google-btn-container'),
         {
           theme: 'outline',
           size: 'large',
-          width: '100%',
+          width: 350,
           text: 'signin_with',
           shape: 'rectangular',
           logo_alignment: 'left'
         }
       );
 
-      // Opcional: Mostrar Google One Tap
       google.accounts.id.prompt();
     } else {
-      // Reintentar en caso de que tarde en cargar el script
       setTimeout(() => this.initializeGoogleSignIn(), 500);
     }
   }
 
-  // Procesa la respuesta de Google tras loguearse
   private handleGoogleCredentialResponse(response: any) {
     if (response.credential) {
       const payload = this.authService.decodeJwt(response.credential);
       if (payload) {
-        this.authService.login({
+        // No login real hasta elegir tipo
+        this.authService.setPendingUser({
           name: payload.name || payload.given_name,
           email: payload.email,
           picture: payload.picture
         });
-        // Redirigir a elegir-tipo
         this.router.navigate(['/elegir-tipo']);
       }
     }
   }
 
-  // Inicio de sesión manual para testing
   onSubmit(event: Event) {
     event.preventDefault();
-    if (!this.username() || !this.password()) {
-      this.errorMsg.set('Por favor completa todos los campos.');
+    this.touched.set({ email: true, password: true });
+
+    if (!this.formValid()) {
+      this.errorMsg.set('Corrige los errores antes de continuar.');
       return;
     }
 
     this.loading.set(true);
     this.errorMsg.set('');
 
-    // Simular login exitoso tras 1 segundo
+    // Simular login: guardar pending, no autenticado hasta elegir tipo
     setTimeout(() => {
-      this.authService.login({
-        name: this.username(),
-        email: `${this.username()}@ejemplo.com`,
+      this.authService.setPendingUser({
+        name: this.email().split('@')[0],
+        email: this.email(),
         picture: ''
       });
       this.loading.set(false);
       this.router.navigate(['/elegir-tipo']);
-    }, 1000);
+    }, 800);
   }
 }
