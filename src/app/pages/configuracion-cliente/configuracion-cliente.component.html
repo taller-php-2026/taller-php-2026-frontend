@@ -1,0 +1,167 @@
+<header class="w-full top-0 sticky shadow-[0px_4px_20px_rgba(0,0,0,0.04)] bg-surface-container-lowest z-50">
+  <div class="flex items-center justify-between px-lg py-md w-full max-w-7xl mx-auto">
+    <div class="flex items-center gap-md">
+      <button (click)="goBack()" class="active:scale-95 transition-transform duration-200 text-primary flex items-center justify-center p-2 rounded-full hover:bg-surface-container-low">
+        <span class="material-symbols-outlined" style="font-size:24px">arrow_back</span>
+      </button>
+      <h1 class="font-headline-md text-headline-md text-on-surface">Configuración de Perfil</h1>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-md mx-auto px-lg mt-xl space-y-lg pb-xl">
+  <!-- User Info Header Section -->
+  <section class="flex flex-col items-center justify-center p-lg bg-surface-container-lowest rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)]">
+    <div class="relative group">
+      <img
+        [src]="picture()"
+        alt="Profile Picture"
+        class="w-24 h-24 rounded-full object-cover border-4 border-surface-container"
+      >
+      <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" class="hidden" />
+      <button (click)="fileInput.click()" class="absolute bottom-0 right-0 bg-primary p-xs rounded-full text-white shadow-lg active:scale-90 transition-transform flex items-center justify-center">
+        <span class="material-symbols-outlined text-[18px]">edit</span>
+      </button>
+    </div>
+    <div class="mt-md text-center">
+      <h2 class="font-title-sm text-title-sm text-on-surface">{{ name() }}</h2>
+    </div>
+  </section>
+
+  <!-- Success/Error Feedback -->
+  @if (successMsg()) {
+    <div class="p-sm bg-green-50 text-green-700 rounded-lg text-body-sm text-center border border-green-200">
+      {{ successMsg() }}
+    </div>
+  }
+  @if (errorMsg()) {
+    <div class="p-sm bg-error-container text-on-error-container rounded-lg text-body-sm text-center border border-error/20">
+      {{ errorMsg() }}
+    </div>
+  }
+
+  <!-- Account Settings Form -->
+  <section class="space-y-md">
+    <div class="bg-surface-container-lowest p-md rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)]">
+      <h3 class="font-label-bold text-label-bold text-primary mb-md">Datos de la Cuenta</h3>
+      <form (submit)="saveChanges(); $event.preventDefault()" class="space-y-lg" novalidate>
+        
+        <!-- Name Field -->
+        <div class="flex flex-col gap-xs">
+          <label class="font-caption text-caption text-on-surface-variant px-xs">Nombre Completo</label>
+          <div class="flex items-center bg-background border border-outline-variant rounded-lg px-md py-sm focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/15 transition-all">
+            <span class="material-symbols-outlined text-on-surface-variant mr-md">person</span>
+            <input
+              class="bg-transparent border-none p-0 w-full font-body-md text-body-md focus:ring-0 text-on-surface outline-none"
+              placeholder="Tu nombre"
+              type="text"
+              name="name"
+              [ngModel]="name()"
+              (ngModelChange)="name.set($event)"
+            >
+          </div>
+        </div>
+
+        <!-- Email Field -->
+        <div class="flex flex-col gap-xs">
+          <label class="font-caption text-caption text-on-surface-variant px-xs">Correo Electrónico</label>
+          <div class="flex items-center bg-background border border-outline-variant rounded-lg px-md py-sm focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/15 transition-all">
+            <span class="material-symbols-outlined text-on-surface-variant mr-md">mail</span>
+            <input
+              class="bg-transparent border-none p-0 w-full font-body-md text-body-md focus:ring-0 text-on-surface outline-none"
+              placeholder="ejemplo@correo.com"
+              type="email"
+              name="email"
+              [ngModel]="email()"
+              (ngModelChange)="email.set($event)"
+            >
+          </div>
+        </div>
+
+        <!-- Phone Field -->
+        <div class="flex flex-col gap-xs">
+          <label class="font-caption text-caption text-on-surface-variant px-xs">Número de Teléfono</label>
+          <div class="flex h-12 rounded-lg border border-outline-variant overflow-hidden bg-background focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/15 transition-all">
+            
+            <!-- Select país -->
+            <div class="relative flex-shrink-0">
+              <select
+                class="h-full pl-3 pr-8 bg-transparent border-r border-outline-variant font-body-md text-on-surface focus:outline-none cursor-pointer text-sm"
+                [(ngModel)]="countryIndex"
+                (ngModelChange)="onCountryChange($event)"
+                name="countryCode"
+                style="-webkit-appearance: none; -moz-appearance: none; appearance: none;"
+              >
+                @for (c of countries; track c.code; let i = $index) {
+                  <option [value]="i.toString()">{{ c.flag }} {{ c.dial }}</option>
+                }
+              </select>
+            </div>
+
+            <!-- Ícono teléfono + input -->
+            <div class="flex items-center flex-1 px-3 gap-2">
+              <span class="material-symbols-outlined text-on-surface-variant flex-shrink-0" style="font-size:20px">phone</span>
+              <input
+                class="flex-1 bg-transparent border-none p-0 font-body-md text-on-surface placeholder:text-outline-variant focus:outline-none focus:ring-0 h-full"
+                id="phone"
+                [placeholder]="selectedCountry.placeholder"
+                type="tel"
+                [ngModel]="phone()"
+                (ngModelChange)="phone.set($event)"
+                name="phone"
+              />
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="flex flex-col gap-xs">
+          <label class="font-caption text-caption text-on-surface-variant px-xs">Contraseña</label>
+          <div class="flex items-center justify-between bg-background border border-outline-variant rounded-lg px-md py-sm focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/15 transition-all">
+            <div class="flex items-center flex-1">
+              <span class="material-symbols-outlined text-on-surface-variant mr-md">lock</span>
+              <input
+                class="bg-transparent border-none p-0 w-full font-body-md text-body-md focus:ring-0 text-on-surface outline-none"
+                [type]="showConfirm() ? 'text' : 'password'"
+                name="password"
+                [ngModel]="password()"
+                (ngModelChange)="password.set($event)"
+              >
+            </div>
+            <button type="button" (click)="toggleShowConfirm()" class="text-primary font-label-bold text-label-bold active:scale-95 transition-transform flex items-center">
+              <span class="material-symbols-outlined">{{ showConfirm() ? 'visibility_off' : 'visibility' }}</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit & Logout Buttons -->
+        <div class="flex flex-col gap-md pt-md">
+          <button
+            type="submit"
+            style="background: linear-gradient(180deg, #0e9488 0%, #005049 100%) !important; color: white !important;"
+            class="w-full bg-primary text-white font-label-bold text-label-bold py-md rounded-lg shadow-lg active:scale-[0.98] transition-all bg-gradient-to-b from-primary to-[#005a52] h-12 flex items-center justify-center gap-sm disabled:opacity-50"
+            [disabled]="loading()"
+          >
+            @if (loading()) {
+              <span class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
+              Guardando...
+            } @else {
+              Guardar Cambios
+            }
+          </button>
+
+          <button
+            type="button"
+            (click)="goBack()"
+            class="w-full flex items-center justify-center gap-sm text-slate-600 hover:text-slate-800 font-label-bold text-label-bold py-md active:opacity-70 transition-opacity border border-slate-200 hover:bg-slate-50 rounded-lg h-12"
+          >
+            <span class="material-symbols-outlined">close</span>
+            Cancelar
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </section>
+</main>

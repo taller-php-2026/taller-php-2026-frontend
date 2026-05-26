@@ -1,0 +1,16 @@
+{
+  "idUsuario": 2,
+  "nombre": "Guzmán Perera",
+  "email": "guzman@example.com",
+  "fechaRegistro": "2026-05-25 21:00:00",
+  "telefono": "+598 099 888 777",
+  "rol": "profesional",
+  "activo": 1,
+  "cliente": null,
+  "profesional": {
+    "idUsuario": 2,
+    "nombreNegocio": "Guzmán Tech",
+    "descripcion": "Desarrollo de Software a medida y consultoría.",
+    "ratingPromedio": 4.9
+  }
+}
