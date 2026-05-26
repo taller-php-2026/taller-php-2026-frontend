@@ -1,19 +1,20 @@
-<div class="flex-grow w-full max-w-2xl mx-auto px-lg py-xl space-y-xl">
+<div class="flex-grow w-full max-w-2xl mx-auto px-lg py-xl mt-10">
+  <div class="w-full bg-surface-container-lowest rounded-[32px] p-lg md:p-xl soft-shadow shadow-xl border border-outline-variant/20">
 
-  <!-- Welcome Header -->
-  <div class="text-center space-y-sm">
-    <h2 class="font-headline-md text-headline-md text-on-surface">Casi listo</h2>
-    <p class="font-body-md text-on-surface-variant">Personaliza tu experiencia seleccionando tu rol principal.</p>
-  </div>
-
-  <!-- Error global -->
-  @if (errorMsg()) {
-    <div class="p-sm bg-error-container text-on-error-container rounded-lg text-body-sm text-center border border-error/20">
-      {{ errorMsg() }}
+    <!-- Welcome Header -->
+    <div class="text-center space-y-sm mb-lg">
+      <h2 class="font-headline-md text-headline-md text-on-surface">Casi listo</h2>
+      <p class="font-body-md text-on-surface-variant">Personaliza tu experiencia seleccionando tu rol principal.</p>
     </div>
-  }
 
-  <form (submit)="completarRegistro(); $event.preventDefault()" novalidate>
+    <!-- Error global -->
+    @if (errorMsg()) {
+      <div class="p-sm bg-error-container text-on-error-container rounded-lg text-body-sm text-center border border-error/20 mb-md">
+        {{ errorMsg() }}
+      </div>
+    }
+
+    <form (submit)="completarRegistro(); $event.preventDefault()" novalidate>
 
     <!-- Role Selection -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-md mb-xl">
@@ -60,7 +61,7 @@
           <!-- Select país -->
           <div class="relative flex-shrink-0">
             <select
-              class="h-full pl-3 pr-8 bg-transparent border-r border-outline-variant font-body-md text-on-surface focus:outline-none cursor-pointer text-sm appearance-none"
+              class="h-full pl-3 pr-8 bg-transparent border-r border-outline-variant font-body-md text-on-surface focus:outline-none cursor-pointer text-sm"
               [(ngModel)]="countryIndex"
               (ngModelChange)="onCountryChange($event)"
               name="countryCode"
@@ -69,7 +70,6 @@
                 <option [value]="i.toString()">{{ c.flag }} {{ c.dial }}</option>
               }
             </select>
-            <span class="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline" style="font-size:16px">expand_more</span>
           </div>
 
           <!-- Ícono teléfono + input -->
@@ -162,7 +162,7 @@
       <label class="flex items-start gap-md cursor-pointer group" (click)="touch('terms')">
         <div class="relative flex items-center pt-1">
           <input
-            class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary/20 transition-all cursor-pointer"
+            class="w-5 h-5 rounded border-2 border-slate-400 bg-slate-50 text-primary focus:ring-primary/20 transition-all cursor-pointer"
             type="checkbox"
             name="terms"
             [ngModel]="termsAccepted()"
@@ -196,4 +196,5 @@
 
     </div>
   </form>
+  </div>
 </div>
