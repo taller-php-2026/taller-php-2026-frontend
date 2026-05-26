@@ -1,6 +1,8 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, effect } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-editar-servicio',
@@ -11,13 +13,17 @@ import { FormsModule } from '@angular/forms';
 })
 export class EditarServicioComponent {
   private router = inject(Router);
+  private http = inject(HttpClient);
 
-  name = signal('Corte de Cabello');
-  hours = signal<number | null>(1);
-  minutes = signal<number | null>(45);
-  price = signal<number | null>(25.00);
-  description = signal('Incluye lavado con champú premium, corte personalizado y peinado final con productos de alta gama.');
-  imagePreview = signal<string | null>('https://lh3.googleusercontent.com/aida-public/AB6AXuCEspn20-vaUjouNvQfQDskzF3tBzSvh7u5f0woZSjfJLp9fwt8_P0ichHg2FPxOlrzQhoxjiXGDLD68fCrDEiNovNdAH_18Z7IGE7de3U3UEKFjKMh9-P5ko-mEF4DxeQpqPXGnjulAq1Ffl2166G-0x9mWDrT6QJ348cxhenjh6_pUcjy9FzXO3tCjAyYjK5W2DITfdKI6tY1BCtHXIm-WfKY_e0hEo0w_wyu9a6tE4GyrhqzSulTrKVL-MB7lkGuoE72BFbQujbi');
+  // Carga reactiva de la lista de servicios desde el mock JSON
+  private serviciosData = toSignal(this.http.get<any[]>('/mock-servicios.json'));
+
+  name = signal('Cargando...');
+  hours = signal<number | null>(0);
+  minutes = signal<number | null>(0);
+  price = signal<number | null>(0);
+  description = signal('');
+  imagePreview = signal<string | null>(null);
   isActive = signal(true);
 
   availableCategories = [
@@ -28,13 +34,40 @@ export class EditarServicioComponent {
     'Manicura',
     'Masajes'
   ];
-  selectedCategories = signal<string[]>(['Barbería', 'Tratamientos']);
+  selectedCategories = signal<string[]>(['Barbería']);
   selectedCategoryDropdown = '';
 
   loading = signal(false);
   deleting = signal(false);
   successMsg = signal('');
   errorMsg = signal('');
+
+  constructor() {
+    // Sincronizar datos del servicio obtenido desde el mock
+    effect(() => {
+      const lista = this.serviciosData();
+      if (lista && lista.length > 0) {
+        const serv = lista[0]; // Cargar el primer servicio como demostración
+        this.name.set(serv.nombre);
+        
+        const hrs = Math.floor(serv.duracionMinutos / 60);
+        const mins = serv.duracionMinutos % 60;
+        this.hours.set(hrs > 0 ? hrs : null);
+        this.minutes.set(mins);
+        
+        this.price.set(serv.precio);
+        this.description.set(serv.descripcion);
+        this.isActive.set(serv.activo === 1);
+        
+        // Categorías asociadas según el tipo
+        if (serv.modalidad === 'online') {
+          this.selectedCategories.set(['Estética', 'Tratamientos']);
+        } else {
+          this.selectedCategories.set(['Barbería', 'Peluquería']);
+        }
+      }
+    });
+  }
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;

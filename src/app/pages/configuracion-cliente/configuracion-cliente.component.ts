@@ -1,7 +1,9 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, effect } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { HttpClient } from '@angular/common/http';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 interface Country {
   code: string;
@@ -23,6 +25,10 @@ interface Country {
 export class ConfiguracionClienteComponent {
   authService = inject(AuthService);
   private router = inject(Router);
+  private http = inject(HttpClient);
+
+  // Carga reactiva de los datos del cliente desde el mock JSON
+  private clienteData = toSignal(this.http.get<any>('/mock-usuario.json'));
 
   countries: Country[] = [
     { code: 'UY', name: 'Uruguay',   flag: '🇺🇾', dial: '+598', phonePattern: /^09[1-9]\d{6}$/,   placeholder: '091 123 456',  example: '091123456'  },
@@ -46,11 +52,11 @@ export class ConfiguracionClienteComponent {
     this.phone.set('');
   }
 
-  // Pre-load data from currentUser
-  name = signal(this.authService.currentUser()?.name || 'Mariana Rodríguez');
-  email = signal(this.authService.currentUser()?.email || 'mariana.rod@example.com');
-  phone = signal('091123456');
-  picture = signal(this.authService.currentUser()?.picture || 'https://lh3.googleusercontent.com/aida-public/AB6AXuBBKFPIdwAwenLkQteMIQWDlbgG8uvhw5MMKIvA3_5bgEVxssOevl0oJGWDBLG0eYr65t0MRDoPYl2do2C6nINYsoFZpCxNlN0KLhl12DhYMXrK0WXLigcA1Sq5JCDDQ7FuSnp6T3iIHPNpQ1fyEXmhZmmfDpyEJMamYk1-3CwxRMG9hLcyllr9FeI1ZAjWAui9O26FbzB8lpqfUHP21I6ul-lioYyFOiQvzGEH_UpP92-x16wUUFUIhAdSRXr7HGKqwTnN1XrgWyuy');
+  // Signals para enlace del formulario
+  name = signal('Cargando...');
+  email = signal('cargando@example.com');
+  phone = signal('');
+  picture = signal('https://lh3.googleusercontent.com/aida-public/AB6AXuBBKFPIdwAwenLkQteMIQWDlbgG8uvhw5MMKIvA3_5bgEVxssOevl0oJGWDBLG0eYr65t0MRDoPYl2do2C6nINYsoFZpCxNlN0KLhl12DhYMXrK0WXLigcA1Sq5JCDDQ7FuSnp6T3iIHPNpQ1fyEXmhZmmfDpyEJMamYk1-3CwxRMG9hLcyllr9FeI1ZAjWAui9O26FbzB8lpqfUHP21I6ul-lioYyFOiQvzGEH_UpP92-x16wUUFUIhAdSRXr7HGKqwTnN1XrgWyuy');
   password = signal('••••••••••••');
   confirmPassword = signal('••••••••••••');
 
@@ -58,6 +64,30 @@ export class ConfiguracionClienteComponent {
   successMsg = signal('');
   errorMsg = signal('');
   showConfirm = signal(false);
+
+  constructor() {
+    // Sincronizar con mock de datos o currentUser
+    effect(() => {
+      const data = this.clienteData();
+      if (data) {
+        this.name.set(data.nombre);
+        this.email.set(data.email);
+        if (data.telefono) {
+          // Limpiar prefijo si viene en el número de teléfono
+          const tel = data.telefono.replace('+598 ', '').replace(/\s/g, '');
+          this.phone.set(tel);
+        }
+        if (data.picture) this.picture.set(data.picture);
+      } else {
+        const user = this.authService.currentUser();
+        if (user) {
+          this.name.set(user.name);
+          this.email.set(user.email);
+          if (user.picture) this.picture.set(user.picture);
+        }
+      }
+    });
+  }
 
   goBack() {
     this.router.navigate(['/']);
