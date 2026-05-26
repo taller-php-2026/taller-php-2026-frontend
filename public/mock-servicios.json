@@ -1,0 +1,52 @@
+[
+  {
+    "idServicio": 1,
+    "idProfesional": 2,
+    "nombre": "Corte de Cabello Premium",
+    "descripcion": "Incluye lavado con champú premium, corte personalizado y peinado final con productos de alta gama.",
+    "precio": 25.00,
+    "duracionMinutos": 45,
+    "activo": 1,
+    "modalidad": "presencial"
+  },
+  {
+    "idServicio": 2,
+    "idProfesional": 2,
+    "nombre": "Afeitado y Delineado de Barba",
+    "descripcion": "Afeitado clásico a navaja con toallas calientes y aceites esenciales para cuidar tu piel.",
+    "precio": 15.00,
+    "duracionMinutos": 30,
+    "activo": 1,
+    "modalidad": "presencial"
+  },
+  {
+    "idServicio": 3,
+    "idProfesional": 2,
+    "nombre": "Tratamiento Facial Purificante",
+    "descripcion": "Limpieza profunda con exfoliación, mascarilla hidratante y masaje facial relajante.",
+    "precio": 40.00,
+    "duracionMinutos": 60,
+    "activo": 1,
+    "modalidad": "presencial"
+  },
+  {
+    "idServicio": 4,
+    "idProfesional": 2,
+    "nombre": "Coloración Completa y Matizado",
+    "descripcion": "Aplicación de tinte profesional sin amoníaco con hidratación capilar post-color.",
+    "precio": 55.00,
+    "duracionMinutos": 120,
+    "activo": 1,
+    "modalidad": "presencial"
+  },
+  {
+    "idServicio": 5,
+    "idProfesional": 2,
+    "nombre": "Consultoría Estilismo Online",
+    "descripcion": "Sesión virtual de asesoría de imagen y recomendación de productos para el cuidado de tu cabello y barba.",
+    "precio": 20.00,
+    "duracionMinutos": 30,
+    "activo": 1,
+    "modalidad": "online"
+  }
+]

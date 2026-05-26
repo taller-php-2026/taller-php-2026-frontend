@@ -1,0 +1,9 @@
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  display: inline-block;
+  line-height: 1;
+}
+
+.soft-shadow {
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.04);
+}

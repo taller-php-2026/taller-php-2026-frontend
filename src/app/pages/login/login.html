@@ -44,13 +44,6 @@
             autocomplete="email"
           />
         </div>
-        @if (touched().email) {
-          <ul class="text-xs pl-xs space-y-[2px]">
-            <li [class]="emailValid() ? 'text-green-600' : 'text-red-500'">
-              <span class="mr-1">{{ emailValid() ? '✓' : '✗' }}</span>Correo válido (contiene &#64; y dominio)
-            </li>
-          </ul>
-        }
       </div>
 
       <!-- Password Input -->
@@ -78,13 +71,6 @@
             </span>
           </button>
         </div>
-        @if (touched().password) {
-          <ul class="text-xs pl-xs space-y-[2px]">
-            <li [class]="passwordMinLength() ? 'text-green-600' : 'text-red-500'">
-              <span class="mr-1">{{ passwordMinLength() ? '✓' : '✗' }}</span>Mínimo 6 caracteres
-            </li>
-          </ul>
-        }
       </div>
 
       <!-- Forgot Password -->

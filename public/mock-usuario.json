@@ -3,6 +3,7 @@
   "nombre": "Mariana Rodríguez",
   "email": "mariana.rod@example.com",
   "fechaRegistro": "2026-05-25 21:00:00",
+  "contrasena": "Password123",
   "telefono": "+598 091 123 456",
   "rol": "cliente",
   "activo": 1,

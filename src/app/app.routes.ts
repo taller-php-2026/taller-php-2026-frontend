@@ -31,6 +31,18 @@ export const routes: Routes = [
     path: 'configuracion-cliente',
     loadComponent: () => import('./pages/configuracion-cliente/configuracion-cliente.component').then((m) => m.ConfiguracionClienteComponent),
   },
+  {
+    path: 'anadir-servicio',
+    loadComponent: () => import('./pages/anadir-servicio/anadir-servicio.component').then((m) => m.AnadirServicioComponent),
+  },
+  {
+    path: 'editar-servicio',
+    loadComponent: () => import('./pages/editar-servicio/editar-servicio.component').then((m) => m.EditarServicioComponent),
+  },
+  {
+    path: 'configuracion-negocio',
+    loadComponent: () => import('./pages/configuracion-negocio/configuracion-negocio.component').then((m) => m.ConfiguracionNegocioComponent),
+  },
 
   {
     path: '**',

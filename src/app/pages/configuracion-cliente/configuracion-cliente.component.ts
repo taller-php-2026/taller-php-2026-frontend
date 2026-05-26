@@ -1,5 +1,5 @@
 import { Component, inject, signal, computed } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 
@@ -16,7 +16,7 @@ interface Country {
 @Component({
   selector: 'app-configuracion-cliente',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule],
   templateUrl: './configuracion-cliente.component.html',
   styleUrl: './configuracion-cliente.component.css'
 })

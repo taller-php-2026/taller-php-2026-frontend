@@ -3,6 +3,7 @@
   "nombre": "Guzmán Perera",
   "email": "guzman@example.com",
   "fechaRegistro": "2026-05-25 21:00:00",
+  "contrasena": "Password123",
   "telefono": "+598 099 888 777",
   "rol": "profesional",
   "activo": 1,

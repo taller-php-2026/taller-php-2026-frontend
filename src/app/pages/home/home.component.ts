@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { HeaderComponent } from '@shared/header/header.component';
+import { HeaderComponent } from '@components/header/header.component';
 import { HeroComponent } from './components/hero-home/hero.component';
-import { LayoutComponent } from '@shared/layout/layout.component';
+import { LayoutComponent } from '@components/layout/layout.component';
 
 @Component({
   selector: 'app-home',
