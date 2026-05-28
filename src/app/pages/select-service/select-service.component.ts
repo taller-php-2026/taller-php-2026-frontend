@@ -1,21 +1,38 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { HeaderComponent } from '@shared/header/header.component';
-import { EmpresaHero } from './components/empresa-hero/empresa-hero.component';
-import { LayoutComponent } from '@shared/layout/layout.component';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Header } from '@shared/header/header.component';
+import { CompanyHero } from '@shared/company-hero/company-hero.component';
+import { Layout } from '@shared/layout/layout.component';
 import { ServiceCards } from './components/service-cards/service-cards.component';
+import { BookingService } from 'app/services/BookingService';
 
 @Component({
   selector: 'app-select-service',
   templateUrl: './select-service.component.html',
-  imports: [HeaderComponent, EmpresaHero, LayoutComponent, ServiceCards],
+  imports: [Header, CompanyHero, Layout, ServiceCards],
 })
 export class SelectService implements OnInit {
-  empresaId: string | null = null;
+  @Input() empresaId: string | null = null;
+  selectedService: string | null = null;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    private route: ActivatedRoute,
+    private reserva: BookingService,
+    private router: Router,
+  ) {}
+
+  selectService(serviceId: string) {
+    this.reserva.serviceId = serviceId;
+  }
+
+  goToNextStep() {
+    this.router.navigate(['/empresa', this.empresaId, 'select-professional']);
+  }
 
   ngOnInit() {
-    this.empresaId = this.route.snapshot.paramMap.get('id');
+    const companyIdParam = this.route.snapshot.paramMap.get('id');
+    this.empresaId = companyIdParam;
+    this.reserva.companyId = companyIdParam;
+    this.selectedService = this.reserva.serviceId;
   }
 }

@@ -10,4 +10,11 @@ export const routes: Routes = [
     loadChildren: () =>
       import('@pages/select-service/select-service.routes').then((m) => m.SERVICIO_ROUTES),
   },
+  {
+    path: 'empresa/:id/seleccionar-profesional',
+    loadChildren: () =>
+      import('@pages/select-professional/select-professional.routes').then(
+        (m) => m.PROFESIONAL_ROUTES,
+      ),
+  },
 ];

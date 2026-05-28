@@ -8,4 +8,4 @@ import { NgIconComponent } from '@ng-icons/core';
   templateUrl: './header.component.html',
   imports: [NgIconComponent, RouterLink],
 })
-export class HeaderComponent {}
+export class Header {}
