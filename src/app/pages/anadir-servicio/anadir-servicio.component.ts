@@ -58,7 +58,7 @@ export class AnadirServicioComponent {
   }
 
   goBack() {
-    this.router.navigate(['/']);
+    this.router.navigate(['/configurar-servicios']);
   }
 
   resetFields() {

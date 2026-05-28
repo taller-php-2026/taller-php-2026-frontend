@@ -34,4 +34,8 @@ export class HomeComponent implements OnInit {
       this.router.navigate(['/login']);
     }
   }
+
+  goToConfigurarServicios() {
+    this.router.navigate(['/configurar-servicios']);
+  }
 }

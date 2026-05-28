@@ -1,0 +1,53 @@
+<header class="bg-white flex justify-between items-center px-6 py-4 w-full sticky top-0 z-40 shadow-sm">
+  <div class="flex items-center gap-3">
+    <button (click)="goBack()" class="transition-all duration-200 active:scale-95 text-slate-600 flex items-center justify-center p-1 rounded-full hover:bg-slate-100">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </button>
+    <h1 class="text-xl font-bold text-slate-800">Configurar Servicios</h1>
+  </div>
+</header>
+<main class="px-6 py-8 max-w-md mx-auto">
+  <!-- Card contenedor blanco principal -->
+  <div class="bg-white rounded-2xl p-6 shadow-xl border border-slate-100/50 space-y-6">
+    <!-- Welcome Section -->
+    <section>
+      <p class="text-sm text-slate-500 mb-4">
+        Administra tu catálogo de tratamientos, duraciones y precios.
+      </p>
+      <!-- Primary Action -->
+      <button (click)="goToAdd()" class="w-full bg-[#00685f] text-white py-3 px-6 rounded-lg flex items-center justify-center gap-2 shadow-md transition-all duration-200 active:scale-95 hover:bg-[#005a52] cursor-pointer font-bold">
+        <span class="material-symbols-outlined">add</span>
+        Añadir Nuevo Servicio
+      </button>
+    </section>
+
+    <!-- Services Grid -->
+    <div class="space-y-4">
+      @for (serv of servicios(); track serv.idServicio) {
+        <div class="bg-slate-50 p-4 rounded-xl shadow-[0px_2px_8px_rgba(0,0,0,0.02)] hover:shadow-md transition-all duration-200 border border-slate-100 flex justify-between items-center group">
+          <div class="flex gap-4 items-center">
+            <div class="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-white flex items-center justify-center border border-slate-100">
+              @if (serv.fotoUrl) {
+                <img [src]="serv.fotoUrl" alt="Servicio" class="w-full h-full object-cover">
+              } @else {
+                <span class="material-symbols-outlined text-slate-400">{{ getIcon(serv.nombre) }}</span>
+              }
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-800 text-sm">{{ serv.nombre }}</h3>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="bg-white text-slate-500 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-slate-100">{{ formatDuration(serv.duracionMinutos) }}</span>
+                <span class="text-[#00685f] font-black text-sm">${{ serv.precio }}</span>
+              </div>
+            </div>
+          </div>
+          <button (click)="goToEdit(serv.idServicio)" class="p-2 rounded-full text-slate-400 hover:bg-slate-200 transition-colors cursor-pointer flex items-center justify-center bg-white border border-slate-100">
+            <span class="material-symbols-outlined">edit</span>
+          </button>
+        </div>
+      } @empty {
+        <p class="text-center text-slate-400 text-sm font-medium">Cargando catálogo de servicios...</p>
+      }
+    </div>
+  </div>
+</main>

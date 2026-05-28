@@ -1,5 +1,5 @@
 import { Component, inject, signal, effect } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -14,6 +14,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 export class EditarServicioComponent {
   private router = inject(Router);
   private http = inject(HttpClient);
+  private route = inject(ActivatedRoute);
 
   // Carga reactiva de la lista de servicios desde el mock JSON
   private serviciosData = toSignal(this.http.get<any[]>('/mock-servicios.json'));
@@ -47,7 +48,9 @@ export class EditarServicioComponent {
     effect(() => {
       const lista = this.serviciosData();
       if (lista && lista.length > 0) {
-        const serv = lista[0]; // Cargar el primer servicio como demostración
+        const idParam = this.route.snapshot.queryParamMap.get('id');
+        const serv = idParam ? (lista.find(s => s.idServicio === +idParam) || lista[0]) : lista[0];
+        
         this.name.set(serv.nombre);
         
         const hrs = Math.floor(serv.duracionMinutos / 60);
@@ -57,6 +60,7 @@ export class EditarServicioComponent {
         
         this.price.set(serv.precio);
         this.description.set(serv.descripcion);
+        this.imagePreview.set(serv.fotoUrl || null);
         this.isActive.set(serv.activo === 1);
         
         // Categorías asociadas según el tipo
@@ -97,7 +101,7 @@ export class EditarServicioComponent {
   }
 
   goBack() {
-    this.router.navigate(['/']);
+    this.router.navigate(['/configurar-servicios']);
   }
 
   onSubmit() {
