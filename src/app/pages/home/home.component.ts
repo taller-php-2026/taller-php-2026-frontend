@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { HeaderComponent } from '@components/header/header.component';
+import { Header } from '@shared/header/header.component';
 import { HeroComponent } from './components/hero-home/hero.component';
-import { LayoutComponent } from '@components/layout/layout.component';
+import { Layout } from '@shared/layout/layout.component';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, HeaderComponent, HeroComponent, LayoutComponent],
+  imports: [RouterLink, Header, HeroComponent, Layout],
   templateUrl: './home.component.html',
 })
 export class HomeComponent {}

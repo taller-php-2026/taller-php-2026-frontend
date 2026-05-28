@@ -9,7 +9,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './header.component.html',
   imports: [NgIconComponent, RouterLink],
 })
-export class HeaderComponent {
+export class Header {
   auth = inject(AuthService);
   private router = inject(Router);
 

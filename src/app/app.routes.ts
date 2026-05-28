@@ -19,29 +19,57 @@ export const routes: Routes = [
       },
       {
         path: 'configuracion-cliente',
-        loadComponent: () => import('./pages/configuracion-cliente/configuracion-cliente.component').then((m) => m.ConfiguracionClienteComponent),
+        loadComponent: () =>
+          import('./pages/configuracion-cliente/configuracion-cliente.component').then(
+            (m) => m.ConfiguracionClienteComponent,
+          ),
       },
       {
         path: 'anadir-servicio',
-        loadComponent: () => import('./pages/anadir-servicio/anadir-servicio.component').then((m) => m.AnadirServicioComponent),
+        loadComponent: () =>
+          import('./pages/anadir-servicio/anadir-servicio.component').then(
+            (m) => m.AnadirServicioComponent,
+          ),
       },
       {
         path: 'editar-servicio',
-        loadComponent: () => import('./pages/editar-servicio/editar-servicio.component').then((m) => m.EditarServicioComponent),
+        loadComponent: () =>
+          import('./pages/editar-servicio/editar-servicio.component').then(
+            (m) => m.EditarServicioComponent,
+          ),
       },
       {
         path: 'configuracion-negocio',
-        loadComponent: () => import('./pages/configuracion-negocio/configuracion-negocio.component').then((m) => m.ConfiguracionNegocioComponent),
+        loadComponent: () =>
+          import('./pages/configuracion-negocio/configuracion-negocio.component').then(
+            (m) => m.ConfiguracionNegocioComponent,
+          ),
       },
       {
         path: 'configurar-servicios',
-        loadComponent: () => import('./pages/configurar-servicios/configurar-servicios.component').then((m) => m.ConfigurarServiciosComponent),
+        loadComponent: () =>
+          import('./pages/configurar-servicios/configurar-servicios.component').then(
+            (m) => m.ConfigurarServiciosComponent,
+          ),
       },
       {
         path: 'pago-seguro',
-        loadComponent: () => import('./pages/pago-seguro/pago-seguro.component').then((m) => m.PagoSeguroComponent),
-      }
-    ]
+        loadComponent: () =>
+          import('./pages/pago-seguro/pago-seguro.component').then((m) => m.PagoSeguroComponent),
+      },
+      {
+        path: 'empresa/:id/seleccionar-servicio',
+        loadComponent: () =>
+          import('@pages/select-service/select-service.component').then((m) => m.SelectService),
+      },
+      {
+        path: 'empresa/:id/seleccionar-profesional',
+        loadComponent: () =>
+          import('@pages/select-professional/select-professional.component').then(
+            (m) => m.SelectProfessional,
+          ),
+      },
+    ],
   },
 
   {
@@ -50,11 +78,13 @@ export const routes: Routes = [
   },
   {
     path: 'elegir-tipo',
-    loadComponent: () => import('./pages/elegir-tipo/elegir-tipo.component').then((m) => m.ElegirTipoComponent),
+    loadComponent: () =>
+      import('./pages/elegir-tipo/elegir-tipo.component').then((m) => m.ElegirTipoComponent),
   },
   {
     path: 'registro',
-    loadComponent: () => import('./pages/registro/registro.component').then((m) => m.RegistroComponent),
+    loadComponent: () =>
+      import('./pages/registro/registro.component').then((m) => m.RegistroComponent),
   },
 
   {
