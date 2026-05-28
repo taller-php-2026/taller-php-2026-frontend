@@ -57,8 +57,8 @@ export class ConfiguracionClienteComponent {
   email = signal('cargando@example.com');
   phone = signal('');
   picture = signal('https://lh3.googleusercontent.com/aida-public/AB6AXuBBKFPIdwAwenLkQteMIQWDlbgG8uvhw5MMKIvA3_5bgEVxssOevl0oJGWDBLG0eYr65t0MRDoPYl2do2C6nINYsoFZpCxNlN0KLhl12DhYMXrK0WXLigcA1Sq5JCDDQ7FuSnp6T3iIHPNpQ1fyEXmhZmmfDpyEJMamYk1-3CwxRMG9hLcyllr9FeI1ZAjWAui9O26FbzB8lpqfUHP21I6ul-lioYyFOiQvzGEH_UpP92-x16wUUFUIhAdSRXr7HGKqwTnN1XrgWyuy');
-  password = signal('••••••••••••');
-  confirmPassword = signal('••••••••••••');
+  password = signal('');
+  confirmPassword = signal('');
 
   loading = signal(false);
   successMsg = signal('');
@@ -78,6 +78,10 @@ export class ConfiguracionClienteComponent {
           this.phone.set(tel);
         }
         if (data.picture) this.picture.set(data.picture);
+        if (data.contrasena) {
+          this.password.set(data.contrasena);
+          this.confirmPassword.set(data.contrasena);
+        }
       } else {
         const user = this.authService.currentUser();
         if (user) {
@@ -119,6 +123,45 @@ export class ConfiguracionClienteComponent {
   }
 
   saveChanges() {
+    // 1. Validación de Nombre
+    if (this.name().trim().length < 4) {
+      this.errorMsg.set('El nombre debe tener al menos 4 caracteres.');
+      return;
+    }
+
+    // 2. Validación de Correo
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.email())) {
+      this.errorMsg.set('El correo electrónico no es válido.');
+      return;
+    }
+
+    // 3. Validación de Teléfono (según país)
+    if (this.phone()) {
+      const pattern = this.selectedCountry.phonePattern;
+      if (!pattern.test(this.phone())) {
+        this.errorMsg.set(`El teléfono no es válido para ${this.selectedCountry.name}. Formato: ${this.selectedCountry.placeholder}`);
+        return;
+      }
+    }
+
+    // 4. Validación de Contraseña (Largo >= 8, 1 Mayúscula, 1 Número)
+    const pass = this.password();
+    const hasUpper = /[A-Z]/.test(pass);
+    const hasNumber = /[0-9]/.test(pass);
+    const minLength = pass.length >= 8;
+
+    if (!minLength || !hasUpper || !hasNumber) {
+      this.errorMsg.set('La contraseña debe tener al menos 8 caracteres, una mayúscula y un número.');
+      return;
+    }
+
+    // 5. Coincidencia de contraseña
+    if (this.password() !== this.confirmPassword()) {
+      this.errorMsg.set('Las contraseñas no coinciden.');
+      return;
+    }
+
     this.loading.set(true);
     this.successMsg.set('');
     this.errorMsg.set('');

@@ -14,7 +14,7 @@ export class AnadirServicioComponent {
 
   name = signal('');
   hours = signal<number | null>(null);
-  minutes = signal<number | null>(30);
+  minutes = signal<number | null>(null);
   price = signal<number | null>(null);
   description = signal('');
   imagePreview = signal<string | null>(null);
@@ -27,7 +27,7 @@ export class AnadirServicioComponent {
     'Barbería',
     'Maquillaje'
   ];
-  selectedCategories = signal<string[]>(['Peluquería']);
+  selectedCategories = signal<string[]>([]);
   selectedCategoryDropdown = '';
 
   loading = signal(false);
@@ -61,6 +61,17 @@ export class AnadirServicioComponent {
     this.router.navigate(['/']);
   }
 
+  resetFields() {
+    this.name.set('');
+    this.hours.set(null);
+    this.minutes.set(null);
+    this.price.set(null);
+    this.description.set('');
+    this.imagePreview.set(null);
+    this.selectedCategories.set([]);
+    this.selectedCategoryDropdown = '';
+  }
+
   onSubmit() {
     if (!this.name().trim()) {
       this.errorMsg.set('El nombre del servicio es requerido.');
@@ -82,10 +93,10 @@ export class AnadirServicioComponent {
     setTimeout(() => {
       this.loading.set(false);
       this.successMsg.set('¡Servicio añadido con éxito!');
-      // Redirigir después de éxito
+      this.resetFields();
       setTimeout(() => {
-        this.goBack();
-      }, 1200);
+        this.successMsg.set('');
+      }, 3000);
     }, 1000);
   }
 }

@@ -71,7 +71,7 @@
             [(ngModel)]="selectedCategoryDropdown"
             (change)="addCategory(selectedCategoryDropdown)"
           >
-            <option value="" disabled selected>Selecciona una categoría</option>
+            <option value="">Selecciona una categoría</option>
             @for (cat of availableCategories; track cat) {
               <option [value]="cat">{{ cat }}</option>
             }

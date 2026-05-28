@@ -135,6 +135,23 @@
           </div>
         </div>
 
+        <!-- Confirm Password Field -->
+        <div class="flex flex-col gap-xs">
+          <label class="font-caption text-caption text-on-surface-variant px-xs">Confirmar Contraseña</label>
+          <div class="flex items-center justify-between bg-background border border-outline-variant rounded-lg px-md py-sm focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/15 transition-all">
+            <div class="flex items-center flex-1">
+              <span class="material-symbols-outlined text-on-surface-variant mr-md">lock</span>
+              <input
+                class="bg-transparent border-none p-0 w-full font-body-md text-body-md focus:ring-0 text-on-surface outline-none"
+                [type]="showConfirm() ? 'text' : 'password'"
+                name="confirmPassword"
+                [ngModel]="confirmPassword()"
+                (ngModelChange)="confirmPassword.set($event)"
+              >
+            </div>
+          </div>
+        </div>
+
         <!-- Submit & Logout Buttons -->
         <div class="flex flex-col gap-md pt-md">
           <button

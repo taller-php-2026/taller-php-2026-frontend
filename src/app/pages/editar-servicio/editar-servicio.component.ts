@@ -122,8 +122,8 @@ export class EditarServicioComponent {
       this.loading.set(false);
       this.successMsg.set('¡Cambios guardados con éxito!');
       setTimeout(() => {
-        this.goBack();
-      }, 1200);
+        this.successMsg.set('');
+      }, 3000);
     }, 1000);
   }
 
