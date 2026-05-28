@@ -43,6 +43,10 @@ export const routes: Routes = [
     path: 'configuracion-negocio',
     loadComponent: () => import('./pages/configuracion-negocio/configuracion-negocio.component').then((m) => m.ConfiguracionNegocioComponent),
   },
+  {
+    path: 'pago-seguro',
+    loadComponent: () => import('./pages/pago-seguro/pago-seguro.component').then((m) => m.PagoSeguroComponent),
+  },
 
   {
     path: '**',

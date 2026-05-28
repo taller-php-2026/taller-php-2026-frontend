@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'liga';
+}
+
+/* Elevación Soft UI personalizada */
+.soft-elevation-l1 {
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.font-variation-settings-fill {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Prevent default Tailwind form select arrows from conflicting with Mercado Pago SDK custom SVG arrows in both containers */
+::ng-deep #paymentBrick_container select,
+::ng-deep #cardPaymentBrick_container select {
+  background-image: none !important;
+  padding-right: 2.5rem !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+}
+
+
+
+

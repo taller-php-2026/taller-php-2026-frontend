@@ -1,0 +1,11 @@
+{
+  "serviceName": "Corte de Cabello",
+  "duration": "30 min",
+  "professionalName": "Carlos Ruiz",
+  "professionalRole": "Estilista",
+  "date": "15 de Mayo 2026",
+  "time": "16:00",
+  "subtotal": 25.00,
+  "tax": 5.50,
+  "total": 30.50
+}
