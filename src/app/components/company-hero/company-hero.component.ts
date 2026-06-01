@@ -15,12 +15,12 @@ interface Company {
   templateUrl: './company-hero.component.html',
 })
 export class CompanyHero {
-  @Input() empresaId: string | null = null;
+  @Input() companyId: string | null = null;
   company: Company | null = null;
 
   ngOnInit() {
     this.company = {
-      id: this.empresaId,
+      id: this.companyId,
       name: 'Centro de Belleza y Estética',
       rating: 4.7,
       ubication: 'Montevideo, Uruguay',

@@ -1,5 +1,40 @@
 <app-header />
 
-<!-- <app-company-hero [empresaId]="empresaId" /> -->
+<app-company-hero [companyId]="companyId" />
 
-<app-layout class="mt-10"> </app-layout>
+<app-layout class="mt-10">
+    <div class="flex items-center justify-center space-x-3">
+        <div>
+            <p><span
+                    class="inline-flex items-center justify-center w-8 h-8  bg-gray-500 rounded-full text-white mr-2">1</span>
+                Servicio</p>
+        </div>
+
+        <div class="w-16 h-1 bg-gray-300 rounded-full"></div>
+
+        <div>
+            <p><span
+                    class="inline-flex items-center justify-center w-8 h-8 bg-primary rounded-full text-white mr-2">2</span>
+                Profesional</p>
+        </div>
+
+        <div class="w-16 h-1 bg-gray-300 rounded-full"></div>
+
+        <div>
+            <p><span
+                    class="inline-flex items-center justify-center w-8 h-8 bg-gray-500 rounded-full text-white mr-2">3</span>
+                Fecha y hora</p>
+        </div>
+    </div>
+
+    <h3 class="text-2xl font-bold mt-6">Selecciona un profesional</h3>
+
+    <app-professional-card company="companyId" service="serviceId" />
+
+
+    <div class="flex justify-end mt-6">
+        <button class="px-6 py-2 bg-primary text-white rounded hover:bg-primary-dark transition-colors duration-300">
+            Siguiente
+        </button>
+    </div>
+</app-layout>
