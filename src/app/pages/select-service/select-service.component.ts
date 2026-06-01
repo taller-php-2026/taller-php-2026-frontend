@@ -12,7 +12,7 @@ import { BookingService } from 'app/services/BookingService';
   imports: [Header, CompanyHero, Layout, ServiceCards],
 })
 export class SelectService implements OnInit {
-  @Input() empresaId: string | null = null;
+  @Input() companyId: string | null = null;
   selectedService: string | null = null;
 
   constructor(
@@ -23,15 +23,16 @@ export class SelectService implements OnInit {
 
   selectService(serviceId: string) {
     this.reserva.serviceId = serviceId;
+    this.selectedService = serviceId;
   }
 
   goToNextStep() {
-    this.router.navigate(['/empresa', this.empresaId, 'select-professional']);
+    this.router.navigate(['/empresa', this.companyId, 'seleccionar-profesional']);
   }
 
   ngOnInit() {
     const companyIdParam = this.route.snapshot.paramMap.get('id');
-    this.empresaId = companyIdParam;
+    this.companyId = companyIdParam;
     this.reserva.companyId = companyIdParam;
     this.selectedService = this.reserva.serviceId;
   }

@@ -16,19 +16,21 @@ interface Service {
   imports: [NgIconComponent],
 })
 export class ServiceCards {
-  @Input() empresaId: string | null = null;
+  @Input() companyId: string | null = null;
   @Output() servicioSeleccionado = new EventEmitter<string>();
+  selectedServiceId: string | null = null;
   services: Service[] = [];
 
   constructor(private companyService: CompanyService) {}
 
   seleccionarServicio(serviceId: string) {
+    this.selectedServiceId = serviceId;
     this.servicioSeleccionado.emit(serviceId);
   }
 
   ngOnInit() {
-    if (this.empresaId) {
-      this.services = this.companyService.getServicesByCompanyId(this.empresaId);
+    if (this.companyId) {
+      this.services = this.companyService.getServicesByCompanyId(this.companyId);
     }
   }
 }
