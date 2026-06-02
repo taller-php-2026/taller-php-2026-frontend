@@ -10,6 +10,21 @@ const authGuard = () => {
 
 export const routes: Routes = [
   {
+    path: 'login',
+    loadComponent: () => import('./pages/login/login').then((m) => m.LoginComponent),
+  },
+  {
+    path: 'elegir-tipo',
+    loadComponent: () =>
+      import('./pages/elegir-tipo/elegir-tipo.component').then((m) => m.ElegirTipoComponent),
+  },
+  {
+    path: 'registro',
+    loadComponent: () =>
+      import('./pages/registro/registro.component').then((m) => m.RegistroComponent),
+  },
+
+  {
     path: '',
     canActivate: [authGuard],
     children: [
@@ -78,22 +93,8 @@ export const routes: Routes = [
   },
 
   {
-    path: 'login',
-    loadComponent: () => import('./pages/login/login').then((m) => m.LoginComponent),
-  },
-  {
-    path: 'elegir-tipo',
-    loadComponent: () =>
-      import('./pages/elegir-tipo/elegir-tipo.component').then((m) => m.ElegirTipoComponent),
-  },
-  {
-    path: 'registro',
-    loadComponent: () =>
-      import('./pages/registro/registro.component').then((m) => m.RegistroComponent),
-  },
-
-  {
     path: '**',
     redirectTo: 'login',
   },
 ];
+
