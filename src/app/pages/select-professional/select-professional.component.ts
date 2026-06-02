@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CompanyHero } from '@components/company-hero/company-hero.component';
 import { Header } from '@shared/header/header.component';
 import { Layout } from '@shared/layout/layout.component';
@@ -14,11 +14,22 @@ import { BookingService } from 'app/services/BookingService';
 export class SelectProfessional {
   companyId: string | null = null;
   serviceId: string | null = null;
+  selectedProfessional: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private bookingService: BookingService,
+    private router: Router,
   ) {}
+
+  goToNextStep() {
+    this.router.navigate([`/empresa/${this.companyId}/seleccionar-horario`]);
+  }
+
+  selectProfessional(professionalId: string) {
+    this.selectedProfessional = professionalId;
+    this.bookingService.professionalId = professionalId;
+  }
 
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {

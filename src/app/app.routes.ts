@@ -70,9 +70,11 @@ export const routes: Routes = [
           ),
       },
       {
-        path: '**',
+        path: 'empresa/:id/seleccionar-horario',
         loadComponent: () =>
-          import('./pages/not-found/not-found.component').then((m) => m.NotFoundComponent),
+          import('@pages/select-time-date/select-time-date.component').then(
+            (m) => m.SelectTimeDateComponent,
+          ),
       },
     ],
   },
@@ -94,6 +96,7 @@ export const routes: Routes = [
 
   {
     path: '**',
-    redirectTo: 'login',
+    loadComponent: () =>
+      import('./pages/not-found/not-found.component').then((m) => m.NotFoundComponent),
   },
 ];
