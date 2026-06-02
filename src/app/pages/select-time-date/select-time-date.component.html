@@ -1,0 +1,46 @@
+<app-header />
+
+<app-company-hero [companyId]="companyId" />
+
+<app-layout class="mt-10">
+    <div class="flex items-center justify-center space-x-3">
+        <div>
+            <p><span
+                    class="inline-flex items-center justify-center w-8 h-8 bg-gray-500 rounded-full text-white mr-2">1</span>
+                Servicio</p>
+        </div>
+
+        <div class="w-16 h-1 bg-gray-300 rounded-full"></div>
+
+        <div>
+            <p><span
+                    class="inline-flex items-center justify-center w-8 h-8 bg-gray-500 rounded-full text-white mr-2">2</span>
+                Profesional</p>
+        </div>
+
+        <div class="w-16 h-1 bg-gray-300 rounded-full"></div>
+
+        <div>
+            <p><span
+                    class="inline-flex items-center justify-center w-8 h-8 bg-primary  rounded-full text-white mr-2">3</span>
+                Fecha y hora</p>
+        </div>
+    </div>
+
+    <h3 class="text-2xl font-bold mt-6">Selecciona un horario</h3>
+
+    <section class="flex items-start justify-center space-x-10 mt-6">
+        <div class="flex flex-col">
+            <p class="font-semibold text-center">Seleccione una fecha:</p>
+            <app-calendar class="mt-4"></app-calendar>
+        </div>
+
+        <div class="flex flex-col">
+            <p class="font-semibold text-center">Horarios disponibles:</p>
+
+            <app-select-time class="mt-4"></app-select-time>
+        </div>
+    </section>
+
+    <button class="mt-6 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">Continuar</button>
+</app-layout>

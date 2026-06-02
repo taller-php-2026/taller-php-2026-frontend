@@ -1,0 +1,109 @@
+<div class="w-full max-w-md mx-auto flex flex-col items-center py-xl px-gutter mt-10">
+  <!-- Card Section -->
+  <div class="w-full bg-surface-container-lowest rounded-[16px] p-xl soft-shadow border border-outline-variant/20">
+    <header class="mb-xl text-center">
+      <h2 class="font-headline-md text-headline-md text-on-surface mb-xs">Iniciar Sesión</h2>
+      <p class="font-body-sm text-body-sm text-on-surface-variant">Gestiona tus citas con facilidad.</p>
+    </header>
+
+    <!-- Google Sign-In -->
+    <div class="w-full mb-md">
+      <div id="google-btn-container" class="w-full flex justify-center min-h-[44px]"></div>
+    </div>
+
+    <!-- Divider -->
+    <div class="relative flex py-md items-center">
+      <div class="flex-grow border-t border-outline-variant/30"></div>
+      <span class="flex-shrink mx-md text-caption font-caption text-outline-variant uppercase tracking-wider">o</span>
+      <div class="flex-grow border-t border-outline-variant/30"></div>
+    </div>
+
+    <!-- Error Message -->
+    @if (errorMsg()) {
+      <div class="p-sm bg-error-container text-on-error-container rounded-lg text-body-sm text-center mb-lg border border-error/20">
+        {{ errorMsg() }}
+      </div>
+    }
+
+    <!-- Login Form -->
+    <form (submit)="onSubmit($event)" class="space-y-lg" novalidate>
+
+      <!-- Email Input -->
+      <div class="space-y-xs">
+        <label class="font-label-bold text-label-bold text-on-surface-variant ml-xs" for="email">Correo Electrónico</label>
+        <div class="relative">
+          <input
+            class="w-full h-12 px-md bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md focus:ring-2 focus:ring-primary/15 focus:border-primary outline-none transition-all duration-200"
+            id="email"
+            placeholder="ejemplo&#64;correo.com"
+            type="email"
+            [ngModel]="email()"
+            (ngModelChange)="email.set($event)"
+            (blur)="touch('email')"
+            name="email"
+            autocomplete="email"
+          />
+        </div>
+      </div>
+
+      <!-- Password Input -->
+      <div class="space-y-xs">
+        <label class="font-label-bold text-label-bold text-on-surface-variant ml-xs" for="password">Contraseña</label>
+        <div class="relative">
+          <input
+            class="w-full h-12 px-md pr-[44px] bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md focus:ring-2 focus:ring-primary/15 focus:border-primary outline-none transition-all duration-200"
+            id="password"
+            placeholder="••••••••"
+            [type]="showPassword() ? 'text' : 'password'"
+            [ngModel]="password()"
+            (ngModelChange)="password.set($event)"
+            (blur)="touch('password')"
+            name="password"
+            autocomplete="current-password"
+          />
+          <button
+            class="absolute right-md top-1/2 -translate-y-1/2 text-on-surface-variant/70 hover:text-primary transition-colors flex items-center"
+            type="button"
+            (click)="togglePasswordVisibility()"
+          >
+            <span class="material-symbols-outlined select-none">
+              {{ showPassword() ? 'visibility_off' : 'visibility' }}
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Forgot Password -->
+      <div class="flex justify-end">
+        <a class="font-body-sm text-body-sm text-primary hover:underline transition-all" href="#">¿Olvidaste tu contraseña?</a>
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        style="background: linear-gradient(180deg, #0e9488 0%, #005049 100%) !important; color: white !important;"
+        class="w-full h-12 text-white font-label-bold text-label-bold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95 flex items-center justify-center disabled:opacity-50"
+        type="submit"
+        [disabled]="loading()"
+      >
+        @if (loading()) {
+          <span class="animate-spin mr-sm h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
+          Iniciando...
+        } @else {
+          Iniciar Sesión
+        }
+      </button>
+    </form>
+  </div>
+
+  <!-- Footer Section -->
+  <footer class="mt-xl text-center">
+    <p class="font-body-sm text-body-sm text-on-surface-variant">
+      ¿No tienes una cuenta?
+      <a class="font-label-bold text-label-bold text-[#0e9488] ml-xs hover:underline" routerLink="/registro" href="/registro">Registrarse</a>
+    </p>
+  </footer>
+</div>
+
+<!-- Background Decoration -->
+<div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary-fixed-dim/10 blur-[120px] rounded-full -z-10"></div>
+<div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-tertiary-fixed/10 blur-[120px] rounded-full -z-10"></div>

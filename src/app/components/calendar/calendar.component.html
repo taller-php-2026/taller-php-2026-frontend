@@ -1,0 +1,22 @@
+<div class="w-full">
+    <div class="flex items-center justify-between mb-4">
+        <button (click)="prevMonth()">←</button>
+        <span class="font-bold">{{ getCurrentMonthName() }}</span>
+        <button (click)="nextMonth()">→</button>
+    </div>
+
+    <div class="grid grid-cols-7 text-center font-semibold mb-2">
+        @for (day of ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb']; track day) {
+        <span>{{ day }}</span>
+        }
+    </div>
+
+    <div class="grid grid-cols-7 text-center gap-1">
+        @for (day of days; track $index) {
+        <span class="p-2 rounded-full" [ngClass]="getDayClasses(day)"
+            (click)="day !== null && !isPastDay(day) && selectDay(day)">
+            {{ day }}
+        </span>
+        }
+    </div>
+</div>

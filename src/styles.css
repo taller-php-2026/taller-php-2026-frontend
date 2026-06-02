@@ -16,7 +16,7 @@ body {
 }
 
 button {
-    @apply outline-none border-none cursor-pointer;
+    @apply outline-none cursor-pointer;
 }
 
 input {
