@@ -1,0 +1,142 @@
+<main class="max-w-4xl mx-auto px-gutter py-xl mb-xl">
+  <div class="grid grid-cols-1 gap-lg">
+    <!-- Alert Messages -->
+    <div *ngIf="mensajeExito()" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+      <span class="block sm:inline">{{ mensajeExito() }}</span>
+    </div>
+    <div *ngIf="mensajeError()" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+      <span class="block sm:inline">{{ mensajeError() }}</span>
+    </div>
+
+    <!-- Welcome / Context Card -->
+    <section class="bg-primary-container/10 p-lg rounded-xl flex items-center gap-md border border-primary/10">
+      <div class="p-sm bg-primary text-on-primary rounded-lg">
+        <span class="material-symbols-outlined">event_available</span>
+      </div>
+      <div>
+        <h2 class="font-title-sm text-title-sm text-on-primary-fixed-variant">Define un turno</h2>
+        <p class="font-body-sm text-body-sm text-on-surface-variant">Configura los bloques de tiempo en los que ofreces tus servicios para que tus clientes puedan reservar.</p>
+      </div>
+    </section>
+
+    <!-- Main Configuration Form -->
+    <div class="bg-surface-container-lowest soft-shadow rounded-xl p-lg border border-outline-variant/30">
+      <!-- Day Selection -->
+      <div class="mb-xl">
+        <label class="font-label-bold text-label-bold text-on-surface block mb-md">Selecciona los días de la semana</label>
+        <div class="flex flex-wrap gap-sm">
+          <button 
+            *ngFor="let dia of diasSemana"
+            (click)="alternarDiaSemana(dia)"
+            [ngClass]="dia.activo() 
+              ? 'flex-1 min-w-[60px] py-md rounded-lg border border-primary bg-primary-container/10 text-primary font-label-bold transition-all active:scale-95' 
+              : 'flex-1 min-w-[60px] py-md rounded-lg border border-outline-variant text-on-surface-variant font-label-bold hover:border-primary transition-all active:scale-95'"
+          >
+            {{ dia.nombre }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Time Block Logic -->
+      <div class="space-y-lg">
+        <div class="flex items-center justify-between">
+          <h3 class="font-title-sm text-title-sm text-primary">Bloques de Horario</h3>
+          <button (click)="agregarBloqueHorario()" class="flex items-center gap-xs text-primary font-label-bold hover:bg-primary-container/10 px-md py-sm rounded-lg transition-colors">
+            <span class="material-symbols-outlined text-sm">add_circle</span>
+            Añadir bloque
+          </button>
+        </div>
+
+        <!-- Block Item -->
+        <div 
+          *ngFor="let bloque of bloquesHorario(); let idx = index" 
+          class="p-md bg-background rounded-xl border border-outline-variant/20 grid grid-cols-1 md:grid-cols-2 gap-lg relative"
+        >
+          <div class="absolute -top-3 -right-3">
+            <button (click)="eliminarBloqueHorario(idx)" class="bg-surface-container-lowest border border-outline-variant/30 rounded-full p-xs text-error hover:bg-error-container transition-colors shadow-sm">
+              <span class="material-symbols-outlined text-sm">close</span>
+            </button>
+          </div>
+          <div class="space-y-sm">
+            <label class="font-caption text-caption text-on-surface-variant">Hora de Inicio</label>
+            <div class="relative">
+              <input 
+                class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-md focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" 
+                type="time" 
+                [(ngModel)]="bloque.inicio"
+              >
+            </div>
+          </div>
+          <div class="space-y-sm">
+            <label class="font-caption text-caption text-on-surface-variant">Hora de Fin</label>
+            <div class="relative">
+              <input 
+                class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-md focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" 
+                type="time" 
+                [(ngModel)]="bloque.fin"
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Advanced Options -->
+      <div class="mt-xl pt-lg border-t border-outline-variant/20">
+        <div class="p-md hover:bg-surface-container-low rounded-lg transition-colors group">
+          <div class="flex items-center justify-between mb-md">
+            <div class="flex items-center gap-md">
+              <span class="material-symbols-outlined text-outline">timer</span>
+              <div>
+                <p class="font-label-bold text-on-surface">Tiempo de limpieza/descanso</p>
+                <p class="font-caption text-on-surface-variant">Añadir minutos entre citas automáticamente</p>
+              </div>
+            </div>
+            <div 
+              (click)="alternarTiempoDescanso()" 
+              [ngClass]="tieneDescanso() ? 'bg-primary/40' : 'bg-gray-300'"
+              class="w-10 h-5 rounded-full relative transition-colors cursor-pointer"
+            >
+              <div 
+                [ngClass]="tieneDescanso() ? 'right-1' : 'left-1'"
+                class="absolute top-1 w-3 h-3 bg-white rounded-full transition-all"
+              ></div>
+            </div>
+          </div>
+          <div *ngIf="tieneDescanso()" class="flex items-center gap-md ml-12">
+            <div class="relative max-w-[120px]">
+              <input 
+                class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-md pr-12 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-label-bold text-center" 
+                min="0" 
+                type="number" 
+                [ngModel]="tiempoDescansoMinutos()"
+                (ngModelChange)="tiempoDescansoMinutos.set($event)"
+              >
+              <span class="absolute right-4 top-1/2 -translate-y-1/2 font-caption text-on-surface-variant">min</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Card -->
+    <section class="bg-surface-container-high/40 p-lg rounded-xl border border-primary/5">
+      <div class="flex gap-md">
+        <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">info</span>
+        <p class="font-body-sm text-on-surface-variant">
+          Esta configuración se aplicará a los <span class="font-label-bold text-on-surface">{{ obtenerTextoResumenDias() }}</span>. 
+          Los clientes podrán reservar dentro de los bloques establecidos {{ obtenerTextoResumenHoras() }}<span *ngIf="tieneDescanso()"> (con descanso de {{ tiempoDescansoMinutos() }} min entre citas)</span>.
+        </p>
+      </div>
+    </section>
+
+    <!-- Final Actions -->
+    <footer class="flex flex-col md:flex-row gap-md pt-md">
+      <button (click)="guardarConfiguracionAgenda()" class="flex-1 bg-primary text-on-primary font-label-bold py-lg rounded-lg shadow-lg hover:brightness-110 active:scale-[0.98] transition-all">
+        Guardar
+      </button>
+      <button (click)="volverPaginaAnterior()" class="flex-1 bg-surface-container-lowest border border-outline-variant text-on-surface-variant font-label-bold py-lg rounded-lg hover:bg-surface-container-low active:scale-[0.98] transition-all">
+        Cancelar cambios
+      </button>
+    </footer>
+  </div>
+</main>

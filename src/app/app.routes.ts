@@ -10,6 +10,21 @@ const authGuard = () => {
 
 export const routes: Routes = [
   {
+    path: 'login',
+    loadComponent: () => import('./pages/login/login').then((m) => m.LoginComponent),
+  },
+  {
+    path: 'elegir-tipo',
+    loadComponent: () =>
+      import('./pages/elegir-tipo/elegir-tipo.component').then((m) => m.ElegirTipoComponent),
+  },
+  {
+    path: 'registro',
+    loadComponent: () =>
+      import('./pages/registro/registro.component').then((m) => m.RegistroComponent),
+  },
+
+  {
     path: '',
     canActivate: [authGuard],
     children: [
@@ -58,6 +73,20 @@ export const routes: Routes = [
           import('./pages/pago-seguro/pago-seguro.component').then((m) => m.PagoSeguroComponent),
       },
       {
+        path: 'crear-ciclo-agenda',
+        loadComponent: () =>
+          import('./pages/crear-ciclo-agenda/crear-ciclo-agenda').then(
+            (m) => m.CrearCicloAgenda,
+          ),
+      },
+      {
+        path: 'editar-ciclo-agenda',
+        loadComponent: () =>
+          import('./pages/editar-ciclo-agenda/editar-ciclo-agenda').then(
+            (m) => m.EditarCicloAgenda,
+          ),
+      },
+      {
         path: 'empresa/:id/seleccionar-servicio',
         loadComponent: () =>
           import('@pages/select-service/select-service.component').then((m) => m.SelectService),
@@ -80,23 +109,9 @@ export const routes: Routes = [
   },
 
   {
-    path: 'login',
-    loadComponent: () => import('./pages/login/login').then((m) => m.LoginComponent),
-  },
-  {
-    path: 'elegir-tipo',
-    loadComponent: () =>
-      import('./pages/elegir-tipo/elegir-tipo.component').then((m) => m.ElegirTipoComponent),
-  },
-  {
-    path: 'registro',
-    loadComponent: () =>
-      import('./pages/registro/registro.component').then((m) => m.RegistroComponent),
-  },
-
-  {
     path: '**',
     loadComponent: () =>
       import('./pages/not-found/not-found.component').then((m) => m.NotFoundComponent),
   },
 ];
+
