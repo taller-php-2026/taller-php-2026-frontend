@@ -73,6 +73,20 @@ export const routes: Routes = [
           import('./pages/pago-seguro/pago-seguro.component').then((m) => m.PagoSeguroComponent),
       },
       {
+        path: 'crear-ciclo-agenda',
+        loadComponent: () =>
+          import('./pages/crear-ciclo-agenda/crear-ciclo-agenda').then(
+            (m) => m.CrearCicloAgenda,
+          ),
+      },
+      {
+        path: 'editar-ciclo-agenda',
+        loadComponent: () =>
+          import('./pages/editar-ciclo-agenda/editar-ciclo-agenda').then(
+            (m) => m.EditarCicloAgenda,
+          ),
+      },
+      {
         path: 'empresa/:id/seleccionar-servicio',
         loadComponent: () =>
           import('@pages/select-service/select-service.component').then((m) => m.SelectService),
