@@ -1,0 +1,221 @@
+<main class="relative flex flex-col lg:flex-row w-full h-[calc(100vh-64px)] overflow-hidden">
+  <!-- Video Canvas Section -->
+  <section class="flex-grow relative bg-black flex flex-col overflow-hidden">
+    <!-- Main Video Feed Container -->
+    <div class="flex-grow relative w-full h-0">
+      <img alt="Professional specialist" 
+           class="w-full h-full object-cover transition-all duration-500" 
+           [ngClass]="{'active-speaker-ring': hablanteActivo()}"
+           [src]="profesionalFoto() || 'https://lh3.googleusercontent.com/aida/AP1WRLvz2RwWUq4OaE40cK6F19RQSRwD3YxX9OdpAFtEEV8KzKSO66y6c79zKoBjkttE5VfTIkVufyVdRfO4WSUhS4JamvUx0zwNYs-cMh3KfSPzpLeAA_srE0sF9YPOCbMI9hoXVaxdaIxtFZqqzhnJgbLq8-Um24jg8be9tgGovI5WsVV7fZJqGayQK4m1lQ8qVwLPgl3u0wQRGXzcQ-EKakPKd3zZxAOF4CNVZg5A9QD5VYEdJSE4rS3XEHA'"
+      >
+      <!-- Status Badges Overlay -->
+      <div class="absolute top-md left-md flex gap-sm pointer-events-none">
+        <div class="bg-black/40 backdrop-blur-md px-md py-1.5 rounded-lg flex items-center gap-xs text-white">
+          <span class="w-2 h-2 rounded-full bg-error recording-dot"></span>
+          <span class="font-caption text-caption uppercase tracking-wider">LIVE</span>
+        </div>
+        <div class="bg-black/40 backdrop-blur-md px-md py-1.5 rounded-lg flex items-center gap-xs text-white">
+          <span class="material-symbols-outlined text-[16px]">lock</span>
+          <span class="font-caption text-caption">End-to-end Encrypted</span>
+        </div>
+      </div>
+      <!-- Connection Quality Indicator -->
+      <div class="absolute top-md right-md bg-black/40 backdrop-blur-md px-sm py-1 rounded-lg text-white flex items-center gap-1">
+        <span class="material-symbols-outlined text-[16px] text-green-400">signal_cellular_alt</span>
+        <span class="text-[10px] font-bold">Excellent</span>
+      </div>
+      <!-- Active Speaker Label -->
+      <div class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/40 backdrop-blur-md px-md py-1.5 rounded-lg text-white flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary text-[18px]">volume_up</span>
+        <span class="font-label-bold">{{ profesionalNombre() }}</span>
+      </div>
+      <!-- Floating Self View -->
+      <div class="absolute bottom-4 right-4 w-32 md:w-48 aspect-video rounded-xl overflow-hidden border-2 border-white/40 shadow-2xl transition-transform hover:scale-105 cursor-pointer z-20 group">
+        <img alt="User Preview" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCl28HLXCwxp75ZZFih0TVQNhE-2AWu46F_vgVwb_GdOBBBC0p7S3bp8pl9xq3AJuu81ddH8JkVlh0xucx7AcY6m7V1iTbWVuHZ_emOvL4LjMijsBcqLQcbSIrnK1rrm7Wsudw2jvlArJSYUVx-aYI5muyQWcSAps38YCqf9tEWsfPMFfCvN4zIoENc9O37UwbYiKeFwUn8t_H68MXgkDLFKWeMM9hruT8nSycdMiDWzKflegNB2y-hBGKQsphagRH6DymylxOjMCQx">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        <div class="absolute bottom-2 left-2 bg-black/50 px-sm py-1 rounded text-white text-[10px] font-medium uppercase tracking-wider">
+          You
+        </div>
+      </div>
+    </div>
+
+    <!-- Responsive Control Bar (Below Video on Mobile, Floating on Desktop) -->
+    <div class="w-full lg:w-auto relative lg:absolute bottom-0 lg:bottom-8 left-0 lg:left-1/2 lg:-translate-x-1/2 flex items-center justify-around lg:justify-center gap-md p-sm z-50 bg-white/95 dark:bg-black/85 backdrop-blur-xl lg:rounded-full border-t lg:border border-outline-variant/30 lg:glass-effect shadow-lg lg:shadow-2xl px-md lg:px-xl transition-all duration-300">
+      <button 
+        (click)="alternarMicrofono()"
+        [ngClass]="microfonoSilenciado() ? 'bg-error text-on-error' : 'bg-white dark:bg-surface-dim text-on-surface'"
+        class="rounded-full w-12 h-12 flex items-center justify-center hover:bg-surface-container transition-all active:scale-95 shadow-sm border border-outline-variant/20"
+      >
+        <span class="material-symbols-outlined">{{ microfonoSilenciado() ? 'mic_off' : 'mic' }}</span>
+      </button>
+      <button 
+        (click)="alternarVideo()"
+        [ngClass]="videoDesactivado() ? 'bg-error text-on-error' : 'bg-white dark:bg-surface-dim text-on-surface'"
+        class="rounded-full w-12 h-12 flex items-center justify-center hover:bg-surface-container transition-all active:scale-95 shadow-sm border border-outline-variant/20"
+      >
+        <span class="material-symbols-outlined">{{ videoDesactivado() ? 'videocam_off' : 'videocam' }}</span>
+      </button>
+      <button class="bg-white dark:bg-surface-dim text-on-surface rounded-full w-12 h-12 flex items-center justify-center hover:bg-surface-container transition-all active:scale-95 shadow-sm border border-outline-variant/20">
+        <span class="material-symbols-outlined">screen_share</span>
+      </button>
+      <button class="bg-white dark:bg-surface-dim text-on-surface rounded-full w-12 h-12 flex items-center justify-center hover:bg-surface-container transition-all active:scale-95 shadow-sm border border-outline-variant/20">
+        <span class="material-symbols-outlined">more_horiz</span>
+      </button>
+      <div class="w-[1px] h-8 bg-outline-variant/30 mx-xs"></div>
+      <button (click)="finalizarSesion()" class="bg-error text-on-error rounded-full w-12 h-12 flex items-center justify-center hover:brightness-110 hover:shadow-lg hover:shadow-error/30 transition-all active:scale-95">
+        <span class="material-symbols-outlined">call_end</span>
+      </button>
+    </div>
+
+    <!-- Toggle Sidebar Button (Mobile, Floating Right Edge) -->
+    <button 
+      (click)="alternarSidebar()" 
+      class="lg:hidden absolute right-0 top-1/2 -translate-y-1/2 bg-primary text-on-primary w-10 h-12 rounded-l-xl shadow-lg z-50 flex items-center justify-center transition-all active:scale-95"
+    >
+      <span class="material-symbols-outlined">{{ sidebarAbierto() ? 'chevron_right' : 'chevron_left' }}</span>
+    </button>
+  </section>
+
+  <!-- Right Sidebar -->
+  <aside 
+    [ngClass]="sidebarAbierto() ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'"
+    class="fixed lg:relative top-16 lg:top-0 right-0 h-[calc(100vh-64px)] w-80 bg-surface flex flex-col border-l border-outline-variant/30 shadow-xl z-30 transition-transform duration-300"
+  >
+    <!-- Professional Profile Header -->
+    <div class="p-lg flex flex-col items-center text-center border-b border-outline-variant/20 flex-shrink-0">
+      <div class="relative">
+        <div class="w-20 h-20 rounded-full border-4 border-primary/10 p-1 mb-sm overflow-hidden bg-white">
+          <img alt="Professional" class="w-full h-full object-cover rounded-full" [src]="profesionalFoto() || 'https://lh3.googleusercontent.com/aida/AP1WRLvz2RwWUq4OaE40cK6F19RQSRwD3YxX9OdpAFtEEV8KzKSO66y6c79zKoBjkttE5VfTIkVufyVdRfO4WSUhS4JamvUx0zwNYs-cMh3KfSPzpLeAA_srE0sF9YPOCbMI9hoXVaxdaIxtFZqqzhnJgbLq8-Um24jg8be9tgGovI5WsVV7fZJqGayQK4m1lQ8qVwLPgl3u0wQRGXzcQ-EKakPKd3zZxAOF4CNVZg5A9QD5VYEdJSE4rS3XEHA'">
+        </div>
+        <div class="absolute bottom-4 right-1 w-4 h-4 bg-green-500 border-2 border-surface rounded-full"></div>
+      </div>
+      <h3 class="font-headline-md text-headline-md text-primary mb-xs">{{ profesionalNombre() }}</h3>
+      <p class="font-body-sm text-body-sm text-secondary">ID: {{ servicioId() }}</p>
+      <div class="mt-md bg-surface-container-low px-md py-sm rounded-xl w-full border border-outline-variant/20">
+        <div class="flex justify-between items-center mb-xs">
+          <span class="text-on-surface-variant font-label-bold text-[10px] uppercase">Session Time</span>
+          <span class="text-primary font-bold text-sm">{{ textoTemporizador() }}</span>
+        </div>
+        <div class="w-full bg-outline-variant/20 h-1.5 rounded-full overflow-hidden">
+          <div class="bg-primary h-full rounded-full transition-all duration-1000" [style.width.%]="progresoPorcentaje()"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex border-b border-outline-variant/20 bg-surface-container-low flex-shrink-0">
+      <button 
+        (click)="seleccionarTab('participantes')" 
+        [ngClass]="tabSeleccionada() === 'participantes' ? 'border-b-2 border-primary text-primary font-bold' : 'text-on-surface-variant'" 
+        class="flex-1 py-3 text-center font-label-bold text-[11px] flex flex-col items-center justify-center gap-xs"
+      >
+        <span class="material-symbols-outlined text-[18px]">group</span>
+        Part.
+      </button>
+      <button 
+        (click)="seleccionarTab('chat')" 
+        [ngClass]="tabSeleccionada() === 'chat' ? 'border-b-2 border-primary text-primary font-bold' : 'text-on-surface-variant'" 
+        class="flex-1 py-3 text-center font-label-bold text-[11px] flex flex-col items-center justify-center gap-xs relative"
+      >
+        <span class="material-symbols-outlined text-[18px]">chat</span>
+        Chat
+        <span *ngIf="mensajes().length > 0" class="absolute top-1.5 right-3 bg-error text-on-error text-[9px] w-4 h-4 flex items-center justify-center rounded-full font-bold">
+          {{ mensajes().length }}
+        </span>
+      </button>
+      <button 
+        (click)="seleccionarTab('archivos')" 
+        [ngClass]="tabSeleccionada() === 'archivos' ? 'border-b-2 border-primary text-primary font-bold' : 'text-on-surface-variant'" 
+        class="flex-1 py-3 text-center font-label-bold text-[11px] flex flex-col items-center justify-center gap-xs"
+      >
+        <span class="material-symbols-outlined text-[18px]">description</span>
+        Files
+      </button>
+      <button 
+        (click)="seleccionarTab('ajustes')" 
+        [ngClass]="tabSeleccionada() === 'ajustes' ? 'border-b-2 border-primary text-primary font-bold' : 'text-on-surface-variant'" 
+        class="flex-1 py-3 text-center font-label-bold text-[11px] flex flex-col items-center justify-center gap-xs"
+      >
+        <span class="material-symbols-outlined text-[18px]">settings</span>
+        Config
+      </button>
+    </div>
+
+    <!-- Tab Contents -->
+    <div class="flex-grow p-md overflow-y-auto">
+      @if (tabSeleccionada() === 'participantes') {
+        <div class="space-y-sm">
+          <div *ngFor="let part of participantes()" class="flex items-center gap-md p-sm bg-surface-container-low rounded-lg border border-outline-variant/10">
+            <img [src]="part.foto" class="w-8 h-8 rounded-full object-cover">
+            <div>
+              <p class="font-label-bold text-sm text-on-surface">{{ part.nombre }}</p>
+              <p class="text-[11px] text-on-surface-variant">{{ part.rol }}</p>
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (tabSeleccionada() === 'chat') {
+        <div class="flex flex-col h-full">
+          <div class="flex-grow space-y-sm overflow-y-auto mb-md max-h-[260px] pr-xs">
+            <div *ngFor="let msg of mensajes()" class="flex flex-col" [ngClass]="msg.remitente === 'Tú' ? 'items-end' : 'items-start'">
+              <span class="text-[9px] text-on-surface-variant">{{ msg.remitente }} • {{ msg.tiempo }}</span>
+              <div class="p-sm rounded-lg mt-xs text-xs max-w-[85%] break-words" 
+                   [ngClass]="msg.remitente === 'Tú' ? 'bg-primary text-on-primary rounded-tr-none' : 'bg-surface-container-high text-on-surface rounded-tl-none'">
+                {{ msg.texto }}
+              </div>
+            </div>
+          </div>
+          <form (submit)="enviarMensaje(); $event.preventDefault()" class="flex gap-2 mt-auto">
+            <input 
+              [(ngModel)]="nuevoMensajeTexto" 
+              [ngModelOptions]="{standalone: true}"
+              class="flex-grow rounded-lg border border-outline-variant px-sm py-1.5 text-xs focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" 
+              placeholder="Escribe un mensaje..."
+            >
+            <button type="submit" class="bg-primary text-on-primary p-sm rounded-lg flex items-center justify-center hover:brightness-110 active:scale-95 transition-all">
+              <span class="material-symbols-outlined text-[16px]">send</span>
+            </button>
+          </form>
+        </div>
+      }
+
+      @if (tabSeleccionada() === 'archivos') {
+        <div class="space-y-sm">
+          <div *ngFor="let file of archivos()" class="flex items-center gap-md p-sm bg-surface-container-low rounded-lg hover:bg-surface-container-high cursor-pointer transition-colors border border-outline-variant/10">
+            <span class="material-symbols-outlined text-primary text-[20px]">description</span>
+            <div class="flex-grow min-w-0">
+              <p class="font-label-bold text-xs text-on-surface truncate">{{ file.nombre }}</p>
+              <p class="text-[10px] text-on-surface-variant">{{ file.tamano }}</p>
+            </div>
+            <span class="material-symbols-outlined text-on-surface-variant text-[16px]">download</span>
+          </div>
+        </div>
+      }
+
+      @if (tabSeleccionada() === 'ajustes') {
+        <div class="space-y-md text-xs">
+          <p class="font-label-bold text-primary text-sm">LiveKit Config</p>
+          <div class="p-sm bg-surface-container-low rounded-lg space-y-sm break-all">
+            <p><strong class="text-on-surface">Servidor:</strong> {{ livekitUrl() }}</p>
+            <p><strong class="text-on-surface">Sala:</strong> {{ roomName() }}</p>
+            <p><strong class="text-on-surface">Token:</strong> <span class="truncate block text-[10px] text-on-surface-variant">{{ livekitToken() }}</span></p>
+            <p><strong class="text-on-surface">Estado:</strong> {{ livekitConectado() ? 'Conectado (Simulado)' : 'Desconectado' }}</p>
+          </div>
+          <div class="flex items-center justify-between border-t pt-sm">
+            <span>Supresión de ruido</span>
+            <input type="checkbox" checked class="rounded border-outline-variant text-primary focus:ring-primary">
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Bottom CTA -->
+    <div class="p-lg mt-auto flex-shrink-0 border-t border-outline-variant/20">
+      <button (click)="finalizarSesion()" class="w-full bg-error text-on-error py-md rounded-xl font-bold shadow-lg shadow-error/20 hover:brightness-110 active:scale-[0.98] transition-all">
+        End Session
+      </button>
+    </div>
+  </aside>
+</main>
+

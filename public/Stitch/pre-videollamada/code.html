@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#f8f9ff",
+                        "primary-container": "#008378",
+                        "surface-container-highest": "#d3e4fe",
+                        "secondary": "#5a5f62",
+                        "on-secondary-container": "#5e6367",
+                        "on-tertiary-fixed": "#201c00",
+                        "surface-variant": "#d3e4fe",
+                        "surface": "#f8f9ff",
+                        "secondary-fixed": "#dfe3e7",
+                        "inverse-on-surface": "#eaf1ff",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#cbdbf5",
+                        "on-surface-variant": "#3d4947",
+                        "inverse-primary": "#6bd8cb",
+                        "on-background": "#0b1c30",
+                        "tertiary-container": "#baad3e",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#89f5e7",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#bcc9c6",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#005049",
+                        "on-primary-fixed": "#00201d",
+                        "surface-tint": "#006a61",
+                        "tertiary-fixed": "#f4e570",
+                        "surface-container-low": "#eff4ff",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed": "#171c1f",
+                        "on-secondary-fixed-variant": "#43474b",
+                        "primary-fixed-dim": "#6bd8cb",
+                        "surface-container-high": "#dce9ff",
+                        "on-primary-container": "#f4fffc",
+                        "on-primary": "#ffffff",
+                        "primary": "#00685f",
+                        "tertiary-fixed-dim": "#d7c957",
+                        "outline": "#6d7a77",
+                        "on-tertiary-container": "#474000",
+                        "secondary-fixed-dim": "#c3c7cb",
+                        "surface-bright": "#f8f9ff",
+                        "surface-container": "#e5eeff",
+                        "secondary-container": "#dce0e4",
+                        "on-tertiary-fixed-variant": "#4f4800",
+                        "inverse-surface": "#213145",
+                        "on-surface": "#0b1c30",
+                        "tertiary": "#695f00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "8px",
+                        "xl": "16px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "unit": "4px",
+                        "container-padding": "24px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "title-sm": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "caption": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "title-sm": ["18px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "label-bold": ["14px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "caption": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "display-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .soft-shadow {
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.04);
+        }
+        .primary-gradient {
+            background: linear-gradient(180deg, #008378 0%, #00685f 100%);
+        }
+        .primary-glow:focus {
+            box-shadow: 0 0 0 4px rgba(0, 131, 120, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-background font-body-md text-on-surface min-h-screen flex flex-col">
+<!-- TopNavBar Shell -->
+<header class="bg-surface w-full h-16 shadow-sm z-50">
+<div class="flex justify-between items-center px-lg w-full max-w-7xl mx-auto h-full">
+<div class="flex items-center gap-xl">
+<span class="font-display-lg text-display-lg text-primary-container">SchedulEase</span>
+<nav class="hidden md:flex gap-lg">
+<a class="font-body-md text-body-md text-secondary hover:text-primary-container transition-colors cursor-pointer" href="#">Dashboard</a>
+<a class="font-body-md text-body-md text-primary border-b-2 border-primary pb-1 cursor-pointer" href="#">Appointments</a>
+<a class="font-body-md text-body-md text-secondary hover:text-primary-container transition-colors cursor-pointer" href="#">Clients</a>
+<a class="font-body-md text-body-md text-secondary hover:text-primary-container transition-colors cursor-pointer" href="#">Team</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<div class="relative group hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="bg-surface-container-low border-none rounded-lg pl-10 pr-4 py-2 w-64 focus:ring-2 focus:ring-primary-container/20" placeholder="Search..." type="text"/>
+</div>
+<button class="material-symbols-outlined text-secondary hover:text-primary transition-colors cursor-pointer">notifications</button>
+<button class="material-symbols-outlined text-secondary hover:text-primary transition-colors cursor-pointer">settings</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant">
+<img alt="User profile" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMcXlYM--wNmMpkZOr01uQFIYMQ7NnHG8C6_asYaZsxYfNZarjqH6Ba7gudpVifAt6LUlPb60EL-ZXHPv-Q444pECLyEV0249TEnnu01Z9Fz1F8QFpbr-wie6CuQIzJHxDLgyfkLBScVrfZv84Mv-LilRxPOu6O88u04ZKgSTDngQxTswijNKbZav7fOl1mOusF6YzjRpLrc6tchff3M2lCLQyQrdvpV92lnuUGhHQwX70serEZAPx6vdSO8hbZvJyaIH8g-dyslHH"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-grow flex items-center justify-center p-lg">
+<div class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-xl">
+<!-- Video Preview Column -->
+<div class="lg:col-span-8 flex flex-col gap-md">
+<div class="relative aspect-video bg-inverse-surface rounded-xl overflow-hidden soft-shadow border border-outline-variant/30">
+<img alt="Camera Preview" class="w-full h-full object-cover grayscale-[0.2]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbbOoyKG0I2amA-oFkVkQBJTUXYCEk8wf4-yM69cUJ9kW7bCVoJjDg3adPoS8EHoKnCssWL9zB03GX3E-A0MzUbEAgWMLXCX80rF-Ul2-da16AlFbRXEB2Cb1zbi7zpyRTnI3m-knjL_yl82_XMQ0BXL1e0dzE1S68q0C2P-ACzNw6Jl61njklronTbDDd9NobRfvcSRnm0B6B34EkAm9ATuStpP0WkZHLPtHbS8aKZLnfKM-CcpemHQwWg8MZMdft9mTkYeT0OWBy"/>
+<!-- Floating Control Bar -->
+<div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-md px-md py-sm bg-surface/80 backdrop-blur-md rounded-full soft-shadow border border-white/20">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-highest transition-colors text-secondary" id="toggle-mic" onclick="toggleIcon(this, 'mic', 'mic_off')">
+<span class="material-symbols-outlined">mic</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-highest transition-colors text-secondary" id="toggle-cam" onclick="toggleIcon(this, 'videocam', 'videocam_off')">
+<span class="material-symbols-outlined">videocam</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-highest transition-colors text-secondary">
+<span class="material-symbols-outlined">screen_share</span>
+</button>
+<div class="w-px h-6 bg-outline-variant/50 mx-xs"></div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-highest transition-colors text-secondary">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+<!-- Overlay Label -->
+<div class="absolute top-4 left-4 bg-on-background/60 text-white px-md py-unit rounded-lg text-caption backdrop-blur-sm">
+                        Previsualización de Cámara
+                    </div>
+</div>
+</div>
+<!-- Join Column -->
+<div class="lg:col-span-4 flex flex-col gap-lg">
+<div class="bg-surface-container-lowest p-lg rounded-xl soft-shadow border border-outline-variant/20 flex flex-col gap-lg">
+<!-- Professional Details -->
+<div class="flex items-center gap-md">
+<div class="w-14 h-14 rounded-xl overflow-hidden border-2 border-primary-container/20">
+<img alt="Dr. Elena Santos" class="w-full h-full object-cover" data-alt="A professional close-up portrait of a female doctor with dark hair, wearing a white medical coat and a subtle stethoscope around her neck. She has a warm, confident expression. The background is a soft, blurred clinical setting with cool blue and teal accents, maintaining a professional yet approachable aesthetic consistent with the SoftUI design system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxb6pHCGWjXLQbnKAbenNkbI2DWWylyG0y2I2_CAHQ086cDP2YwpEzaztXuakYIZSn3gU2q9A5czYJeHIochXqlJW7TJYvFAGXX10fglWSfu27boe5U6BBSLLrCc_lLrVKHnACH3IjV9QM_Yign9afg47AEvkt23PxCCcJSGtDT_150-1mnyFmP5puoVYqmE_7RKTOcflkc6F0uj41ikG06mdYtTKpkZPuzGivFrA2if5YZOW4DcDqwU6KO2BwWKkyHsnm1fQv417M"/>
+</div>
+<div class="flex flex-col">
+<h2 class="font-title-sm text-title-sm text-on-surface">Dr. Elena Santos</h2>
+<span class="font-body-sm text-body-sm text-secondary">Consulta General</span>
+</div>
+</div>
+<!-- Device Settings -->
+<div class="flex flex-col gap-md">
+<div class="flex flex-col gap-xs">
+<label class="font-label-bold text-label-bold text-secondary">Cámara</label>
+<div class="relative">
+<select class="w-full bg-surface border border-outline-variant rounded-lg px-md py-sm appearance-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-body-md transition-all">
+<option>FaceTime HD Camera (Built-in)</option>
+<option>Logitech StreamCam</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-bold text-label-bold text-secondary">Micrófono</label>
+<div class="relative">
+<select class="w-full bg-surface border border-outline-variant rounded-lg px-md py-sm appearance-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-body-md transition-all">
+<option>Internal Microphone (Built-in)</option>
+<option>Yeti Stereo Microphone</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-bold text-label-bold text-secondary">Altavoces</label>
+<div class="relative">
+<select class="w-full bg-surface border border-outline-variant rounded-lg px-md py-sm appearance-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-body-md transition-all">
+<option>MacBook Pro Speakers</option>
+<option>Headphones (External)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Join Button -->
+<button class="w-full primary-gradient text-white font-title-sm py-md rounded-lg soft-shadow primary-glow transition-all active:scale-[0.98] mt-md">
+                        Unirse a la Llamada
+                    </button>
+<!-- Status Text -->
+<p class="text-caption text-secondary text-center">
+                        La sesión comenzará puntualmente a las 14:00
+                    </p>
+</div>
+<!-- Tips/Info Card -->
+<div class="bg-surface-container-low p-md rounded-lg border border-outline-variant/20">
+<div class="flex gap-sm">
+<span class="material-symbols-outlined text-primary-container">info</span>
+<p class="text-caption text-on-surface-variant">Asegúrate de tener una conexión estable y estar en un lugar con buena iluminación para tu consulta.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Shell -->
+<footer class="bg-surface-container-low w-full py-md border-t border-outline-variant mt-auto">
+<div class="flex flex-col md:flex-row justify-between items-center px-lg gap-md max-w-7xl mx-auto">
+<span class="font-label-bold text-label-bold text-on-surface">SchedulEase</span>
+<div class="flex gap-lg">
+<a class="font-caption text-caption text-secondary hover:text-on-surface transition-colors" href="#">Privacy Policy</a>
+<a class="font-caption text-caption text-secondary hover:text-on-surface transition-colors" href="#">Terms of Service</a>
+<a class="font-caption text-caption text-secondary hover:text-on-surface transition-colors" href="#">Support</a>
+</div>
+<span class="font-caption text-caption text-secondary">© 2024 SchedulEase SaaS. All rights reserved.</span>
+</div>
+</footer>
+<script>
+        function toggleIcon(btn, iconOn, iconOff) {
+            const span = btn.querySelector('span');
+            if (span.innerText === iconOn) {
+                span.innerText = iconOff;
+                btn.classList.add('text-error');
+                btn.classList.remove('text-secondary');
+            } else {
+                span.innerText = iconOn;
+                btn.classList.remove('text-error');
+                btn.classList.add('text-secondary');
+            }
+        }
+    </script>
+</body></html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mis Citas - SaaS Citas</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "background": "#f8f9ff",
+                    "surface-tint": "#006a61",
+                    "on-primary-fixed-variant": "#005049",
+                    "surface-bright": "#f8f9ff",
+                    "surface-container-highest": "#d3e4fe",
+                    "surface-container": "#e5eeff",
+                    "tertiary-fixed": "#f4e570",
+                    "on-secondary": "#ffffff",
+                    "inverse-primary": "#6bd8cb",
+                    "on-tertiary-container": "#474000",
+                    "outline-variant": "#bcc9c6",
+                    "on-surface": "#0b1c30",
+                    "secondary-fixed-dim": "#c3c7cb",
+                    "on-tertiary-fixed": "#201c00",
+                    "on-secondary-fixed-variant": "#43474b",
+                    "on-error-container": "#93000a",
+                    "inverse-surface": "#213145",
+                    "primary-fixed": "#89f5e7",
+                    "error-container": "#ffdad6",
+                    "secondary": "#5a5f62",
+                    "surface-variant": "#d3e4fe",
+                    "tertiary-container": "#baad3e",
+                    "primary-fixed-dim": "#6bd8cb",
+                    "secondary-fixed": "#dfe3e7",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#d7c957",
+                    "primary-container": "#008378",
+                    "on-primary": "#ffffff",
+                    "surface": "#f8f9ff",
+                    "inverse-on-surface": "#eaf1ff",
+                    "on-tertiary": "#ffffff",
+                    "outline": "#6d7a77",
+                    "surface-dim": "#cbdbf5",
+                    "on-secondary-container": "#5e6367",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#eff4ff",
+                    "on-surface-variant": "#3d4947",
+                    "on-primary-fixed": "#00201d",
+                    "surface-container-high": "#dce9ff",
+                    "error": "#ba1a1a",
+                    "tertiary": "#695f00",
+                    "on-tertiary-fixed-variant": "#4f4800",
+                    "on-background": "#0b1c30",
+                    "on-primary-container": "#f4fffc",
+                    "secondary-container": "#dce0e4",
+                    "primary": "#00685f",
+                    "on-secondary-fixed": "#171c1f"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "8px",
+                    "xl": "16px",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "lg": "24px",
+                    "gutter": "16px",
+                    "xs": "4px",
+                    "sm": "8px",
+                    "xl": "32px",
+                    "md": "16px",
+                    "container-padding": "24px"
+            },
+            "fontFamily": {
+                    "title-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "caption": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-bold": ["Inter"],
+                    "display-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "title-sm": ["18px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "caption": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "label-bold": ["14px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "display-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      body {
+        background-color: #f8f9ff;
+        font-family: 'Inter', sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .soft-shadow {
+        box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.04);
+      }
+      .active-tab {
+        position: relative;
+      }
+      .active-tab::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background-color: #00685f;
+      }
+      /* Custom primary button gradient per brand style */
+      .btn-primary {
+        background: linear-gradient(to bottom, #008378, #00685f);
+        transition: transform 0.1s ease-in-out;
+      }
+      .btn-primary:active {
+        transform: scale(0.95);
+      }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface-container-lowest sticky top-0 z-50 shadow-[0px_4px_20px_rgba(0,0,0,0.04)]">
+<nav class="flex justify-between items-center w-full px-lg py-md max-w-7xl mx-auto">
+<div class="font-display-lg text-display-lg font-bold text-primary">SaaS Citas</div>
+<div class="hidden md:flex gap-xl items-center">
+<a class="text-secondary font-body-md hover:text-primary-container transition-colors duration-200" href="#">Explorar</a>
+<a class="text-primary border-b-2 border-primary pb-1 font-label-bold active:scale-95 transition-transform" href="#">Mis Citas</a>
+<a class="text-secondary font-body-md hover:text-primary-container transition-colors duration-200" href="#">Perfil</a>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-sm rounded-full hover:bg-surface-container transition-colors text-secondary">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-sm rounded-full hover:bg-surface-container transition-colors text-secondary">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant">
+<img alt="Avatar del usuario" class="w-full h-full object-cover" data-alt="A close-up professional portrait of a smiling young man with a friendly expression, captured in high-key natural light against a soft-focus office background. The aesthetic is clean, modern, and corporate, featuring muted tones of white and light blue that align with a professional SaaS interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCx5N2ojWmyif7jA1sK4siLS_q4NHb2FjwGVX3qXx4EfcfkNR8pRPOoGg7WyHO7RymyLHeIXkppekhVmhM17zNAVyINjeJPU_g9GcZ2zQc_F6GL-SepyxFFt3PWAKzqGrFpK3KMbwwEH0Gfhyj2H_DDUSYmYrQiy_t1Xe9KLQGUTBwrvZu3E7DCxMhiuxCifx_tmg9tPIFav0yuF_lpoPtlVqqbEQpLpKI-CHXbcfyoVnl0kO7wmzVZ--4OcLZPSPiNup8UCZxKKR-8"/>
+</div>
+</div>
+</nav>
+</header>
+<main class="flex-grow max-w-5xl w-full mx-auto px-lg py-xl">
+<!-- Header -->
+<div class="mb-xl">
+<h1 class="font-display-lg text-display-lg text-on-surface mb-sm">Mis Reservas</h1>
+<p class="text-secondary font-body-md">Administra tus próximas citas y revisa tu historial de servicios.</p>
+</div>
+<!-- Filters / Tabs -->
+<div class="flex gap-lg border-b border-outline-variant mb-xl">
+<button class="pb-md px-xs font-label-bold text-primary border-b-2 border-primary">Próximas</button>
+<button class="pb-md px-xs font-label-bold text-secondary hover:text-primary transition-colors">Pasadas</button>
+<button class="pb-md px-xs font-label-bold text-secondary hover:text-primary transition-colors">Canceladas</button>
+</div>
+<!-- Reservations Grid -->
+<div class="grid grid-cols-1 gap-lg">
+<!-- Card 1: Próxima -->
+<div class="bg-surface-container-lowest rounded-xl p-md soft-shadow border border-surface-container-low flex flex-col md:flex-row gap-lg items-start md:items-center">
+<div class="w-16 h-16 rounded-lg bg-surface-container-high flex items-center justify-center shrink-0">
+<img alt="Logo Empresa" class="w-full h-full object-cover rounded-lg" data-alt="A clean and minimalist logo for a high-end hair salon, featuring elegant typography and a stylized scissor icon. The image is set against a soft pearl gray background with professional studio lighting, reflecting a luxurious and modern brand identity consistent with a premium service platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD97PJzIWNi9EnOucJQgvSB-vEW8JEqCdo5JdEixMHwvliHUj4dzJMyY9Ol2T1OWftiIUDPpf7DphdorvLes-lBy0I6Cu_lm5ayJJ7LMgAeNl2S2G8PzggYDOrMZn9Un6eIbXaUOeIU3xiJU2JU2vK9sv1QdeeB5OrcyDu6n4UzzB0PTepAI_YZGrwrzKBvMtCtXNvYuGjUbmS1uKMFGj-BTNZXNb5i1zOEclwB5q97AGgyHx8yxCqw3w7HDcmkNpWWLCJb994Ms5z2"/>
+</div>
+<div class="flex-grow">
+<div class="flex flex-wrap items-center gap-sm mb-xs">
+<h3 class="font-title-sm text-title-sm text-on-surface">Studio de Belleza Élite</h3>
+<span class="px-sm py-[2px] rounded-full bg-primary-fixed text-on-primary-fixed text-caption font-label-bold">Confirmada</span>
+</div>
+<p class="text-secondary font-body-sm flex items-center gap-xs mb-sm">
+                        Corte de Cabello y Barba • <span class="font-medium text-on-surface-variant">Carlos Méndez</span>
+</p>
+<div class="flex flex-wrap gap-md">
+<div class="flex items-center gap-xs text-secondary font-body-sm">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                            15 de Octubre, 2024
+                        </div>
+<div class="flex items-center gap-xs text-secondary font-body-sm">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+                            10:30 AM
+                        </div>
+</div>
+</div>
+<div class="flex gap-sm w-full md:w-auto mt-md md:mt-0">
+<button class="flex-1 md:flex-none px-md py-sm rounded-lg border border-outline-variant text-secondary font-label-bold hover:bg-surface-container-low transition-colors active:scale-95">
+                        Cancelar
+                    </button>
+<button class="flex-1 md:flex-none px-md py-sm rounded-lg btn-primary text-white font-label-bold soft-shadow">
+                        Reprogramar
+                    </button>
+</div>
+</div>
+<!-- Card 2: Pendiente -->
+<div class="bg-surface-container-lowest rounded-xl p-md soft-shadow border border-surface-container-low flex flex-col md:flex-row gap-lg items-start md:items-center">
+<div class="w-16 h-16 rounded-lg bg-surface-container-high flex items-center justify-center shrink-0">
+<img alt="Logo Empresa" class="w-full h-full object-cover rounded-lg" data-alt="A modern and bright interior of a dental clinic, focusing on a clean reception desk with a subtle blue and white color scheme. The lighting is clinical yet warm, creating a sense of reliability and professional hygiene. High-key aesthetic with soft shadows and generous white space." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyDA10FGs5tZcpxl3GqbV6dDKVyuiR9-8E89uaIzJXHvIO1Gp3hs0VpJBLKORws7nNwEqwJJ0J0tlyznUYxQ6asFowWaIeoekII4d3lFVrpxRgxq8E5o2q9Z_O7mc78owTgZdVmunskGU4zShHqjf27SgqHk87NCX7QvMuMPSLY9lC3fB_jxav7jPeDBd_ytMlgNgTZfdxTsedyB57zo5LNdbT47evwvH-st_ufCtt-O4jUBBdL-giVlHKlM1qRRhtMmv8xz7VQUg_"/>
+</div>
+<div class="flex-grow">
+<div class="flex flex-wrap items-center gap-sm mb-xs">
+<h3 class="font-title-sm text-title-sm text-on-surface">Clínica Dental DentalCare</h3>
+<span class="px-sm py-[2px] rounded-full bg-secondary-container text-on-secondary-container text-caption font-label-bold">Pendiente</span>
+</div>
+<p class="text-secondary font-body-sm flex items-center gap-xs mb-sm">
+                        Limpieza Dental Profunda • <span class="font-medium text-on-surface-variant">Dra. Sofía Rivas</span>
+</p>
+<div class="flex flex-wrap gap-md">
+<div class="flex items-center gap-xs text-secondary font-body-sm">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                            18 de Octubre, 2024
+                        </div>
+<div class="flex items-center gap-xs text-secondary font-body-sm">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+                            04:15 PM
+                        </div>
+</div>
+</div>
+<div class="flex gap-sm w-full md:w-auto mt-md md:mt-0">
+<button class="flex-1 md:flex-none px-md py-sm rounded-lg border border-outline-variant text-secondary font-label-bold hover:bg-surface-container-low transition-colors active:scale-95">
+                        Cancelar
+                    </button>
+<button class="flex-1 md:flex-none px-md py-sm rounded-lg btn-primary text-white font-label-bold soft-shadow">
+                        Reprogramar
+                    </button>
+</div>
+</div>
+<!-- Empty State Illustration (Hidden by default, shown if no cards) -->
+<div class="hidden flex-col items-center justify-center py-xl bg-surface-container-lowest rounded-xl soft-shadow border border-dashed border-outline-variant" id="empty-state">
+<div class="w-24 h-24 bg-surface-container rounded-full flex items-center justify-center mb-md text-primary opacity-50">
+<span class="material-symbols-outlined text-5xl">event_busy</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-sm">No tienes citas próximas</h3>
+<p class="text-secondary font-body-md mb-lg text-center max-w-xs">Parece que tu agenda está libre. ¿Por qué no exploras nuevos servicios hoy?</p>
+<button class="btn-primary text-white px-xl py-md rounded-lg font-label-bold soft-shadow flex items-center gap-sm">
+<span class="material-symbols-outlined">search</span>
+                    Buscar Servicios
+                </button>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low border-t border-outline-variant">
+<div class="flex flex-col md:flex-row justify-between items-center px-lg py-xl w-full max-w-7xl mx-auto gap-md">
+<div class="flex flex-col items-center md:items-start gap-xs">
+<span class="font-label-bold text-label-bold text-secondary">SaaS Citas</span>
+<p class="font-caption text-caption text-on-secondary-container">© 2024 SaaS Citas. Todos los derechos reservados.</p>
+</div>
+<div class="flex gap-xl">
+<a class="font-caption text-caption text-on-secondary-container hover:text-primary transition-colors" href="#">Privacidad</a>
+<a class="font-caption text-caption text-on-secondary-container hover:text-primary transition-colors" href="#">Términos</a>
+<a class="font-caption text-caption text-on-secondary-container hover:text-primary transition-colors" href="#">Contacto</a>
+<a class="font-caption text-caption text-on-secondary-container hover:text-primary transition-colors" href="#">Ayuda</a>
+</div>
+</div>
+</footer>
+<script>
+        // Simple Interaction logic for tabs
+        const tabs = document.querySelectorAll('button[class*="pb-md"]');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => {
+                    t.classList.remove('text-primary', 'border-b-2', 'border-primary');
+                    t.classList.add('text-secondary');
+                });
+                tab.classList.remove('text-secondary');
+                tab.classList.add('text-primary', 'border-b-2', 'border-primary');
+                
+                // Logic to simulate empty state when "Canceladas" is clicked
+                const grid = document.querySelector('.grid');
+                const cards = document.querySelectorAll('.grid > div:not(#empty-state)');
+                const emptyState = document.getElementById('empty-state');
+                
+                if (tab.innerText === 'Canceladas') {
+                    cards.forEach(c => c.style.display = 'none');
+                    emptyState.classList.remove('hidden');
+                    emptyState.classList.add('flex');
+                } else {
+                    cards.forEach(c => c.style.display = 'flex');
+                    emptyState.classList.add('hidden');
+                    emptyState.classList.remove('flex');
+                }
+            });
+        });
+
+        // Add ripple-like effect on primary buttons
+        document.querySelectorAll('.btn-primary').forEach(button => {
+            button.addEventListener('mousedown', function(e) {
+                this.classList.add('scale-95');
+            });
+            button.addEventListener('mouseup', function(e) {
+                this.classList.remove('scale-95');
+            });
+            button.addEventListener('mouseleave', function(e) {
+                this.classList.remove('scale-95');
+            });
+        });
+    </script>
+</body></html>

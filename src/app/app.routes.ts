@@ -87,6 +87,20 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'videollamada',
+        loadComponent: () =>
+          import('./pages/videollamada/videollamada').then(
+            (m) => m.Videollamada,
+          ),
+      },
+      {
+        path: 'pre-videollamada',
+        loadComponent: () =>
+          import('./pages/pre-videollamada/pre-videollamada').then(
+            (m) => m.PreVideollamada,
+          ),
+      },
+      {
         path: 'empresa/:id/seleccionar-servicio',
         loadComponent: () =>
           import('@pages/select-service/select-service.component').then((m) => m.SelectService),

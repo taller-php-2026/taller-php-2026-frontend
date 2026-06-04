@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ServiceLink - Video Session</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#5e6367",
+                        "surface-tint": "#006a61",
+                        "outline-variant": "#bcc9c6",
+                        "tertiary-fixed-dim": "#d7c957",
+                        "inverse-primary": "#6bd8cb",
+                        "inverse-on-surface": "#eaf1ff",
+                        "background": "#f8f9ff",
+                        "surface-dim": "#cbdbf5",
+                        "on-tertiary": "#ffffff",
+                        "surface-container": "#e5eeff",
+                        "surface-bright": "#f8f9ff",
+                        "on-tertiary-fixed-variant": "#4f4800",
+                        "secondary": "#5a5f62",
+                        "on-background": "#0b1c30",
+                        "tertiary-fixed": "#f4e570",
+                        "on-tertiary-container": "#474000",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#3d4947",
+                        "tertiary": "#695f00",
+                        "secondary-fixed-dim": "#c3c7cb",
+                        "secondary-fixed": "#dfe3e7",
+                        "primary-container": "#008378",
+                        "primary": "#009688", /* Updated to brand teal */
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#dce9ff",
+                        "on-error-container": "#93000a",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#213145",
+                        "on-tertiary-fixed": "#201c00",
+                        "surface-container-low": "#eff4ff",
+                        "on-primary-container": "#f4fffc",
+                        "tertiary-container": "#baad3e",
+                        "on-primary-fixed-variant": "#005049",
+                        "on-surface": "#0b1c30",
+                        "on-secondary-fixed": "#171c1f",
+                        "primary-fixed": "#89f5e7",
+                        "surface": "#f8f9ff",
+                        "surface-variant": "#d3e4fe",
+                        "on-secondary": "#ffffff",
+                        "secondary-container": "#dce0e4",
+                        "outline": "#6d7a77",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed": "#00201d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "container-padding": "24px",
+                        "unit": "4px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "caption": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "title-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "caption": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "title-sm": ["18px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label-bold": ["14px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "display-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9ff;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-effect {
+            backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.8);
+        }
+        .soft-shadow {
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.04);
+        }
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+        .recording-dot {
+            animation: pulse-soft 2s infinite;
+        }
+        .active-speaker-ring {
+            box-shadow: 0 0 0 4px rgba(0, 150, 136, 0.4);
+        }
+    </style>
+</head>
+<body class="overflow-hidden bg-background">
+<!-- Top Navigation -->
+<header class="bg-surface dark:bg-on-background shadow-sm flex justify-between items-center px-lg py-sm w-full z-40 relative">
+<div class="flex items-center gap-sm">
+<span class="font-headline-md text-headline-md text-primary dark:text-primary-fixed">ServiceLink</span>
+</div>
+<nav class="hidden md:flex gap-lg">
+<a class="font-body-md text-body-md text-secondary dark:text-secondary-fixed-dim hover:text-primary transition-colors" href="#">Appointment</a>
+<a class="font-body-md text-body-md text-secondary dark:text-secondary-fixed-dim hover:text-primary transition-colors" href="#">History</a>
+<a class="font-body-md text-body-md text-secondary dark:text-secondary-fixed-dim hover:text-primary transition-colors" href="#">Support</a>
+</nav>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-secondary hover:text-primary transition-colors">notifications</button>
+<button class="material-symbols-outlined text-secondary hover:text-primary transition-colors">settings</button>
+<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border-2 border-primary/20">
+<img alt="User profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuALvQfaM1XFnt_1DwY3FN3hscN4Wu2DNKnGoQtBWJFd2xxt5gungIG1aH_SwBa7QQR09Q3CrmYHztYkNPv_IzI-iYiN56QV606pkK6nwBtUIpiX9wSTuVGh2o3JVv63GBVERFMKPio7Co3BmzdiuaFNplto2OOEChBo26ni4DL66TwsMJZgKwZFS0_jFbFw0ucCko7Vkg-t83LwzWHOcgwiN-a4QzWF_fLT_F1IJUkiI-urQcnTTDCvH-2V8Bj0lIGVzU6V20T3m4gB"/>
+</div>
+</div>
+</header>
+<main class="relative flex w-full h-[calc(100vh-64px)]">
+<!-- Video Canvas Section -->
+<section class="flex-grow relative bg-black flex flex-col items-center justify-center overflow-hidden">
+<!-- Main Video Feed -->
+<div class="w-full h-full relative">
+<img alt="Professional aesthetic specialist during video consultation" class="w-full h-full object-cover active-speaker-ring transition-all duration-500" src="https://lh3.googleusercontent.com/aida/AP1WRLvz2RwWUq4OaE40cK6F19RQSRwD3YxX9OdpAFtEEV8KzKSO66y6c79zKoBjkttE5VfTIkVufyVdRfO4WSUhS4JamvUx0zwNYs-cMh3KfSPzpLeAA_srE0sF9YPOCbMI9hoXVaxdaIxtFZqqzhnJgbLq8-Um24jg8be9tgGovI5WsVV7fZJqGayQK4m1lQ8qVwLPgl3u0wQRGXzcQ-EKakPKd3zZxAOF4CNVZg5A9QD5VYEdJSE4rS3XEHA"/>
+<!-- Status Badges Overlay -->
+<div class="absolute top-md left-md flex gap-sm pointer-events-none">
+<div class="bg-black/40 backdrop-blur-md px-md py-1.5 rounded-lg flex items-center gap-xs text-white">
+<span class="w-2 h-2 rounded-full bg-error recording-dot"></span>
+<span class="font-caption text-caption uppercase tracking-wider">LIVE</span>
+</div>
+<div class="bg-black/40 backdrop-blur-md px-md py-1.5 rounded-lg flex items-center gap-xs text-white">
+<span class="material-symbols-outlined text-[16px]">lock</span>
+<span class="font-caption text-caption">End-to-end Encrypted</span>
+</div>
+</div>
+<!-- Connection Quality Indicator -->
+<div class="absolute top-md right-md bg-black/40 backdrop-blur-md px-sm py-1 rounded-lg text-white flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-green-400">signal_cellular_alt</span>
+<span class="text-[10px] font-bold">Excellent</span>
+</div>
+<!-- Active Speaker Label -->
+<div class="absolute bottom-32 left-1/2 -translate-x-1/2 bg-black/40 backdrop-blur-md px-md py-1.5 rounded-lg text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">volume_up</span>
+<span class="font-label-bold">Tech Specialist</span>
+</div>
+<!-- Floating Self View -->
+<div class="absolute bottom-xl right-xl w-48 aspect-video rounded-xl overflow-hidden border-2 border-white/40 shadow-2xl transition-transform hover:scale-105 cursor-pointer z-20 group">
+<img alt="User Preview" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCl28HLXCwxp75ZZFih0TVQNhE-2AWu46F_vgVwb_GdOBBBC0p7S3bp8pl9xq3AJuu81ddH8JkVlh0xucx7AcY6m7V1iTbWVuHZ_emOvL4LjMijsBcqLQcbSIrnK1rrm7Wsudw2jvlArJSYUVx-aYI5muyQWcSAps38YCqf9tEWsfPMFfCvN4zIoENc9O37UwbYiKeFwUn8t_H68MXgkDLFKWeMM9hruT8nSycdMiDWzKflegNB2y-hBGKQsphagRH6DymylxOjMCQx"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="absolute bottom-2 left-2 bg-black/50 px-sm py-1 rounded text-white text-[10px] font-medium uppercase tracking-wider">
+                    You
+                </div>
+</div>
+</div>
+<!-- Floating Control Bar -->
+<div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-md p-sm z-50 bg-white/10 dark:bg-black/20 backdrop-blur-xl rounded-full border border-white/20 shadow-2xl glass-effect px-xl">
+<button class="bg-white dark:bg-surface-dim text-on-surface rounded-full w-12 h-12 flex items-center justify-center hover:bg-surface-container transition-all active:scale-95 shadow-sm" id="mute-btn">
+<span class="material-symbols-outlined">mic</span>
+</button>
+<button class="bg-white dark:bg-surface-dim text-on-surface rounded-full w-12 h-12 flex items-center justify-center hover:bg-surface-container transition-all active:scale-95 shadow-sm" id="video-btn">
+<span class="material-symbols-outlined">videocam</span>
+</button>
+<button class="bg-white dark:bg-surface-dim text-on-surface rounded-full w-12 h-12 flex items-center justify-center hover:bg-surface-container transition-all active:scale-95 shadow-sm">
+<span class="material-symbols-outlined">screen_share</span>
+</button>
+<button class="bg-white dark:bg-surface-dim text-on-surface rounded-full w-12 h-12 flex items-center justify-center hover:bg-surface-container transition-all active:scale-95 shadow-sm">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+<div class="w-[1px] h-8 bg-outline-variant/30 mx-xs"></div>
+<button class="bg-error text-on-error rounded-full w-12 h-12 flex items-center justify-center hover:brightness-110 hover:shadow-lg hover:shadow-error/30 transition-all active:scale-95">
+<span class="material-symbols-outlined">call_end</span>
+</button>
+</div>
+</section>
+<!-- Right Sidebar -->
+<aside class="w-80 bg-surface flex flex-col border-l border-outline-variant/30 shadow-xl z-30">
+<!-- Professional Profile Header -->
+<div class="p-lg flex flex-col items-center text-center border-b border-outline-variant/20">
+<div class="relative">
+<div class="w-24 h-24 rounded-full border-4 border-primary/10 p-1 mb-md overflow-hidden bg-white">
+<img alt="Professional Technician" class="w-full h-full object-cover rounded-full" src="https://lh3.googleusercontent.com/aida/AP1WRLvz2RwWUq4OaE40cK6F19RQSRwD3YxX9OdpAFtEEV8KzKSO66y6c79zKoBjkttE5VfTIkVufyVdRfO4WSUhS4JamvUx0zwNYs-cMh3KfSPzpLeAA_srE0sF9YPOCbMI9hoXVaxdaIxtFZqqzhnJgbLq8-Um24jg8be9tgGovI5WsVV7fZJqGayQK4m1lQ8qVwLPgl3u0wQRGXzcQ-EKakPKd3zZxAOF4CNVZg5A9QD5VYEdJSE4rS3XEHA"/>
+</div>
+<div class="absolute bottom-4 right-1 w-5 h-5 bg-green-500 border-4 border-surface rounded-full"></div>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary mb-xs">Tech Specialist</h3>
+<p class="font-body-sm text-body-sm text-secondary">Service ID: #8821</p>
+<div class="mt-lg bg-surface-container-low px-md py-md rounded-xl w-full border border-outline-variant/20">
+<div class="flex justify-between items-center mb-sm">
+<span class="text-on-surface-variant font-label-bold text-caption uppercase">Session Time</span>
+<span class="text-primary font-bold text-body-md" id="timer">14:52</span>
+</div>
+<div class="w-full bg-outline-variant/20 h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[65%] rounded-full transition-all duration-1000" id="progress-bar"></div>
+</div>
+</div>
+</div>
+<!-- Tabs/Navigation -->
+<div class="flex-grow flex flex-col p-md gap-sm overflow-y-auto">
+<button class="flex items-center gap-md p-md bg-primary text-on-primary rounded-lg shadow-md transition-all">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-bold text-label-bold">Participant List</span>
+<span class="ml-auto text-caption bg-white/20 px-2 rounded-full">2</span>
+</button>
+<button class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container transition-all rounded-lg">
+<span class="material-symbols-outlined">chat</span>
+<span class="font-label-bold text-label-bold">Chat</span>
+<span class="ml-auto bg-error text-on-error text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold">3</span>
+</button>
+<button class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container transition-all rounded-lg">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-bold text-label-bold">Files</span>
+</button>
+<button class="flex items-center gap-md p-md text-on-surface-variant hover:bg-surface-container transition-all rounded-lg">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-bold text-label-bold">Settings</span>
+</button>
+</div>
+<!-- Bottom CTA -->
+<div class="p-lg mt-auto">
+<button class="w-full bg-error text-on-error py-md rounded-xl font-bold shadow-lg shadow-error/20 hover:brightness-110 active:scale-[0.98] transition-all">
+                End Session
+            </button>
+</div>
+</aside>
+</main>
+<script>
+    // Mute and Video Toggles
+    const muteBtn = document.getElementById('mute-btn');
+    const videoBtn = document.getElementById('video-btn');
+
+    muteBtn.addEventListener('click', () => {
+        const icon = muteBtn.querySelector('.material-symbols-outlined');
+        const isMuted = icon.innerText === 'mic_off';
+        icon.innerText = isMuted ? 'mic' : 'mic_off';
+        muteBtn.classList.toggle('bg-error', !isMuted);
+        muteBtn.classList.toggle('text-on-error', !isMuted);
+    });
+
+    videoBtn.addEventListener('click', () => {
+        const icon = videoBtn.querySelector('.material-symbols-outlined');
+        const isOff = icon.innerText === 'videocam_off';
+        icon.innerText = isOff ? 'videocam' : 'videocam_off';
+        videoBtn.classList.toggle('bg-error', !isOff);
+        videoBtn.classList.toggle('text-on-error', !isOff);
+    });
+
+    // Dynamic timer
+    let timeLeft = 14*60 + 52;
+    const totalTime = 20*60;
+    const timerEl = document.getElementById('timer');
+    const progressEl = document.getElementById('progress-bar');
+
+    setInterval(() => {
+        if(timeLeft > 0) {
+            timeLeft--;
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            timerEl.innerText = `${mins}:${secs.toString().padStart(2, '0')}`;
+            
+            const progressPercent = (timeLeft / totalTime) * 100;
+            progressEl.style.width = `${progressPercent}%`;
+        }
+    }, 1000);
+
+    // Active speaker simulation
+    setInterval(() => {
+        const mainVideo = document.querySelector('img[alt*="specialist"]');
+        mainVideo.classList.toggle('active-speaker-ring');
+    }, 5000);
+</script>
+</body></html>

@@ -1,0 +1,50 @@
+{
+  "profesionalNombre": "Dr. Fernando Pérez",
+  "profesionalFoto": "https://lh3.googleusercontent.com/aida/AP1WRLvz2RwWUq4OaE40cK6F19RQSRwD3YxX9OdpAFtEEV8KzKSO66y6c79zKoBjkttE5VfTIkVufyVdRfO4WSUhS4JamvUx0zwNYs-cMh3KfSPzpLeAA_srE0sF9YPOCbMI9hoXVaxdaIxtFZqqzhnJgbLq8-Um24jg8be9tgGovI5WsVV7fZJqGayQK4m1lQ8qVwLPgl3u0wQRGXzcQ-EKakPKd3zZxAOF4CNVZg5A9QD5VYEdJSE4rS3XEHA",
+  "servicioId": "#9952",
+  "servicioNombre": "Asesoría Estética Dental",
+  "duracionSegundos": 1200,
+  "tiempoRestanteInicial": 892,
+  "livekitUrl": "wss://meet.livekit.example.com",
+  "livekitToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dummy_token_for_future_livekit_connection",
+  "roomName": "aesthetic-specialist-session-9952",
+  "participantes": [
+    {
+      "nombre": "Dr. Fernando Pérez",
+      "rol": "Especialista",
+      "foto": "https://lh3.googleusercontent.com/aida/AP1WRLvz2RwWUq4OaE40cK6F19RQSRwD3YxX9OdpAFtEEV8KzKSO66y6c79zKoBjkttE5VfTIkVufyVdRfO4WSUhS4JamvUx0zwNYs-cMh3KfSPzpLeAA_srE0sF9YPOCbMI9hoXVaxdaIxtFZqqzhnJgbLq8-Um24jg8be9tgGovI5WsVV7fZJqGayQK4m1lQ8qVwLPgl3u0wQRGXzcQ-EKakPKd3zZxAOF4CNVZg5A9QD5VYEdJSE4rS3XEHA"
+    },
+    {
+      "nombre": "Tú",
+      "rol": "Paciente",
+      "foto": "https://lh3.googleusercontent.com/aida-public/AB6AXuCl28HLXCwxp75ZZFih0TVQNhE-2AWu46F_vgVwb_GdOBBBC0p7S3bp8pl9xq3AJuu81ddH8JkVlh0xucx7AcY6m7V1iTbWVuHZ_emOvL4LjMijsBcqLQcbSIrnK1rrm7Wsudw2jvlArJSYUVx-aYI5muyQWcSAps38YCqf9tEWsfPMFfCvN4zIoENc9O37UwbYiKeFwUn8t_H68MXgkDLFKWeMM9hruT8nSycdMiDWzKflegNB2y-hBGKQsphagRH6DymylxOjMCQx"
+    }
+  ],
+  "mensajes": [
+    {
+      "remitente": "Dr. Fernando Pérez",
+      "texto": "Hola, bienvenido a la sesión de hoy.",
+      "tiempo": "14:50"
+    },
+    {
+      "remitente": "Tú",
+      "texto": "Hola doctor, muchas gracias. Ya estoy listo.",
+      "tiempo": "14:51"
+    },
+    {
+      "remitente": "Dr. Fernando Pérez",
+      "texto": "¿Puedes ver mi pantalla correctamente?",
+      "tiempo": "14:52"
+    }
+  ],
+  "archivos": [
+    {
+      "nombre": "historial_clinico.pdf",
+      "tamano": "2.4 MB"
+    },
+    {
+      "nombre": "ficha_analisis.png",
+      "tamano": "1.2 MB"
+    }
+  ]
+}

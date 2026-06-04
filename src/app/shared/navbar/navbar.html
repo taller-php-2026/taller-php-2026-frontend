@@ -6,29 +6,21 @@
       <h1 class="font-display-lg text-display-lg text-primary tracking-tight">AgendaPro</h1>
     </a>
 
+
     <!-- Enlaces y Sección de Usuario -->
     <div class="flex items-center gap-md">
-      <!-- Navegación de Escritorio -->
-      <div class="hidden md:flex items-center gap-lg mr-lg">
-        <a routerLink="/" class="text-primary font-label-bold cursor-pointer transition-colors hover:bg-primary-container/10 px-md py-sm rounded-lg">Inicio</a>
-        
-        @if (authService.isAuthenticated()) {
-          <a class="text-on-surface-variant font-body-md cursor-pointer transition-colors hover:bg-primary-container/10 px-md py-sm rounded-lg">Agenda</a>
-          <a class="text-on-surface-variant font-body-md cursor-pointer transition-colors hover:bg-primary-container/10 px-md py-sm rounded-lg">Servicios</a>
-        }
-      </div>
 
       <!-- Control de Sesión -->
       @if (authService.isAuthenticated()) {
-        <div class="flex items-center gap-md">
+        <div class="flex items-center gap-md relative">
           <!-- Datos del usuario logueado -->
           <div class="hidden sm:flex flex-col text-right">
             <span class="font-label-bold text-sm text-on-surface">{{ authService.currentUser()?.name }}</span>
             <span class="text-xs text-on-surface-variant">{{ authService.currentUser()?.email }}</span>
           </div>
 
-          <!-- Avatar del perfil -->
-          <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden border border-outline-variant">
+          <!-- Avatar del perfil que actúa como trigger de la hamburguesa/dropdown -->
+          <div (click)="alternarDropdown()" class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden border border-outline-variant hover:border-primary transition-all cursor-pointer">
             @if (authService.currentUser()?.picture) {
               <img [src]="authService.currentUser()?.picture" alt="User Profile" class="w-full h-full object-cover">
             } @else {
@@ -36,10 +28,22 @@
             }
           </div>
 
-          <!-- Botón de Cerrar Sesión -->
-          <button (click)="logout()" class="flex items-center justify-center p-sm rounded-lg hover:bg-error-container/30 text-error active:scale-95 transition-all" title="Cerrar sesión">
-            <span class="material-symbols-outlined">logout</span>
-          </button>
+          <!-- Dropdown / Menú Hamburguesa -->
+          <div *ngIf="dropdownAbierto()" class="absolute right-0 top-12 w-56 bg-white border border-outline-variant/30 rounded-xl soft-shadow z-50 flex flex-col p-md gap-xs">
+            <div class="flex flex-col border-b border-outline-variant/20 pb-sm mb-xs">
+              <span class="font-label-bold text-sm text-on-surface truncate">{{ authService.currentUser()?.name }}</span>
+              <span class="text-xs text-on-surface-variant truncate">{{ authService.currentUser()?.email }}</span>
+            </div>
+            
+
+            <a [routerLink]="obtenerRutaConfiguracion()" (click)="cerrarDropdown()" class="flex items-center gap-sm p-sm rounded-lg hover:bg-primary-container/10 text-on-surface-variant text-sm font-label-bold">
+              <span class="material-symbols-outlined text-sm">settings</span> Configuración
+            </a>
+            
+            <button (click)="logout()" class="flex items-center gap-sm p-sm rounded-lg hover:bg-error-container/30 text-error text-sm font-label-bold text-left w-full mt-xs border-t border-outline-variant/20 pt-sm">
+              <span class="material-symbols-outlined text-sm">logout</span> Cerrar sesión
+            </button>
+          </div>
         </div>
       } @else {
         <!-- Botón para ir al Login si no está autenticado -->
@@ -47,6 +51,7 @@
           Iniciar Sesión
         </a>
       }
+
     </div>
   </div>
 </header>

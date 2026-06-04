@@ -1,0 +1,113 @@
+<main class="flex-grow flex items-center justify-center p-md md:p-lg">
+  <div class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-lg md:gap-xl">
+    <!-- Video Preview Column -->
+    <div class="lg:col-span-8 flex flex-col gap-md">
+      <div class="relative aspect-video bg-inverse-surface rounded-xl overflow-hidden soft-shadow border border-outline-variant/30">
+        <img 
+          *ngIf="!videoDesactivado()"
+          alt="Camera Preview" 
+          class="w-full h-full object-cover grayscale-[0.2]" 
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbbOoyKG0I2amA-oFkVkQBJTUXYCEk8wf4-yM69cUJ9kW7bCVoJjDg3adPoS8EHoKnCssWL9zB03GX3E-A0MzUbEAgWMLXCX80rF-Ul2-da16AlFbRXEB2Cb1zbi7zpyRTnI3m-knjL_yl82_XMQ0BXL1e0dzE1S68q0C2P-ACzNw6Jl61njklronTbDDd9NobRfvcSRnm0B6B34EkAm9ATuStpP0WkZHLPtHbS8aKZLnfKM-CcpemHQwWg8MZMdft9mTkYeT0OWBy"
+        >
+        <div *ngIf="videoDesactivado()" class="w-full h-full flex flex-col items-center justify-center text-white/50 bg-black">
+          <span class="material-symbols-outlined text-4xl mb-2">videocam_off</span>
+          <p class="text-sm">La cámara está desactivada</p>
+        </div>
+        <!-- Floating Control Bar Wrapper -->
+        <div class="absolute bottom-4 left-0 right-0 flex justify-center z-20">
+          <div class="flex items-center gap-md px-md py-sm bg-surface-container-lowest/95 backdrop-blur-md rounded-full soft-shadow border border-outline-variant/20">
+            <button 
+              (click)="alternarMicrofono()"
+              [ngClass]="microfonoSilenciado() ? 'text-error hover:bg-error-container' : 'text-secondary hover:bg-surface-container-highest'"
+              class="w-10 h-10 flex items-center justify-center rounded-full transition-colors"
+            >
+              <span class="material-symbols-outlined">{{ microfonoSilenciado() ? 'mic_off' : 'mic' }}</span>
+            </button>
+            <button 
+              (click)="alternarVideo()"
+              [ngClass]="videoDesactivado() ? 'text-error hover:bg-error-container' : 'text-secondary hover:bg-surface-container-highest'"
+              class="w-10 h-10 flex items-center justify-center rounded-full transition-colors"
+            >
+              <span class="material-symbols-outlined">{{ videoDesactivado() ? 'videocam_off' : 'videocam' }}</span>
+            </button>
+            <div class="w-px h-6 bg-outline-variant/50 mx-xs"></div>
+            <button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-highest transition-colors text-secondary">
+              <span class="material-symbols-outlined">settings</span>
+            </button>
+          </div>
+        </div>
+
+
+        <!-- Overlay Label -->
+        <div class="absolute top-4 left-4 bg-on-background/60 text-white px-md py-unit rounded-lg text-caption backdrop-blur-sm">
+          Previsualización de Cámara
+        </div>
+      </div>
+    </div>
+
+    <!-- Join Column -->
+    <div class="lg:col-span-4 flex flex-col gap-lg">
+      <div class="bg-surface-container-lowest p-lg rounded-xl soft-shadow border border-outline-variant/20 flex flex-col gap-lg">
+        <!-- Professional Details -->
+        <div class="flex items-center gap-md">
+          <div class="w-14 h-14 rounded-xl overflow-hidden border-2 border-primary-container/20 flex-shrink-0">
+            <img 
+              alt="Professional profile" 
+              class="w-full h-full object-cover" 
+              [src]="profesionalFoto() || 'https://lh3.googleusercontent.com/aida-public/AB6AXuDxb6pHCGWjXLQbnKAbenNkbI2DWWylyG0y2I2_CAHQ086cDP2YwpEzaztXuakYIZSn3gU2q9A5czYJeHIochXqlJW7TJYvFAGXX10fglWSfu27boe5U6BBSLLrCc_lLrVKHnACH3IjV9QM_Yign9afg47AEvkt23PxCCcJSGtDT_150-1mnyFmP5puoVYqmE_7RKTOcflkc6F0uj41ikG06mdYtTKpkZPuzGivFrA2if5YZOW4DcDqwU6KO2BwWKkyHsnm1fQv417M'"
+            >
+          </div>
+          <div class="flex flex-col min-w-0">
+            <h2 class="font-title-sm text-title-sm text-on-surface truncate">{{ profesionalNombre() }}</h2>
+            <span class="font-body-sm text-body-sm text-secondary truncate">{{ servicioNombre() }}</span>
+          </div>
+        </div>
+        <!-- Device Settings -->
+        <div class="flex flex-col gap-md">
+          <div class="flex flex-col gap-xs">
+            <label class="font-label-bold text-label-bold text-secondary">Cámara</label>
+            <div class="relative">
+              <select [(ngModel)]="camaraSeleccionada" class="w-full bg-surface border border-outline-variant rounded-lg px-md py-sm appearance-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-body-md transition-all">
+                <option *ngFor="let cam of camaras()" [value]="cam">{{ cam }}</option>
+              </select>
+              <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+            </div>
+          </div>
+          <div class="flex flex-col gap-xs">
+            <label class="font-label-bold text-label-bold text-secondary">Micrófono</label>
+            <div class="relative">
+              <select [(ngModel)]="microfonoSeleccionado" class="w-full bg-surface border border-outline-variant rounded-lg px-md py-sm appearance-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-body-md transition-all">
+                <option *ngFor="let mic of microfonos()" [value]="mic">{{ mic }}</option>
+              </select>
+              <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+            </div>
+          </div>
+          <div class="flex flex-col gap-xs">
+            <label class="font-label-bold text-label-bold text-secondary">Altavoces</label>
+            <div class="relative">
+              <select [(ngModel)]="altavozSeleccionado" class="w-full bg-surface border border-outline-variant rounded-lg px-md py-sm appearance-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-body-md transition-all">
+                <option *ngFor="let spk of altavoces()" [value]="spk">{{ spk }}</option>
+              </select>
+              <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+            </div>
+          </div>
+        </div>
+        <!-- Join Button -->
+        <button (click)="unirseLlamada()" class="w-full bg-primary text-white font-title-sm py-md rounded-lg soft-shadow hover:brightness-110 transition-all active:scale-[0.98] mt-md">
+          Unirse a la Llamada
+        </button>
+        <!-- Status Text -->
+        <p class="text-caption text-secondary text-center">
+          La sesión comenzará puntualmente
+        </p>
+      </div>
+      <!-- Tips/Info Card -->
+      <div class="bg-surface-container-low p-md rounded-lg border border-outline-variant/20">
+        <div class="flex gap-sm">
+          <span class="material-symbols-outlined text-primary">info</span>
+          <p class="text-caption text-on-surface-variant">Asegúrate de tener una conexión estable y estar en un lugar con buena iluminación para tu consulta.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
