@@ -1,0 +1,206 @@
+<header class="flex justify-between items-center px-lg py-md w-full sticky top-0 z-40 bg-surface-container-lowest shadow-sm">
+  <div class="flex items-center gap-md">
+    <button (click)="goBack()" class="flex items-center justify-center p-xs rounded-full hover:bg-surface-container-low transition-colors text-primary border border-transparent active:scale-95">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </button>
+    <h1 class="font-headline-md text-headline-md text-primary">Añadir Nuevo Paquete</h1>
+  </div>
+  <div class="w-10"></div>
+</header>
+
+<main class="px-container-padding py-lg max-w-lg mx-auto pb-32">
+  <!-- Success/Error Feedback -->
+  @if (successMsg()) {
+    <div class="p-sm bg-green-50 text-green-700 rounded-lg text-body-sm text-center border border-green-200 mb-md">
+      {{ successMsg() }}
+    </div>
+  }
+  @if (errorMsg()) {
+    <div class="p-sm bg-error-container text-on-error-container rounded-lg text-body-sm text-center border border-error/20 mb-md">
+      {{ errorMsg() }}
+    </div>
+  }
+
+  <!-- Form Card -->
+  <div class="bg-surface-container-lowest rounded-2xl soft-shadow p-md space-y-lg border border-[#f1f5f9] shadow-xl">
+    
+    <!-- Package Image Uploader -->
+    <div class="space-y-sm">
+      <label class="font-label-bold text-label-bold text-on-surface-variant">Imagen del Paquete</label>
+      <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" class="hidden" />
+      
+      @if (imagePreview()) {
+        <div (click)="fileInput.click()" class="relative w-full h-40 rounded-xl overflow-hidden cursor-pointer hover:opacity-90 transition-all border border-outline-variant/30">
+          <img [src]="imagePreview()" alt="Package Image Preview" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-black/30 flex items-center justify-center gap-2 text-white opacity-0 hover:opacity-100 transition-opacity">
+            <span class="material-symbols-outlined">add_a_photo</span>
+            <span class="text-caption font-semibold">Cambiar foto</span>
+          </div>
+        </div>
+      } @else {
+        <div (click)="fileInput.click()" class="w-full h-40 rounded-xl border-2 border-dashed border-outline-variant bg-surface flex flex-col items-center justify-center gap-sm cursor-pointer hover:bg-surface-container-low transition-colors">
+          <span class="material-symbols-outlined text-4xl text-outline">add_a_photo</span>
+          <span class="text-caption text-outline">Subir foto del paquete</span>
+        </div>
+      }
+    </div>
+
+    <form (submit)="onSubmit(); $event.preventDefault()" class="space-y-lg" novalidate>
+      
+      <!-- Package Name -->
+      <div class="space-y-xs">
+        <label class="font-label-bold text-label-bold text-on-surface-variant" for="pkg-name">Nombre del Paquete</label>
+        <input
+          class="w-full bg-surface border border-[#e2e8f0] rounded-lg px-md py-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-body-md"
+          id="pkg-name"
+          placeholder="Ej. Pack 5 Cortes + Tratamiento"
+          type="text"
+          name="name"
+          [(ngModel)]="name"
+        />
+      </div>
+
+      <!-- Description Textarea -->
+      <div class="space-y-xs">
+        <label class="font-label-bold text-label-bold text-on-surface-variant" for="pkg-desc">Descripción</label>
+        <textarea
+          class="w-full bg-surface border border-[#e2e8f0] rounded-lg px-md py-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-body-md resize-none"
+          id="pkg-desc"
+          placeholder="Describe los detalles del paquete..."
+          rows="3"
+          name="description"
+          [(ngModel)]="description"
+        ></textarea>
+      </div>
+
+      <!-- Price & Total Sessions Grid -->
+      <div class="grid grid-cols-2 gap-md">
+        <!-- Price Input -->
+        <div class="space-y-xs">
+          <label class="font-label-bold text-label-bold text-on-surface-variant" for="pkg-price">Precio Total</label>
+          <div class="relative flex items-center">
+            <span class="absolute left-md text-on-surface-variant font-label-bold pointer-events-none">$</span>
+            <input
+              class="w-full h-11 bg-surface border border-[#e2e8f0] rounded-lg pl-xl pr-md focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-body-md"
+              id="pkg-price"
+              placeholder="0.00"
+              step="0.01"
+              type="number"
+              name="price"
+              [(ngModel)]="price"
+            />
+          </div>
+        </div>
+
+        <!-- Total Sessions -->
+        <div class="space-y-xs">
+          <label class="font-label-bold text-label-bold text-on-surface-variant" for="pkg-sessions">Sesiones Totales</label>
+          <input
+            class="w-full h-11 bg-surface border border-[#e2e8f0] rounded-lg px-md focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-body-md"
+            id="pkg-sessions"
+            placeholder="Ej. 5"
+            type="number"
+            name="totalSesiones"
+            [(ngModel)]="totalSesiones"
+          />
+        </div>
+      </div>
+
+      <!-- Date Range Grid -->
+      <div class="grid grid-cols-2 gap-md">
+        <div class="space-y-xs">
+          <label class="font-label-bold text-label-bold text-on-surface-variant" for="pkg-start">Fecha Inicio</label>
+          <input
+            class="w-full h-11 bg-surface border border-[#e2e8f0] rounded-lg px-md focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-body-md"
+            id="pkg-start"
+            type="date"
+            name="fechaInicio"
+            [(ngModel)]="fechaInicio"
+          />
+        </div>
+        <div class="space-y-xs">
+          <label class="font-label-bold text-label-bold text-on-surface-variant" for="pkg-end">Fecha Fin</label>
+          <input
+            class="w-full h-11 bg-surface border border-[#e2e8f0] rounded-lg px-md focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-body-md"
+            id="pkg-end"
+            type="date"
+            name="fechaFin"
+            [(ngModel)]="fechaFin"
+          />
+        </div>
+      </div>
+
+      <!-- Select Services (List checklist) -->
+      <div class="space-y-xs">
+        <label class="font-label-bold text-label-bold text-on-surface-variant">Servicios Incluidos</label>
+        <div class="flex flex-col gap-sm border border-[#e2e8f0] rounded-lg p-sm bg-surface max-h-40 overflow-y-auto">
+          @for (s of servicios(); track s.idServicio) {
+            <label class="flex items-center gap-sm cursor-pointer select-none text-body-md text-on-surface">
+              <input
+                type="checkbox"
+                [checked]="selectedServicios().includes(s.idServicio)"
+                (change)="toggleServicio(s.idServicio)"
+                class="w-4 h-4 rounded text-primary border-outline-variant focus:ring-primary/20"
+              />
+              <div class="flex justify-between w-full">
+                <span class="font-bold text-sm">{{ s.nombre }}</span>
+                <span class="text-xs text-outline">${{ s.precio }}</span>
+              </div>
+            </label>
+          } @empty {
+            <p class="text-caption text-outline">Cargando servicios disponibles...</p>
+          }
+        </div>
+      </div>
+
+      <!-- Cycles Selection (Checklist) -->
+      <div class="space-y-xs">
+        <label class="font-label-bold text-label-bold text-on-surface-variant">Ciclos de Agenda asociados</label>
+        <div class="flex flex-col gap-sm border border-[#e2e8f0] rounded-lg p-sm bg-surface">
+          @for (c of ciclos(); track c.id) {
+            <label class="flex items-center gap-sm cursor-pointer select-none text-body-md text-on-surface">
+              <input
+                type="checkbox"
+                [checked]="selectedCiclos().includes(c.id)"
+                (change)="toggleCiclo(c.id)"
+                class="w-4 h-4 rounded text-primary border-outline-variant focus:ring-primary/20"
+              />
+              <div>
+                <span class="font-bold">{{ c.nombre }}</span>
+                <span class="text-xs text-outline ml-sm">({{ c.diasSemana.join(', ') }})</span>
+              </div>
+            </label>
+          } @empty {
+            <p class="text-caption text-outline">No hay ciclos de agenda disponibles.</p>
+          }
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="mt-xl flex flex-col gap-md pt-sm">
+        <button
+          type="submit"
+          style="background: linear-gradient(180deg, #0e9488 0%, #005049 100%) !important; color: white !important;"
+          class="w-full py-md rounded-xl text-on-primary font-label-bold text-label-bold soft-shadow transition-all active:scale-95 h-12 flex items-center justify-center disabled:opacity-50"
+          [disabled]="loading()"
+        >
+          @if (loading()) {
+            <span class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full mr-2"></span>
+            Creando Paquete...
+          } @else {
+            Crear Paquete
+          }
+        </button>
+        
+        <button
+          type="button"
+          (click)="goBack()"
+          class="w-full py-md rounded-xl bg-surface border border-[#e2e8f0] text-on-surface-variant font-label-bold text-label-bold hover:bg-surface-container-low transition-all active:scale-95 h-12 flex items-center justify-center"
+        >
+          Cancelar
+        </button>
+      </div>
+
+    </form>
+  </div>
+</main>

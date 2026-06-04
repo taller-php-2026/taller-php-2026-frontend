@@ -1,0 +1,67 @@
+[
+  {
+    "id": 1,
+    "empresaNombre": "Studio de Belleza Élite",
+    "empresaLogo": "https://lh3.googleusercontent.com/aida-public/AB6AXuD97PJzIWNi9EnOucJQgvSB-vEW8JEqCdo5JdEixMHwvliHUj4dzJMyY9Ol2T1OWftiIUDPpf7DphdorvLes-lBy0I6Cu_lm5ayJJ7LMgAeNl2S2G8PzggYDOrMZn9Un6eIbXaUOeIU3xiJU2JU2vK9sv1QdeeB5OrcyDu6n4UzzB0PTepAI_YZGrwrzKBvMtCtXNvYuGjUbmS1uKMFGj-BTNZXNb5i1zOEclwB5q97AGgyHx8yxCqw3w7HDcmkNpWWLCJb994Ms5z2",
+    "servicioNombre": "Corte de Cabello Premium",
+    "profesionalNombre": "Carlos Méndez",
+    "fecha": "15 de Octubre, 2024",
+    "hora": "10:30 AM",
+    "estado": "CONFIRMADA",
+    "tipo": "proximas",
+    "modalidad": "presencial",
+    "duracionMinutos": 45
+  },
+  {
+    "id": 2,
+    "empresaNombre": "Studio de Belleza Élite",
+    "empresaLogo": "https://lh3.googleusercontent.com/aida-public/AB6AXuD97PJzIWNi9EnOucJQgvSB-vEW8JEqCdo5JdEixMHwvliHUj4dzJMyY9Ol2T1OWftiIUDPpf7DphdorvLes-lBy0I6Cu_lm5ayJJ7LMgAeNl2S2G8PzggYDOrMZn9Un6eIbXaUOeIU3xiJU2JU2vK9sv1QdeeB5OrcyDu6n4UzzB0PTepAI_YZGrwrzKBvMtCtXNvYuGjUbmS1uKMFGj-BTNZXNb5i1zOEclwB5q97AGgyHx8yxCqw3w7HDcmkNpWWLCJb994Ms5z2",
+    "servicioNombre": "Consultoría Estilismo Online",
+    "profesionalNombre": "Carlos Méndez",
+    "fecha": "18 de Octubre, 2024",
+    "hora": "04:15 PM",
+    "estado": "EN_CURSO",
+    "tipo": "proximas",
+    "modalidad": "online",
+    "duracionMinutos": 30
+  },
+  {
+    "id": 3,
+    "empresaNombre": "Spa Sentidos",
+    "empresaLogo": "https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=150",
+    "servicioNombre": "Masaje Descontracturante",
+    "profesionalNombre": "Ana García",
+    "fecha": "05 de Septiembre, 2024",
+    "hora": "11:00 AM",
+    "estado": "FINALIZADA",
+    "tipo": "anteriores",
+    "modalidad": "presencial",
+    "duracionMinutos": 60
+  },
+  {
+    "id": 4,
+    "empresaNombre": "Clínica Dental DentalCare",
+    "empresaLogo": "https://lh3.googleusercontent.com/aida-public/AB6AXuAyDA10FGs5tZcpxl3GqbV6dDKVyuiR9-8E89uaIzJXHvIO1Gp3hs0VpJBLKORws7nNwEqwJJ0J0tlyznUYxQ6asFowWaIeoekII4d3lFVrpxRgxq8E5o2q9Z_O7mc78owTgZdVmunskGU4zShHqjf27SgqHk87NCX7QvMuMPSLY9lC3fB_jxav7jPeDBd_ytMlgNgTZfdxTsedyB57zo5LNdbT47evwvH-st_ufCtt-O4jUBBdL-giVlHKlM1qRRhtMmv8xz7VQUg_",
+    "servicioNombre": "Limpieza Dental Profunda",
+    "profesionalNombre": "Dra. Sofía Rivas",
+    "fecha": "20 de Octubre, 2024",
+    "hora": "09:00 AM",
+    "estado": "PENDIENTE",
+    "tipo": "proximas",
+    "modalidad": "presencial",
+    "duracionMinutos": 45
+  },
+  {
+    "id": 5,
+    "empresaNombre": "Studio de Belleza Élite",
+    "empresaLogo": "https://lh3.googleusercontent.com/aida-public/AB6AXuD97PJzIWNi9EnOucJQgvSB-vEW8JEqCdo5JdEixMHwvliHUj4dzJMyY9Ol2T1OWftiIUDPpf7DphdorvLes-lBy0I6Cu_lm5ayJJ7LMgAeNl2S2G8PzggYDOrMZn9Un6eIbXaUOeIU3xiJU2JU2vK9sv1QdeeB5OrcyDu6n4UzzB0PTepAI_YZGrwrzKBvMtCtXNvYuGjUbmS1uKMFGj-BTNZXNb5i1zOEclwB5q97AGgyHx8yxCqw3w7HDcmkNpWWLCJb994Ms5z2",
+    "servicioNombre": "Afeitado y Delineado de Barba",
+    "profesionalNombre": "Carlos Méndez",
+    "fecha": "10 de Octubre, 2024",
+    "hora": "02:00 PM",
+    "estado": "CANCELADA",
+    "tipo": "canceladas",
+    "modalidad": "presencial",
+    "duracionMinutos": 30
+  }
+]

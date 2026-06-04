@@ -1,9 +1,25 @@
-{
-  "diasSemana": ["Lun", "Mié", "Jue", "Vie"],
-  "bloquesHorario": [
-    { "inicio": "09:00", "fin": "14:00" },
-    { "inicio": "16:00", "fin": "20:00" }
-  ],
-  "tieneDescanso": true,
-  "tiempoDescansoMinutos": 5
-}
+[
+  {
+    "id": 1,
+    "nombre": "Horario Principal",
+    "diasSemana": ["Lun", "Mié", "Jue", "Vie"],
+    "bloquesHorario": [
+      { "inicio": "09:00", "fin": "14:00" },
+      { "inicio": "16:00", "fin": "20:00" }
+    ],
+    "tieneDescanso": true,
+    "tiempoDescansoMinutos": 5,
+    "serviciosIds": [1, 2, 3, 6]
+  },
+  {
+    "id": 2,
+    "nombre": "Sábados Cortos",
+    "diasSemana": ["Sáb"],
+    "bloquesHorario": [
+      { "inicio": "08:00", "fin": "13:00" }
+    ],
+    "tieneDescanso": false,
+    "tiempoDescansoMinutos": 0,
+    "serviciosIds": [4, 5]
+  }
+]

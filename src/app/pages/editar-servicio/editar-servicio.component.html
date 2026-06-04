@@ -29,15 +29,25 @@
       <label class="font-label-bold text-label-bold text-on-surface-variant block w-full text-left">Imagen del Servicio</label>
       <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" class="hidden" />
       
-      <div class="relative group">
-        <div class="w-32 h-32 rounded-xl overflow-hidden border-4 border-surface-container-lowest soft-shadow">
-          <img [src]="imagePreview() || 'https://lh3.googleusercontent.com/aida-public/AB6AXuCEspn20-vaUjouNvQfQDskzF3tBzSvh7u5f0woZSjfJLp9fwt8_P0ichHg2FPxOlrzQhoxjiXGDLD68fCrDEiNovNdAH_18Z7IGE7de3U3UEKFjKMh9-P5ko-mEF4DxeQpqPXGnjulAq1Ffl2166G-0x9mWDrT6QJ348cxhenjh6_pUcjy9FzXO3tCjAyYjK5W2DITfdKI6tY1BCtHXIm-WfKY_e0hEo0w_wyu9a6tE4GyrhqzSulTrKVL-MB7lkGuoE72BFbQujbi'" alt="Service Photo" class="w-full h-full object-cover">
+      @if (imagePreview()) {
+        <div class="relative group">
+          <div class="w-32 h-32 rounded-xl overflow-hidden border-4 border-surface-container-lowest soft-shadow">
+            <img [src]="imagePreview()" alt="Service Photo" class="w-full h-full object-cover">
+          </div>
+          <button type="button" (click)="fileInput.click()" class="absolute bottom-0 right-0 bg-primary text-on-primary w-10 h-10 rounded-full flex items-center justify-center soft-shadow border-2 border-surface transition-transform active:scale-95">
+            <span class="material-symbols-outlined text-md">photo_camera</span>
+          </button>
+          <button type="button" (click)="quitarFoto()" class="absolute top-0 right-0 bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center soft-shadow border border-surface hover:bg-red-700 active:scale-95 transition-all -translate-y-1 translate-x-1">
+            <span class="material-symbols-outlined text-[14px]">close</span>
+          </button>
         </div>
-        <button type="button" (click)="fileInput.click()" class="absolute bottom-0 right-0 bg-primary text-on-primary w-10 h-10 rounded-full flex items-center justify-center soft-shadow border-2 border-surface transition-transform active:scale-95">
-          <span class="material-symbols-outlined text-md">photo_camera</span>
-        </button>
-      </div>
-      <p (click)="fileInput.click()" class="mt-4 font-label-bold text-label-bold text-primary cursor-pointer hover:underline">Cambiar foto</p>
+        <p (click)="fileInput.click()" class="mt-4 font-label-bold text-label-bold text-primary cursor-pointer hover:underline">Cambiar foto</p>
+      } @else {
+        <div (click)="fileInput.click()" class="w-full h-40 rounded-xl border-2 border-dashed border-outline-variant bg-surface flex flex-col items-center justify-center gap-sm cursor-pointer hover:bg-surface-container-low transition-colors">
+          <span class="material-symbols-outlined text-4xl text-outline">add_a_photo</span>
+          <span class="text-caption text-outline">Subir foto del servicio</span>
+        </div>
+      }
     </div>
 
     <form (submit)="onSubmit(); $event.preventDefault()" class="space-y-lg" novalidate>
@@ -83,6 +93,36 @@
               </button>
             </div>
           }
+        </div>
+      </div>
+
+      <!-- Modalidad Selector -->
+      <div class="space-y-xs">
+        <label class="font-label-bold text-label-bold text-on-surface-variant">Modalidad de Servicio</label>
+        <div class="grid grid-cols-2 gap-md">
+          <label class="flex items-center gap-sm cursor-pointer p-md border border-[#e2e8f0] rounded-lg bg-surface">
+            <input type="radio" name="modalidad" value="presencial" [checked]="modalidad() === 'presencial'" (change)="modalidad.set('presencial')" class="w-4 h-4 text-primary focus:ring-primary/20" />
+            <span class="font-bold text-sm text-on-surface">Presencial</span>
+          </label>
+          <label class="flex items-center gap-sm cursor-pointer p-md border border-[#e2e8f0] rounded-lg bg-surface">
+            <input type="radio" name="modalidad" value="online" [checked]="modalidad() === 'online'" (change)="modalidad.set('online')" class="w-4 h-4 text-primary focus:ring-primary/20" />
+            <span class="font-bold text-sm text-on-surface">Videollamada (Online)</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Presencial Fields (Ubicacion) -->
+      <div *ngIf="modalidad() === 'presencial'" class="space-y-md p-md bg-surface-container-low rounded-xl border border-outline-variant/10">
+        <h4 class="font-label-bold text-sm text-on-surface">Ubicación del Servicio</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-sm">
+          <div class="space-y-xs">
+            <label class="text-xs font-label-bold text-on-surface-variant" for="direccion">Dirección</label>
+            <input type="text" id="direccion" name="direccion" [(ngModel)]="direccion" class="w-full bg-surface border border-[#e2e8f0] rounded-lg px-md py-sm focus:border-primary outline-none text-sm" placeholder="Ej. Av. 18 de Julio 1234" />
+          </div>
+          <div class="space-y-xs">
+            <label class="text-xs font-label-bold text-on-surface-variant" for="ciudad">Ciudad</label>
+            <input type="text" id="ciudad" name="ciudad" [(ngModel)]="ciudad" class="w-full bg-surface border border-[#e2e8f0] rounded-lg px-md py-sm focus:border-primary outline-none text-sm" placeholder="Ej. Montevideo" />
+          </div>
         </div>
       </div>
 
@@ -160,6 +200,29 @@
         >
           <div class="w-4 h-4 bg-white rounded-full shadow-sm"></div>
         </button>
+      </div>
+
+      <!-- Cycles Association -->
+      <div class="space-y-xs">
+        <label class="font-label-bold text-label-bold text-on-surface-variant">Ciclos de Agenda asociados</label>
+        <div class="flex flex-col gap-sm border border-[#e2e8f0] rounded-lg p-sm bg-surface">
+          @for (c of ciclos(); track c.id) {
+            <label class="flex items-center gap-sm cursor-pointer select-none text-body-md text-on-surface">
+              <input
+                type="checkbox"
+                [checked]="selectedCiclos().includes(c.id)"
+                (change)="toggleCiclo(c.id)"
+                class="w-4 h-4 rounded text-primary border-outline-variant focus:ring-primary/20"
+              />
+              <div>
+                <span class="font-bold">{{ c.nombre }}</span>
+                <span class="text-xs text-outline ml-sm">({{ c.diasSemana.join(', ') }})</span>
+              </div>
+            </label>
+          } @empty {
+            <p class="text-caption text-outline">No hay ciclos de agenda disponibles.</p>
+          }
+        </div>
       </div>
 
       <!-- Action Buttons -->

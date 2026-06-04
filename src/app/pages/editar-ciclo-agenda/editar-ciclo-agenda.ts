@@ -1,5 +1,5 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -19,6 +19,7 @@ interface HorarioBloque {
 export class EditarCicloAgenda implements OnInit {
   private enrutador = inject(Router);
   private clienteHttp = inject(HttpClient);
+  private rutaActiva = inject(ActivatedRoute);
 
   // Dias de la semana
   diasSemana = [
@@ -46,10 +47,12 @@ export class EditarCicloAgenda implements OnInit {
     this.cargarDatosAgenda();
   }
 
-  // Cargar datos de la agenda desde mock
+  // Obtener datos agenda.
   cargarDatosAgenda(): void {
-    this.clienteHttp.get<any>('/mock-ciclo-agenda.json').subscribe({
-      next: (datos) => {
+    const id = Number(this.rutaActiva.snapshot.queryParams['id'] || 1);
+    this.clienteHttp.get<any[]>('/mock-ciclo-agenda.json').subscribe({
+      next: (lista) => {
+        const datos = lista?.find((c) => c.id === id) || lista?.[0];
         if (datos) {
           // Marcar dias activos
           this.diasSemana.forEach((dia) => {

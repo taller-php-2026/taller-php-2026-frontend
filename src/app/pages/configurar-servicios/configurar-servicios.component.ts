@@ -24,6 +24,11 @@ export class ConfigurarServiciosComponent {
     this.router.navigate(['/anadir-servicio']);
   }
 
+  // Redirigir a crear paquete.
+  goToAddPaquete() {
+    this.router.navigate(['/anadir-paquete']);
+  }
+
   goToEdit(id: number) {
     this.router.navigate(['/editar-servicio'], { queryParams: { id } });
   }

@@ -53,5 +53,19 @@
     "activo": 1,
     "modalidad": "online",
     "fotoUrl": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=60"
+  },
+  {
+    "idServicio": 6,
+    "idProfesional": 2,
+    "nombre": "Paquete Barbería Completa",
+    "descripcion": "Paquete especial de 3 sesiones de Corte de Cabello Premium y 2 afeitados de barba.",
+    "precio": 85.00,
+    "duracionMinutos": 180,
+    "activo": 1,
+    "modalidad": "presencial",
+    "fotoUrl": "",
+    "esPaquete": true,
+    "totalSesiones": 5,
+    "serviciosIds": [1, 2]
   }
 ]

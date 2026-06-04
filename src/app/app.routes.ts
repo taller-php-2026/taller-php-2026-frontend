@@ -47,6 +47,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'anadir-paquete',
+        loadComponent: () =>
+          import('./pages/anadir-paquete/anadir-paquete').then(
+            (m) => m.AnadirPaqueteComponent,
+          ),
+      },
+      {
         path: 'editar-servicio',
         loadComponent: () =>
           import('./pages/editar-servicio/editar-servicio.component').then(
@@ -87,6 +94,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'configurar-ciclos',
+        loadComponent: () =>
+          import('./pages/configurar-ciclos/configurar-ciclos').then(
+            (m) => m.ConfigurarCiclosComponent,
+          ),
+      },
+      {
         path: 'videollamada',
         loadComponent: () =>
           import('./pages/videollamada/videollamada').then(
@@ -98,6 +112,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/pre-videollamada/pre-videollamada').then(
             (m) => m.PreVideollamada,
+          ),
+      },
+      {
+        path: 'reservas',
+        loadComponent: () =>
+          import('./pages/reservas/reservas').then(
+            (m) => m.Reservas,
           ),
       },
       {

@@ -1,16 +1,19 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-anadir-servicio',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './anadir-servicio.component.html',
   styleUrl: './anadir-servicio.component.css'
 })
-export class AnadirServicioComponent {
+export class AnadirServicioComponent implements OnInit {
   private router = inject(Router);
+  private http = inject(HttpClient);
 
   name = signal('');
   hours = signal<number | null>(null);
@@ -18,6 +21,20 @@ export class AnadirServicioComponent {
   price = signal<number | null>(null);
   description = signal('');
   imagePreview = signal<string | null>(null);
+
+  // Modalidad de servicio.
+  modalidad = signal<'presencial' | 'online'>('presencial');
+  direccion = signal('');
+  ciudad = signal('');
+  proveedor = signal('');
+  urlAcceso = signal('');
+  nombreSala = signal('');
+
+  // Listar ciclos.
+  ciclos = signal<any[]>([]);
+
+  // Listar ciclos seleccionados.
+  selectedCiclos = signal<number[]>([]);
 
   availableCategories = [
     'Peluquería',
@@ -33,6 +50,20 @@ export class AnadirServicioComponent {
   loading = signal(false);
   successMsg = signal('');
   errorMsg = signal('');
+
+  // Inicializar componente.
+  ngOnInit(): void {
+    this.http.get<any[]>('/mock-ciclo-agenda.json').subscribe((datos) => {
+      this.ciclos.set(datos || []);
+    });
+  }
+
+  // Cambiar selección de ciclo.
+  toggleCiclo(id: number): void {
+    this.selectedCiclos.update((lista) =>
+      lista.includes(id) ? lista.filter((c) => c !== id) : [...lista, id]
+    );
+  }
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -70,6 +101,13 @@ export class AnadirServicioComponent {
     this.imagePreview.set(null);
     this.selectedCategories.set([]);
     this.selectedCategoryDropdown = '';
+    this.selectedCiclos.set([]);
+    this.modalidad.set('presencial');
+    this.direccion.set('');
+    this.ciudad.set('');
+    this.proveedor.set('');
+    this.urlAcceso.set('');
+    this.nombreSala.set('');
   }
 
   onSubmit() {
@@ -83,6 +121,10 @@ export class AnadirServicioComponent {
     }
     if (this.price() === null || this.price()! <= 0) {
       this.errorMsg.set('El precio debe ser mayor a 0.');
+      return;
+    }
+    if (this.selectedCiclos().length === 0) {
+      this.errorMsg.set('Debes seleccionar al menos un ciclo de agenda.');
       return;
     }
 

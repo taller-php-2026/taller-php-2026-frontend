@@ -1,17 +1,18 @@
-import { Component, inject, signal, effect } from '@angular/core';
+import { Component, inject, signal, effect, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-editar-servicio',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './editar-servicio.component.html',
   styleUrl: './editar-servicio.component.css'
 })
-export class EditarServicioComponent {
+export class EditarServicioComponent implements OnInit {
   private router = inject(Router);
   private http = inject(HttpClient);
   private route = inject(ActivatedRoute);
@@ -26,6 +27,20 @@ export class EditarServicioComponent {
   description = signal('');
   imagePreview = signal<string | null>(null);
   isActive = signal(true);
+
+  // Modalidad de servicio.
+  modalidad = signal<'presencial' | 'online'>('presencial');
+  direccion = signal('');
+  ciudad = signal('');
+  proveedor = signal('');
+  urlAcceso = signal('');
+  nombreSala = signal('');
+
+  // Listar ciclos.
+  ciclos = signal<any[]>([]);
+
+  // Listar ciclos seleccionados.
+  selectedCiclos = signal<number[]>([]);
 
   availableCategories = [
     'Barbería',
@@ -43,6 +58,28 @@ export class EditarServicioComponent {
   successMsg = signal('');
   errorMsg = signal('');
 
+  // Inicializar componente.
+  ngOnInit(): void {
+    this.http.get<any[]>('/mock-ciclo-agenda.json').subscribe((datos) => {
+      this.ciclos.set(datos || []);
+      const idParam = this.route.snapshot.queryParamMap.get('id');
+      if (idParam) {
+        const idServ = +idParam;
+        const asociados = (datos || [])
+          .filter((c) => c.serviciosIds && c.serviciosIds.includes(idServ))
+          .map((c) => c.id);
+        this.selectedCiclos.set(asociados);
+      }
+    });
+  }
+
+  // Cambiar selección de ciclo.
+  toggleCiclo(id: number): void {
+    this.selectedCiclos.update((lista) =>
+      lista.includes(id) ? lista.filter((c) => c !== id) : [...lista, id]
+    );
+  }
+
   constructor() {
     // Sincronizar datos del servicio obtenido desde el mock
     effect(() => {
@@ -58,10 +95,17 @@ export class EditarServicioComponent {
         this.hours.set(hrs > 0 ? hrs : null);
         this.minutes.set(mins);
         
-        this.price.set(serv.precio);
+         this.price.set(serv.precio);
         this.description.set(serv.descripcion);
         this.imagePreview.set(serv.fotoUrl || null);
         this.isActive.set(serv.activo === 1);
+
+        this.modalidad.set(serv.modalidad || 'presencial');
+        this.direccion.set(serv.ubicacion?.direccion || '');
+        this.ciudad.set(serv.ubicacion?.ciudad || '');
+        this.proveedor.set(serv.videoSesion?.proveedor || '');
+        this.urlAcceso.set(serv.videoSesion?.urlAcceso || '');
+        this.nombreSala.set(serv.videoSesion?.nombreSala || '');
         
         // Categorías asociadas según el tipo
         if (serv.modalidad === 'online') {
@@ -96,6 +140,11 @@ export class EditarServicioComponent {
     this.selectedCategories.update(cats => cats.filter(c => c !== category));
   }
 
+  // Eliminar foto del servicio.
+  quitarFoto(): void {
+    this.imagePreview.set(null);
+  }
+
   toggleActive() {
     this.isActive.update(v => !v);
   }
@@ -115,6 +164,10 @@ export class EditarServicioComponent {
     }
     if (this.price() === null || this.price()! <= 0) {
       this.errorMsg.set('El precio debe ser mayor a 0.');
+      return;
+    }
+    if (this.selectedCiclos().length === 0) {
+      this.errorMsg.set('Debes seleccionar al menos un ciclo de agenda.');
       return;
     }
 

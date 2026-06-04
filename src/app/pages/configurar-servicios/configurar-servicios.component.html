@@ -15,10 +15,16 @@
         Administra tu catálogo de tratamientos, duraciones y precios.
       </p>
       <!-- Primary Action -->
-      <button (click)="goToAdd()" class="w-full bg-[#00685f] text-white py-3 px-6 rounded-lg flex items-center justify-center gap-2 shadow-md transition-all duration-200 active:scale-95 hover:bg-[#005a52] cursor-pointer font-bold">
-        <span class="material-symbols-outlined">add</span>
-        Añadir Nuevo Servicio
-      </button>
+      <div class="grid grid-cols-2 gap-sm">
+        <button (click)="goToAdd()" class="bg-[#00685f] text-white py-3 px-2 rounded-lg flex items-center justify-center gap-1 shadow-md transition-all duration-200 active:scale-95 hover:bg-[#005a52] cursor-pointer font-bold text-xs">
+          <span class="material-symbols-outlined text-[18px]">add</span>
+          Servicio
+        </button>
+        <button (click)="goToAddPaquete()" class="bg-teal-700 text-white py-3 px-2 rounded-lg flex items-center justify-center gap-1 shadow-md transition-all duration-200 active:scale-95 hover:bg-teal-800 cursor-pointer font-bold text-xs">
+          <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+          + Paquete
+        </button>
+      </div>
     </section>
 
     <!-- Services Grid -->
@@ -26,13 +32,11 @@
       @for (serv of servicios(); track serv.idServicio) {
         <div class="bg-slate-50 p-4 rounded-xl shadow-[0px_2px_8px_rgba(0,0,0,0.02)] hover:shadow-md transition-all duration-200 border border-slate-100 flex justify-between items-center group">
           <div class="flex gap-4 items-center">
-            <div class="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-white flex items-center justify-center border border-slate-100">
-              @if (serv.fotoUrl) {
+            @if (serv.fotoUrl) {
+              <div class="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-white flex items-center justify-center border border-slate-100">
                 <img [src]="serv.fotoUrl" alt="Servicio" class="w-full h-full object-cover">
-              } @else {
-                <span class="material-symbols-outlined text-slate-400">{{ getIcon(serv.nombre) }}</span>
-              }
-            </div>
+              </div>
+            }
             <div>
               <h3 class="font-bold text-slate-800 text-sm">{{ serv.nombre }}</h3>
               <div class="flex items-center gap-2 mt-1">
