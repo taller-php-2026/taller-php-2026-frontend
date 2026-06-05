@@ -10,31 +10,26 @@ import { BookingService } from 'app/services/BookingService';
   templateUrl: './select-professional.component.html',
   imports: [Layout, CompanyHero, ProfessionalCard],
 })
-
 export class SelectProfessional {
-  companyId: string | null = null;
   serviceId: string | null = null;
   selectedProfessional: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
-    private bookingService: BookingService,
     private router: Router,
   ) {}
 
   goToNextStep() {
-    this.router.navigate([`/empresa/${this.companyId}/seleccionar-horario`]);
+    this.router.navigate([`/servicio/${this.serviceId}/seleccionar-horario`]);
   }
 
   selectProfessional(professionalId: string) {
     this.selectedProfessional = professionalId;
-    this.bookingService.professionalId = professionalId;
   }
 
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
-      this.companyId = params.get('id');
+      this.serviceId = params.get('id');
     });
-    this.serviceId = this.bookingService.getServiceId();
   }
 }

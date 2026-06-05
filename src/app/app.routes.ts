@@ -49,9 +49,7 @@ export const routes: Routes = [
       {
         path: 'anadir-paquete',
         loadComponent: () =>
-          import('./pages/anadir-paquete/anadir-paquete').then(
-            (m) => m.AnadirPaqueteComponent,
-          ),
+          import('./pages/anadir-paquete/anadir-paquete').then((m) => m.AnadirPaqueteComponent),
       },
       {
         path: 'editar-servicio',
@@ -82,9 +80,7 @@ export const routes: Routes = [
       {
         path: 'crear-ciclo-agenda',
         loadComponent: () =>
-          import('./pages/crear-ciclo-agenda/crear-ciclo-agenda').then(
-            (m) => m.CrearCicloAgenda,
-          ),
+          import('./pages/crear-ciclo-agenda/crear-ciclo-agenda').then((m) => m.CrearCicloAgenda),
       },
       {
         path: 'editar-ciclo-agenda',
@@ -103,38 +99,26 @@ export const routes: Routes = [
       {
         path: 'videollamada',
         loadComponent: () =>
-          import('./pages/videollamada/videollamada').then(
-            (m) => m.Videollamada,
-          ),
+          import('./pages/videollamada/videollamada').then((m) => m.Videollamada),
       },
       {
         path: 'pre-videollamada',
         loadComponent: () =>
-          import('./pages/pre-videollamada/pre-videollamada').then(
-            (m) => m.PreVideollamada,
-          ),
+          import('./pages/pre-videollamada/pre-videollamada').then((m) => m.PreVideollamada),
       },
       {
         path: 'reservas',
-        loadComponent: () =>
-          import('./pages/reservas/reservas').then(
-            (m) => m.Reservas,
-          ),
+        loadComponent: () => import('./pages/reservas/reservas').then((m) => m.Reservas),
       },
       {
-        path: 'empresa/:id/seleccionar-servicio',
-        loadComponent: () =>
-          import('@pages/select-service/select-service.component').then((m) => m.SelectService),
-      },
-      {
-        path: 'empresa/:id/seleccionar-profesional',
+        path: 'servicio/:id/seleccionar-profesional',
         loadComponent: () =>
           import('@pages/select-professional/select-professional.component').then(
             (m) => m.SelectProfessional,
           ),
       },
       {
-        path: 'empresa/:id/seleccionar-horario',
+        path: 'servicio/:id/seleccionar-horario',
         loadComponent: () =>
           import('@pages/select-time-date/select-time-date.component').then(
             (m) => m.SelectTimeDateComponent,
@@ -149,4 +133,3 @@ export const routes: Routes = [
       import('./pages/not-found/not-found.component').then((m) => m.NotFoundComponent),
   },
 ];
-
