@@ -1,6 +1,7 @@
 import { inject } from '@angular/core';
 import { Router, Routes } from '@angular/router';
 import { AuthService } from './services/auth.service';
+import { bookingStep2Guard, bookingStep3Guard } from './guards/booking-guard';
 
 const authGuard = () => {
   const authService = inject(AuthService);
@@ -11,7 +12,7 @@ const authGuard = () => {
 export const routes: Routes = [
   {
     path: 'login',
-    loadComponent: () => import('./pages/login/login').then((m) => m.LoginComponent),
+    loadComponent: () => import('./pages/login/login.component').then((m) => m.LoginComponent),
   },
   {
     path: 'elegir-tipo',
@@ -118,11 +119,13 @@ export const routes: Routes = [
           import('@pages/select-time-date/select-time-date.component').then(
             (m) => m.SelectTimeDateComponent,
           ),
+        canActivate: [bookingStep2Guard],
       },
       {
         path: 'servicio/:id/pago',
         loadComponent: () =>
           import('./pages/pago/pago.component').then((m) => m.PagoSeguroComponent),
+        canActivate: [bookingStep3Guard],
       },
     ],
   },

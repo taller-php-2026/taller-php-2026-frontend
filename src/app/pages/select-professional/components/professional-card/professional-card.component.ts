@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgIconComponent } from '@ng-icons/core';
 import { Professional } from 'app/models/professional.model';
-import { ProfessionalService } from 'app/services/ProfessionalService';
 
 @Component({
   selector: 'app-professional-card',

@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { decodeJwt } from 'app/utils/jwt.utils';
 
 declare var google: any;
 
@@ -25,7 +26,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
   showPassword = signal(false);
   touched = signal({ email: false, password: false });
 
-  // Validaciones
   emailValid = computed(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email()));
   passwordMinLength = computed(() => this.password().length >= 6);
   formValid = computed(() => this.emailValid() && this.passwordMinLength());
@@ -56,7 +56,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
         auto_select: false,
         cancel_on_tap_outside: true,
       });
-
       google.accounts.id.renderButton(document.getElementById('google-btn-container'), {
         theme: 'outline',
         size: 'large',
@@ -65,7 +64,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
         shape: 'rectangular',
         logo_alignment: 'left',
       });
-
       google.accounts.id.prompt();
     } else {
       setTimeout(() => this.initializeGoogleSignIn(), 500);
@@ -74,9 +72,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   private handleGoogleCredentialResponse(response: any) {
     if (response.credential) {
-      const payload = this.authService.decodeJwt(response.credential);
+      const payload = decodeJwt(response.credential);
       if (payload) {
-        // No login real hasta elegir tipo
         this.authService.setPendingUser({
           name: payload.name || payload.given_name,
           email: payload.email,
@@ -97,6 +94,37 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/elegir-tipo']);
   }
 
+  private tryLoginWithMock(mock: any): boolean {
+    if (mock.email.toLowerCase().trim() !== this.email().toLowerCase().trim()) return false;
+
+    if (mock.contrasena && mock.contrasena !== this.password()) {
+      this.errorMsg.set('Contraseña incorrecta.');
+      this.loading.set(false);
+      return true;
+    }
+
+    if (mock.rol) {
+      this.authService.login({ name: mock.nombre, email: mock.email, picture: mock.picture || '' });
+      this.authService.setUserType(mock.rol);
+      this.authService.completePendingLogin();
+      this.loading.set(false);
+      this.router.navigate(['/']);
+    } else {
+      this.goToChooseType();
+    }
+    return true;
+  }
+
+  private tryProfMock() {
+    this.http.get<any>('/mock-profesional.json').subscribe({
+      next: (profMock) => {
+        if (this.tryLoginWithMock(profMock)) return;
+        setTimeout(() => this.goToChooseType(), 800);
+      },
+      error: () => setTimeout(() => this.goToChooseType(), 800),
+    });
+  }
+
   onSubmit(event: Event) {
     event.preventDefault();
     this.touched.set({ email: true, password: true });
@@ -109,97 +137,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.loading.set(true);
     this.errorMsg.set('');
 
-    const emailEntered = this.email().toLowerCase().trim();
-
-    // Intentar buscar en mock-usuario.json
     this.http.get<any>('/mock-usuario.json').subscribe({
       next: (userMock) => {
-        if (userMock.email.toLowerCase().trim() === emailEntered) {
-          setTimeout(() => {
-            if (userMock.contrasena && userMock.contrasena !== this.password()) {
-              this.errorMsg.set('Contraseña incorrecta.');
-              this.loading.set(false);
-              return;
-            }
-            if (userMock.rol) {
-              this.authService.login({
-                name: userMock.nombre,
-                email: userMock.email,
-                picture: userMock.picture || '',
-              });
-              this.authService.setUserType(userMock.rol);
-              this.loading.set(false);
-              this.router.navigate(['/']);
-            } else {
-              this.goToChooseType();
-            }
-          }, 800);
-          return;
-        }
-
-        // Si no es el cliente, intentar en mock-profesional.json
-        this.http.get<any>('/mock-profesional.json').subscribe({
-          next: (profMock) => {
-            if (profMock.email.toLowerCase().trim() === emailEntered) {
-              setTimeout(() => {
-                if (profMock.contrasena && profMock.contrasena !== this.password()) {
-                  this.errorMsg.set('Contraseña incorrecta.');
-                  this.loading.set(false);
-                  return;
-                }
-                if (profMock.rol) {
-                  this.authService.login({
-                    name: profMock.nombre,
-                    email: profMock.email,
-                    picture: profMock.picture || '',
-                  });
-                  this.authService.setUserType(profMock.rol);
-                  this.loading.set(false);
-                  this.router.navigate(['/']);
-                } else {
-                  this.goToChooseType();
-                }
-              }, 800);
-              return;
-            }
-
-            // Flujo normal si no es ningún mock
-            setTimeout(() => this.goToChooseType(), 800);
-          },
-          error: () => setTimeout(() => this.goToChooseType(), 800),
-        });
+        if (this.tryLoginWithMock(userMock)) return;
+        this.tryProfMock();
       },
-      error: () => {
-        // En caso de que falle la carga (ej. CORS o 404), intentar en mock-profesional.json directamente
-        this.http.get<any>('/mock-profesional.json').subscribe({
-          next: (profMock) => {
-            if (profMock.email.toLowerCase().trim() === emailEntered) {
-              setTimeout(() => {
-                if (profMock.contrasena && profMock.contrasena !== this.password()) {
-                  this.errorMsg.set('Contraseña incorrecta.');
-                  this.loading.set(false);
-                  return;
-                }
-                if (profMock.rol) {
-                  this.authService.login({
-                    name: profMock.nombre,
-                    email: profMock.email,
-                    picture: profMock.picture || '',
-                  });
-                  this.authService.setUserType(profMock.rol);
-                  this.loading.set(false);
-                  this.router.navigate(['/']);
-                } else {
-                  this.goToChooseType();
-                }
-              }, 800);
-              return;
-            }
-            setTimeout(() => this.goToChooseType(), 800);
-          },
-          error: () => setTimeout(() => this.goToChooseType(), 800),
-        });
-      },
+      error: () => this.tryProfMock(),
     });
   }
 }
