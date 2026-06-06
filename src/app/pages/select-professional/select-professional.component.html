@@ -1,40 +1,46 @@
-<app-company-hero />
+@if (service) {
+<div class="w-screen bg-primary mx-auto">
 
-<app-layout class="mt-10">
-    <div class="flex items-center justify-center space-x-3">
-        <div>
-            <p><span
-                    class="inline-flex items-center justify-center w-8 h-8  bg-gray-500 rounded-full text-white mr-2">1</span>
-                Servicio</p>
+
+    <div class="w-3/4 flex flex-col mx-auto py-16 text-white">
+        <h3 class="text-4xl font-bold mb-4">{{service.nombre}}</h3>
+        <p class="text-lg"> {{service.descripcion}} </p>
+        <div class="flex items-center">
+            <ng-icon name="heroClock" color="white" size="30" />
+            <p class="text-lg ml-2 my-2"> {{service.duracionMinutos}} min</p>
         </div>
-
-        <div class="w-16 h-1 bg-gray-300 rounded-full"></div>
-
-        <div>
-            <p><span
-                    class="inline-flex items-center justify-center w-8 h-8 bg-primary rounded-full text-white mr-2">2</span>
-                Profesional</p>
-        </div>
-
-        <div class="w-16 h-1 bg-gray-300 rounded-full"></div>
-
-        <div>
-            <p><span
-                    class="inline-flex items-center justify-center w-8 h-8 bg-gray-500 rounded-full text-white mr-2">3</span>
-                Fecha y hora</p>
+        <div class="flex items-center">
+            <ng-icon name="heroCurrencyDollar" color="white" size="30" />
+            <p class="text-lg ml-2 my-2"> {{service.precio.toFixed(2)}} </p>
         </div>
     </div>
+</div>
+
+<app-layout class="mt-10">
+    <app-steps [currentStep]="1"></app-steps>
 
     <h3 class="text-2xl font-bold mt-6">Selecciona un profesional</h3>
 
-    <app-professional-card company="companyId" service="serviceId"
-        (selectedProfessional)="selectProfessional($event)" />
-
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mt-4">
+        @for (professional of professionals; track professional.idUsuario) {
+        <app-professional-card [professional]="professional"
+            [isSelected]="selectedProfessional === professional.idUsuario"
+            (selectedProfessional)="onProfessionalSelected($event)"></app-professional-card>
+        }
+    </div>
 
     <div class="flex justify-end mt-6">
-        <button class="px-6 py-2 bg-primary text-white rounded hover:bg-primary-dark transition-colors duration-300"
-            [disabled]="!selectedProfessional" [class.opacity-50]="!selectedProfessional" (click)="goToNextStep()">
+        <button class="bg-gray-500 hover:bg-primary-dark text-white font-bold py-2 px-4 rounded"
+            (click)="goToNextStep()" [disabled]="!selectedProfessional" [class.bg-primary!]="selectedProfessional">
             Siguiente
         </button>
     </div>
 </app-layout>
+} @else {
+<div class="w-screen flex flex-col mx-auto py-16 text-white bg-primary ">
+    <div class="w-3/4 flex flex-col mx-auto">
+        <h3 class="text-4xl font-bold mb-4">Servicio no encontrado</h3>
+        <p class="text-lg">El servicio que estás buscando no existe o no está disponible.</p>
+    </div>
+</div>
+}

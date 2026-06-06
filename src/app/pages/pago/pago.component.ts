@@ -1,32 +1,46 @@
-import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, inject, signal, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CurrencyPipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { Service } from 'app/models/service.model';
+import { ServicesService } from 'app/services/services.service';
+import { NgIcon } from '@ng-icons/core';
+import { StepsComponent } from '@components/steps/steps.component';
+import { Layout } from '@shared/layout/layout.component';
 
 @Component({
-  selector: 'app-pago-seguro',
+  selector: 'app-pago',
   standalone: true,
-  imports: [FormsModule, CurrencyPipe],
-  templateUrl: './pago-seguro.component.html',
-  styleUrl: './pago-seguro.component.css'
+  imports: [FormsModule, CurrencyPipe, NgIcon, StepsComponent, Layout],
+  templateUrl: './pago.component.html',
+  styleUrl: './pago.component.css',
 })
 export class PagoSeguroComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private http = inject(HttpClient);
+  private servicesService = inject(ServicesService);
+  private cdr = inject(ChangeDetectorRef);
+
+  serviceId: string | null = null;
+  service: Service | null = null;
 
   // URL del backend (Modificar segun corresponda)
   private backendUrl = 'http://localhost:8000/api/pagos.php';
 
   // Paso del flujo de pago: 'selector' | 'formulario_tarjeta' | 'efectivo' | 'mercadopago_portal' | 'procesando' | 'exito'
-  paymentStatus = signal<'selector' | 'formulario_tarjeta' | 'efectivo' | 'mercadopago_portal' | 'procesando' | 'exito'>('selector');
+  paymentStatus = signal<
+    'selector' | 'formulario_tarjeta' | 'efectivo' | 'mercadopago_portal' | 'procesando' | 'exito'
+  >('selector');
 
   // Estado final de la transacción: 'approved' | 'pending' | 'rejected'
   transactionStatus = signal<'approved' | 'pending' | 'rejected'>('approved');
 
   // Método y proveedor seleccionados
-  selectedMethod = signal<'mercadopago' | 'tarjeta_credito' | 'tarjeta_debito' | 'efectivo' | null>(null);
+  selectedMethod = signal<'mercadopago' | 'tarjeta_credito' | 'tarjeta_debito' | 'efectivo' | null>(
+    null,
+  );
   cashProvider = signal<'abitab' | 'redpagos'>('abitab');
 
   // Errores
@@ -38,7 +52,7 @@ export class PagoSeguroComponent implements OnInit, OnDestroy {
     number: '',
     name: '',
     expiry: '',
-    cvv: ''
+    cvv: '',
   };
 
   // Controlador del Card Payment Brick de Mercado Pago
@@ -54,11 +68,22 @@ export class PagoSeguroComponent implements OnInit, OnDestroy {
     time: '',
     subtotal: 0,
     tax: 0,
-    total: 0
+    total: 0,
   };
+
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.loadMockReservation();
+
+    this.route.paramMap.subscribe((params) => {
+      this.serviceId = params.get('id');
+
+      this.servicesService.getServiceById(this.serviceId!).subscribe((response) => {
+        this.service = response.data;
+        this.cdr.detectChanges();
+      });
+    });
   }
 
   private async loadMockReservation() {
@@ -97,7 +122,9 @@ export class PagoSeguroComponent implements OnInit, OnDestroy {
   }
 
   // Seleccion del metodo de pago
-  async selectMethodOption(option: 'mercadopago' | 'tarjeta_credito' | 'tarjeta_debito' | 'efectivo') {
+  async selectMethodOption(
+    option: 'mercadopago' | 'tarjeta_credito' | 'tarjeta_debito' | 'efectivo',
+  ) {
     this.selectedMethod.set(option);
     this.errorMsg.set('');
     this.cleanupBrick();
@@ -128,9 +155,9 @@ export class PagoSeguroComponent implements OnInit, OnDestroy {
   private async initCardPaymentBrick() {
     try {
       await this.loadScript('https://sdk.mercadopago.com/js/v2');
-      
+
       const mp = new (window as any).MercadoPago('TEST-c04301ad-316c-4ccc-8b18-a921a8d891b4', {
-        locale: 'es-UY'
+        locale: 'es-UY',
       });
 
       const bricksBuilder = mp.bricks();
@@ -143,11 +170,11 @@ export class PagoSeguroComponent implements OnInit, OnDestroy {
           visual: {
             style: {
               theme: 'flat',
-            }
+            },
           },
           paymentMethods: {
             maxInstallments: this.selectedMethod() === 'tarjeta_debito' ? 1 : 12,
-          }
+          },
         },
         callbacks: {
           onReady: () => {
@@ -155,13 +182,13 @@ export class PagoSeguroComponent implements OnInit, OnDestroy {
           },
           onSubmit: async (formData: any) => {
             console.log('Datos de Mercado Pago para procesar:', formData);
-            
+
             this.paymentStatus.set('procesando');
 
             const payload = {
               method: this.selectedMethod(),
               reservation: this.reservation,
-              mercadoPagoData: formData
+              mercadoPagoData: formData,
             };
 
             try {
@@ -182,16 +209,15 @@ export class PagoSeguroComponent implements OnInit, OnDestroy {
           onError: (error: any) => {
             console.error('Card Payment Brick error:', error);
             this.errorMsg.set('No se pudo inicializar la pasarela de tarjetas.');
-          }
-        }
+          },
+        },
       };
 
       this.cardPaymentBrickController = await bricksBuilder.create(
         'cardPayment',
         'cardPaymentBrick_container',
-        settings
+        settings,
       );
-
     } catch (err) {
       console.error(err);
       this.useFallbackForm.set(true);
@@ -203,7 +229,7 @@ export class PagoSeguroComponent implements OnInit, OnDestroy {
     const payload = {
       method: this.selectedMethod(),
       reservation: this.reservation,
-      cardData: this.fallbackCard
+      cardData: this.fallbackCard,
     };
     try {
       try {
@@ -233,7 +259,7 @@ export class PagoSeguroComponent implements OnInit, OnDestroy {
     const payload = {
       method: 'efectivo',
       provider: this.cashProvider(),
-      reservation: this.reservation
+      reservation: this.reservation,
     };
 
     try {
@@ -255,7 +281,7 @@ export class PagoSeguroComponent implements OnInit, OnDestroy {
     this.paymentStatus.set('procesando');
     const payload = {
       method: 'mercadopago',
-      reservation: this.reservation
+      reservation: this.reservation,
     };
 
     try {
@@ -281,7 +307,7 @@ export class PagoSeguroComponent implements OnInit, OnDestroy {
       number: '',
       name: '',
       expiry: '',
-      cvv: ''
+      cvv: '',
     };
     this.cleanupBrick();
   }

@@ -1,0 +1,23 @@
+<div class="flex items-center justify-center space-x-3 my-6">
+    <div class="flex items-center gap-2">
+        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full text-white text-sm font-medium"
+            [ngClass]="currentStep === 1 ? 'bg-primary' : 'bg-gray-300'">1</span>
+        <p class="text-sm" [ngClass]="currentStep === 1 ? 'text-primary font-medium' : 'text-gray-400'">Profesional</p>
+    </div>
+
+    <div class="w-16 h-0.5 bg-gray-300 rounded-full"></div>
+
+    <div class="flex items-center gap-2">
+        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full text-white text-sm font-medium"
+            [ngClass]="currentStep === 2 ? 'bg-primary' : 'bg-gray-300'">2</span>
+        <p class="text-sm" [ngClass]="currentStep === 2 ? 'text-primary font-medium' : 'text-gray-400'">Horario</p>
+    </div>
+
+    <div class="w-16 h-0.5 bg-gray-300 rounded-full"></div>
+
+    <div class="flex items-center gap-2">
+        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full text-white text-sm font-medium"
+            [ngClass]="currentStep === 3 ? 'bg-primary' : 'bg-gray-300'">3</span>
+        <p class="text-sm" [ngClass]="currentStep === 3 ? 'text-primary font-medium' : 'text-gray-400'">Pago</p>
+    </div>
+</div>
