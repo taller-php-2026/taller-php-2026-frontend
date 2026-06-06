@@ -1,20 +1,16 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { ServicesService } from 'app/services/services.service';
-import { Service } from 'app/models/service.model';
+import { AuthService } from 'app/services/auth.service';
 
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [],
-  templateUrl: './home.html',
+  selector: 'app-home-professional',
+  templateUrl: './home.component.html',
   styleUrl: './home.css',
+  standalone: true,
 })
-export class HomeComponent implements OnInit {
-  protected authService = inject(AuthService);
-
+export class HomeProfessionalComponent {
   private router = inject(Router);
+  authService = inject(AuthService);
 
   // Fecha del día en formato amigable
   todayDate = new Date().toLocaleDateString('es-ES', {
@@ -53,13 +49,6 @@ export class HomeComponent implements OnInit {
       clientPicture: '',
     },
   ];
-
-  ngOnInit() {
-    // Si no está autenticado, redirigir al login
-    if (!this.authService.isAuthenticated()) {
-      this.router.navigate(['/login']);
-    }
-  }
 
   goToConfigurarServicios() {
     this.router.navigate(['/configurar-servicios']);

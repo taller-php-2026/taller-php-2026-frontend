@@ -1,28 +1,14 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
-import { HeroComponent } from './components/hero-home/hero.component';
-import { Layout } from '@shared/layout/layout.component';
-import { Service } from 'app/models/service.model';
-import { ServicesService } from 'app/services/services.service';
-import { ServiceCardComponent } from './components/service-card/service-card.component';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { HomeClientComponent } from './home-cliente/home.component';
+import { HomeProfessionalComponent } from './home-professional/home.component';
+import { AuthService } from 'app/services/auth.service';
 
 @Component({
   selector: 'app-home',
-  imports: [HeroComponent, Layout, ServiceCardComponent],
   templateUrl: './home.component.html',
+  imports: [HomeClientComponent, HomeProfessionalComponent],
+  standalone: true,
 })
 export class HomeComponent {
-  private servicesService = inject(ServicesService);
-  private cdr = inject(ChangeDetectorRef);
-
-  services: Service[] = [];
-
-  ngOnInit() {
-    this.servicesService.getAllServices().subscribe({
-      next: (response) => {
-        this.services = response.data;
-        this.cdr.detectChanges();
-      },
-    });
-  }
+  auth = inject(AuthService);
 }

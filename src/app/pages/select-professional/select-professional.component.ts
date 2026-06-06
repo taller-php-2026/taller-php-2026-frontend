@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Layout } from '@shared/layout/layout.component';
 import { ProfessionalCard } from './components/professional-card/professional-card.component';
-import { BookingService } from 'app/services/BookingService';
 import { Service } from 'app/models/service.model';
 import { ServicesService } from 'app/services/services.service';
 import { Professional } from 'app/models/professional.model';
