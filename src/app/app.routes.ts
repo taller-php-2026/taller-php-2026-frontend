@@ -73,11 +73,6 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'pago-seguro',
-        loadComponent: () =>
-          import('./pages/pago-seguro/pago-seguro.component').then((m) => m.PagoSeguroComponent),
-      },
-      {
         path: 'crear-ciclo-agenda',
         loadComponent: () =>
           import('./pages/crear-ciclo-agenda/crear-ciclo-agenda').then((m) => m.CrearCicloAgenda),
@@ -123,6 +118,11 @@ export const routes: Routes = [
           import('@pages/select-time-date/select-time-date.component').then(
             (m) => m.SelectTimeDateComponent,
           ),
+      },
+      {
+        path: 'servicio/:id/pago',
+        loadComponent: () =>
+          import('./pages/pago/pago.component').then((m) => m.PagoSeguroComponent),
       },
     ],
   },

@@ -1,45 +1,61 @@
+@if (service) {
+<div class="w-screen bg-primary mx-auto">
 
-<app-company-hero [companyId]="companyId" />
 
-<app-layout class="mt-10">
-    <div class="flex items-center justify-center space-x-3">
-        <div>
-            <p><span
-                    class="inline-flex items-center justify-center w-8 h-8 bg-gray-500 rounded-full text-white mr-2">1</span>
-                Servicio</p>
+    <div class="w-3/4 flex flex-col mx-auto py-16 text-white">
+        <h3 class="text-4xl font-bold mb-4">{{service.nombre}}</h3>
+        <p class="text-lg"> {{service.descripcion}} </p>
+        <div class="flex items-center">
+            <ng-icon name="heroClock" color="white" size="30" />
+            <p class="text-lg ml-2 my-2"> {{service.duracionMinutos}} min</p>
         </div>
-
-        <div class="w-16 h-1 bg-gray-300 rounded-full"></div>
-
-        <div>
-            <p><span
-                    class="inline-flex items-center justify-center w-8 h-8 bg-gray-500 rounded-full text-white mr-2">2</span>
-                Profesional</p>
-        </div>
-
-        <div class="w-16 h-1 bg-gray-300 rounded-full"></div>
-
-        <div>
-            <p><span
-                    class="inline-flex items-center justify-center w-8 h-8 bg-primary  rounded-full text-white mr-2">3</span>
-                Fecha y hora</p>
+        <div class="flex items-center">
+            <ng-icon name="heroCurrencyDollar" color="white" size="30" />
+            <p class="text-lg ml-2 my-2"> {{service.precio.toFixed(2)}} </p>
         </div>
     </div>
+</div>
+
+
+<app-layout class="mt-10">
+    <app-steps [currentStep]="2"></app-steps>
 
     <h3 class="text-2xl font-bold mt-6">Selecciona un horario</h3>
 
     <section class="flex items-start justify-center space-x-10 mt-6">
         <div class="flex flex-col">
             <p class="font-semibold text-center">Seleccione una fecha:</p>
-            <app-calendar class="mt-4"></app-calendar>
+            <app-calendar class="mt-4" (dateSelected)="onDateSelected($event)"></app-calendar>
         </div>
 
         <div class="flex flex-col">
             <p class="font-semibold text-center">Horarios disponibles:</p>
 
-            <app-select-time class="mt-4"></app-select-time>
+            <div class="grid grid-cols-3 gap-4 mt-4">
+                @for (schedule of schedules; track schedule.id) {
+                <button class="border border-primary text-gray-800 font-bold py-2 px-4 rounded"
+                    [class.bg-primary!]="selectedTime === schedule.time"
+                    [class.text-white!]="selectedTime === schedule.time" (click)="onTimeSelected(schedule.time)">
+                    {{ schedule.time }}
+                </button>
+                }
+            </div>
         </div>
     </section>
 
-    <button class="mt-6 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">Continuar</button>
+    <div class="flex justify-end mt-6">
+        <button class="text-white font-bold py-2 px-4 rounded transition-colors duration-200"
+            [ngClass]="selectedTime && selectedDate ? 'bg-primary cursor-pointer' : 'bg-gray-500 cursor-not-allowed opacity-50'"
+            [disabled]="!selectedTime || !selectedDate" (click)="goToNextStep()">
+            Siguiente
+        </button>
+    </div>
 </app-layout>
+} @else {
+<div class="w-screen flex flex-col mx-auto py-16 text-white bg-primary ">
+    <div class="w-3/4 flex flex-col mx-auto">
+        <h3 class="text-4xl font-bold mb-4">Servicio no encontrado</h3>
+        <p class="text-lg">El servicio que estás buscando no existe o no está disponible.</p>
+    </div>
+</div>
+}

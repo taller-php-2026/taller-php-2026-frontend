@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-calendar',
@@ -7,6 +7,7 @@ import { Component } from '@angular/core';
   imports: [NgClass],
 })
 export class Calendar {
+  @Output() dateSelected = new EventEmitter<Date>();
   currentDate = new Date();
   days: (number | null)[] = [];
   today = new Date();
@@ -40,6 +41,8 @@ export class Calendar {
 
   selectDay(day: number) {
     this.selectedDay = day;
+    const selected = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day);
+    this.dateSelected.emit(selected);
   }
 
   getDayClasses(day: number | null): object {

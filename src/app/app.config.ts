@@ -7,6 +7,7 @@ import {
   heroMagnifyingGlass,
   heroMapPin,
   heroClock,
+  heroCurrencyDollar,
 } from '@ng-icons/heroicons/outline';
 import { heroStarSolid } from '@ng-icons/heroicons/solid';
 
@@ -23,7 +24,7 @@ export const appConfig: ApplicationConfig = {
       heroStarSolid,
       heroMapPin,
       heroClock,
+      heroCurrencyDollar,
     }),
   ],
 };
-
