@@ -87,6 +87,17 @@ export class Reservas implements OnInit {
     this.enrutador.navigate(['/pre-videollamada']);
   }
 
+  // Redirigir a calificar profesional.
+  irACalificar(id: number): void {
+    this.enrutador.navigate([`/reservas/${id}/calificar`]);
+  }
+
+  // Chequear si una reserva ya fue calificada.
+  esCalificada(id: number): boolean {
+    const res = this.reservas().find((r) => r.id === id);
+    return !!(res && (res as any).calificada === true);
+  }
+
   // Buscar servicios.
   buscarServicios(): void {
     this.enrutador.navigate(['/']);

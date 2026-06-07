@@ -127,6 +127,13 @@ export const routes: Routes = [
           import('./pages/pago/pago.component').then((m) => m.PagoSeguroComponent),
         canActivate: [bookingStep3Guard],
       },
+      {
+        path: 'reservas/:id/calificar',
+        loadComponent: () =>
+          import('./pages/calificar-profesional/calificar-profesional').then(
+            (m) => m.CalificarProfesional,
+          ),
+      },
     ],
   },
 
