@@ -7,6 +7,7 @@ import { ServicesService } from 'app/services/services.service';
 import { Professional } from 'app/models/professional.model';
 import { NgIcon } from '@ng-icons/core';
 import { StepsComponent } from '@components/steps/steps.component';
+import { BookingStateService } from 'app/services/booking-state.service';
 
 @Component({
   selector: 'app-select-professional',
@@ -15,6 +16,7 @@ import { StepsComponent } from '@components/steps/steps.component';
 })
 export class SelectProfessional {
   private servicesService = inject(ServicesService);
+  private bookingsService = inject(BookingStateService);
   private cdr = inject(ChangeDetectorRef);
 
   serviceId: string | null = null;
@@ -35,6 +37,7 @@ export class SelectProfessional {
 
   onProfessionalSelected(professionalId: number) {
     this.selectedProfessional = professionalId;
+    this.bookingsService.setProfessionalId(professionalId);
   }
 
   ngOnInit() {
@@ -44,12 +47,15 @@ export class SelectProfessional {
       this.servicesService.getServiceById(this.serviceId!).subscribe((response) => {
         this.service = response.data;
         this.cdr.detectChanges();
+        console.log('Servicio obtenido:', this.service);
       });
 
       this.servicesService.getProfessionalsByService(this.serviceId!).subscribe((response) => {
         this.professionals = response.data;
         this.cdr.detectChanges();
       });
+
+      this.bookingsService.setServiceId(parseInt(this.serviceId!));
     });
   }
 }
