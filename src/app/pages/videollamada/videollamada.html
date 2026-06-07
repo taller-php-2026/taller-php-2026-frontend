@@ -31,7 +31,17 @@
       </div>
       <!-- Floating Self View -->
       <div class="absolute bottom-4 right-4 w-32 md:w-48 aspect-video rounded-xl overflow-hidden border-2 border-white/40 shadow-2xl transition-transform hover:scale-105 cursor-pointer z-20 group">
-        <img alt="User Preview" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCl28HLXCwxp75ZZFih0TVQNhE-2AWu46F_vgVwb_GdOBBBC0p7S3bp8pl9xq3AJuu81ddH8JkVlh0xucx7AcY6m7V1iTbWVuHZ_emOvL4LjMijsBcqLQcbSIrnK1rrm7Wsudw2jvlArJSYUVx-aYI5muyQWcSAps38YCqf9tEWsfPMFfCvN4zIoENc9O37UwbYiKeFwUn8t_H68MXgkDLFKWeMM9hruT8nSycdMiDWzKflegNB2y-hBGKQsphagRH6DymylxOjMCQx">
+        <video 
+          #selfVideoPlayer
+          [class.hidden]="videoDesactivado()"
+          autoplay
+          playsinline
+          muted
+          class="w-full h-full object-cover" 
+        ></video>
+        <div *ngIf="videoDesactivado()" class="w-full h-full flex flex-col items-center justify-center text-white/50 bg-black">
+          <span class="material-symbols-outlined text-md mb-1">videocam_off</span>
+        </div>
         <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
         <div class="absolute bottom-2 left-2 bg-black/50 px-sm py-1 rounded text-white text-[10px] font-medium uppercase tracking-wider">
           You

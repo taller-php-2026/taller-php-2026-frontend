@@ -3,12 +3,14 @@
     <!-- Video Preview Column -->
     <div class="lg:col-span-8 flex flex-col gap-md">
       <div class="relative aspect-video bg-inverse-surface rounded-xl overflow-hidden soft-shadow border border-outline-variant/30">
-        <img 
-          *ngIf="!videoDesactivado()"
-          alt="Camera Preview" 
-          class="w-full h-full object-cover grayscale-[0.2]" 
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbbOoyKG0I2amA-oFkVkQBJTUXYCEk8wf4-yM69cUJ9kW7bCVoJjDg3adPoS8EHoKnCssWL9zB03GX3E-A0MzUbEAgWMLXCX80rF-Ul2-da16AlFbRXEB2Cb1zbi7zpyRTnI3m-knjL_yl82_XMQ0BXL1e0dzE1S68q0C2P-ACzNw6Jl61njklronTbDDd9NobRfvcSRnm0B6B34EkAm9ATuStpP0WkZHLPtHbS8aKZLnfKM-CcpemHQwWg8MZMdft9mTkYeT0OWBy"
-        >
+        <video 
+          #videoPlayer
+          [class.hidden]="videoDesactivado()"
+          autoplay
+          playsinline
+          muted
+          class="w-full h-full object-cover" 
+        ></video>
         <div *ngIf="videoDesactivado()" class="w-full h-full flex flex-col items-center justify-center text-white/50 bg-black">
           <span class="material-symbols-outlined text-4xl mb-2">videocam_off</span>
           <p class="text-sm">La cámara está desactivada</p>
@@ -67,8 +69,8 @@
           <div class="flex flex-col gap-xs">
             <label class="font-label-bold text-label-bold text-secondary">Cámara</label>
             <div class="relative">
-              <select [(ngModel)]="camaraSeleccionada" class="w-full bg-surface border border-outline-variant rounded-lg px-md py-sm appearance-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-body-md transition-all">
-                <option *ngFor="let cam of camaras()" [value]="cam">{{ cam }}</option>
+              <select [value]="idCamaraSeleccionada()" (change)="cambiarCamaraReal($event)" class="w-full bg-surface border border-outline-variant rounded-lg px-md py-sm appearance-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-body-md transition-all">
+                <option *ngFor="let cam of camaras()" [value]="cam.deviceId">{{ cam.label || 'Cámara' }}</option>
               </select>
               <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
             </div>
@@ -76,8 +78,8 @@
           <div class="flex flex-col gap-xs">
             <label class="font-label-bold text-label-bold text-secondary">Micrófono</label>
             <div class="relative">
-              <select [(ngModel)]="microfonoSeleccionado" class="w-full bg-surface border border-outline-variant rounded-lg px-md py-sm appearance-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-body-md transition-all">
-                <option *ngFor="let mic of microfonos()" [value]="mic">{{ mic }}</option>
+              <select [value]="idMicrofonoSeleccionado()" (change)="cambiarMicrofonoReal($event)" class="w-full bg-surface border border-outline-variant rounded-lg px-md py-sm appearance-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-body-md transition-all">
+                <option *ngFor="let mic of microfonos()" [value]="mic.deviceId">{{ mic.label || 'Micrófono' }}</option>
               </select>
               <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
             </div>
@@ -85,8 +87,8 @@
           <div class="flex flex-col gap-xs">
             <label class="font-label-bold text-label-bold text-secondary">Altavoces</label>
             <div class="relative">
-              <select [(ngModel)]="altavozSeleccionado" class="w-full bg-surface border border-outline-variant rounded-lg px-md py-sm appearance-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-body-md transition-all">
-                <option *ngFor="let spk of altavoces()" [value]="spk">{{ spk }}</option>
+              <select [value]="idAltavozSeleccionado()" (change)="cambiarAltavozReal($event)" class="w-full bg-surface border border-outline-variant rounded-lg px-md py-sm appearance-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-body-md transition-all">
+                <option *ngFor="let spk of altavoces()" [value]="spk.deviceId">{{ spk.label || 'Altavoces' }}</option>
               </select>
               <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
             </div>

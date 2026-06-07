@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -14,6 +14,8 @@ import { FormsModule } from '@angular/forms';
 export class Videollamada implements OnInit, OnDestroy {
   private enrutador = inject(Router);
   private clienteHttp = inject(HttpClient);
+
+  @ViewChild('selfVideoPlayer') selfVideoPlayer!: ElementRef<HTMLVideoElement>;
 
   // Parámetros de conexión para integración futura con LiveKit Meet
   livekitUrl = signal<string>('');
@@ -52,20 +54,51 @@ export class Videollamada implements OnInit, OnDestroy {
   // Hablante activo
   hablanteActivo = signal<boolean>(true);
 
+  private mediaStream: MediaStream | null = null;
   private intervaloTemporizador: any;
   private intervaloHablante: any;
 
   ngOnInit(): void {
     this.cargarDatosVideollamada();
     this.iniciarSimulacionHablante();
+    this.iniciarCamaraReal();
   }
 
   ngOnDestroy(): void {
+    this.detenerStream();
     if (this.intervaloTemporizador) {
       clearInterval(this.intervaloTemporizador);
     }
     if (this.intervaloHablante) {
       clearInterval(this.intervaloHablante);
+    }
+  }
+
+  // Detener el flujo del stream
+  private detenerStream(): void {
+    if (this.mediaStream) {
+      this.mediaStream.getTracks().forEach((track) => track.stop());
+      this.mediaStream = null;
+    }
+  }
+
+  // Iniciar la cámara real del usuario
+  async iniciarCamaraReal(): Promise<void> {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true
+      });
+      this.mediaStream = stream;
+      
+      setTimeout(() => {
+        if (this.selfVideoPlayer && this.selfVideoPlayer.nativeElement) {
+          this.selfVideoPlayer.nativeElement.srcObject = stream;
+        }
+      }, 200);
+
+    } catch (e) {
+      console.warn('No se pudo acceder a la cámara o micrófono reales en la videollamada.', e);
     }
   }
 
@@ -108,7 +141,6 @@ export class Videollamada implements OnInit, OnDestroy {
   // Simular conexión exitosa de LiveKit
   simularConexionLivekit(): void {
     if (this.livekitUrl() && this.livekitToken()) {
-      // Registrar log para futura referencia
       console.log(`[LiveKit] Conectando a la sala ${this.roomName()} en el servidor ${this.livekitUrl()} usando token.`);
       this.livekitConectado.set(true);
     }
@@ -116,12 +148,24 @@ export class Videollamada implements OnInit, OnDestroy {
 
   // Alternar estado del microfono
   alternarMicrofono(): void {
-    this.microfonoSilenciado.update((estado) => !estado);
+    this.microfonoSilenciado.update((estado) => {
+      const nuevo = !estado;
+      if (this.mediaStream) {
+        this.mediaStream.getAudioTracks().forEach(track => track.enabled = !nuevo);
+      }
+      return nuevo;
+    });
   }
 
   // Alternar estado de la camara
   alternarVideo(): void {
-    this.videoDesactivado.update((estado) => !estado);
+    this.videoDesactivado.update((estado) => {
+      const nuevo = !estado;
+      if (this.mediaStream) {
+        this.mediaStream.getVideoTracks().forEach(track => track.enabled = !nuevo);
+      }
+      return nuevo;
+    });
   }
 
   // Alternar visibilidad de la barra lateral en moviles
@@ -132,7 +176,6 @@ export class Videollamada implements OnInit, OnDestroy {
   // Cambiar pestaña seleccionada en el sidebar
   seleccionarTab(tab: 'participantes' | 'chat' | 'archivos' | 'ajustes'): void {
     this.tabSeleccionada.set(tab);
-    // En móviles, asegurar abrir el sidebar al seleccionar una tab
     this.sidebarAbierto.set(true);
   }
 
@@ -158,6 +201,7 @@ export class Videollamada implements OnInit, OnDestroy {
 
   // Finalizar sesion y redirigir
   finalizarSesion(): void {
+    this.detenerStream();
     this.enrutador.navigate(['/']);
   }
 
@@ -186,5 +230,3 @@ export class Videollamada implements OnInit, OnDestroy {
     }, 5000);
   }
 }
-
-
