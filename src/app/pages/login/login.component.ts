@@ -1,11 +1,8 @@
-import { Component, inject, signal, computed, OnInit, AfterViewInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { decodeJwt } from 'app/utils/jwt.utils';
-
-declare var google: any;
+import { environment } from '../../../../environment';
 
 @Component({
   selector: 'app-login',
@@ -14,10 +11,10 @@ declare var google: any;
   templateUrl: './login.component.html',
   styleUrl: './login.css',
 })
-export class LoginComponent implements OnInit, AfterViewInit {
+export class LoginComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
-  private http = inject(HttpClient);
+  private route = inject(ActivatedRoute);
 
   email = signal('');
   password = signal('');
@@ -41,88 +38,17 @@ export class LoginComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/']);
+      return;
+    }
+    // Mostrar error si Google OAuth falló y redirigió de vuelta con ?error=
+    const errorParam = this.route.snapshot.queryParamMap.get('error');
+    if (errorParam === 'google_auth_failed') {
+      this.errorMsg.set('No se pudo iniciar sesión con Google. Intentalo de nuevo.');
     }
   }
 
-  ngAfterViewInit() {
-    this.initializeGoogleSignIn();
-  }
-
-  private initializeGoogleSignIn() {
-    if (typeof google !== 'undefined') {
-      google.accounts.id.initialize({
-        client_id: '623580687397-vmu72m70i4sgo7e387k06ln5pveob468.apps.googleusercontent.com',
-        callback: (response: any) => this.handleGoogleCredentialResponse(response),
-        auto_select: false,
-        cancel_on_tap_outside: true,
-      });
-      google.accounts.id.renderButton(document.getElementById('google-btn-container'), {
-        theme: 'outline',
-        size: 'large',
-        width: 350,
-        text: 'signin_with',
-        shape: 'rectangular',
-        logo_alignment: 'left',
-      });
-      google.accounts.id.prompt();
-    } else {
-      setTimeout(() => this.initializeGoogleSignIn(), 500);
-    }
-  }
-
-  private handleGoogleCredentialResponse(response: any) {
-    if (response.credential) {
-      const payload = decodeJwt(response.credential);
-      if (payload) {
-        this.authService.setPendingUser({
-          name: payload.name || payload.given_name,
-          email: payload.email,
-          picture: payload.picture,
-        });
-        this.router.navigate(['/elegir-tipo']);
-      }
-    }
-  }
-
-  private goToChooseType() {
-    this.authService.setPendingUser({
-      name: this.email().split('@')[0],
-      email: this.email(),
-      picture: '',
-    });
-    this.loading.set(false);
-    this.router.navigate(['/elegir-tipo']);
-  }
-
-  private tryLoginWithMock(mock: any): boolean {
-    if (mock.email.toLowerCase().trim() !== this.email().toLowerCase().trim()) return false;
-
-    if (mock.contrasena && mock.contrasena !== this.password()) {
-      this.errorMsg.set('Contraseña incorrecta.');
-      this.loading.set(false);
-      return true;
-    }
-
-    if (mock.rol) {
-      this.authService.login({ name: mock.nombre, email: mock.email, picture: mock.picture || '' });
-      this.authService.setUserType(mock.rol);
-      this.authService.completePendingLogin();
-      this.loading.set(false);
-      this.router.navigate(['/']);
-    } else {
-      this.goToChooseType();
-    }
-    return true;
-  }
-
-  private tryProfMock() {
-    this.http.get<any>('/mock-profesional.json').subscribe({
-      next: (profMock) => {
-        if (this.tryLoginWithMock(profMock)) return;
-        setTimeout(() => this.goToChooseType(), 800);
-      },
-      error: () => setTimeout(() => this.goToChooseType(), 800),
-    });
+  loginWithGoogle() {
+    window.location.href = environment.googleRedirectUrl;
   }
 
   onSubmit(event: Event) {
@@ -137,12 +63,21 @@ export class LoginComponent implements OnInit, AfterViewInit {
     this.loading.set(true);
     this.errorMsg.set('');
 
-    this.http.get<any>('/mock-usuario.json').subscribe({
-      next: (userMock) => {
-        if (this.tryLoginWithMock(userMock)) return;
-        this.tryProfMock();
+    this.authService.loginHttp(this.email().trim(), this.password()).subscribe({
+      next: () => {
+        this.loading.set(false);
+        this.router.navigate(['/']);
       },
-      error: () => this.tryProfMock(),
+      error: (err) => {
+        this.loading.set(false);
+        if (err.status === 401 || err.status === 422) {
+          this.errorMsg.set(err.error?.message ?? 'Credenciales incorrectas.');
+        } else if (err.status === 0) {
+          this.errorMsg.set('No se pudo conectar con el servidor.');
+        } else {
+          this.errorMsg.set('Error al iniciar sesión. Intentalo de nuevo.');
+        }
+      },
     });
   }
 }

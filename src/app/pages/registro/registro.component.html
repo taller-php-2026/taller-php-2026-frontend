@@ -1,9 +1,38 @@
 <div class="w-full max-w-[500px] bg-surface-container-lowest rounded-[32px] overflow-hidden soft-shadow mx-auto mt-10">
-  <!-- Registration Form -->
   <div class="p-lg md:p-xl flex flex-col justify-center bg-surface-container-lowest">
     <div class="mb-lg text-center">
       <h1 class="font-display-lg text-display-lg text-on-surface mb-xs font-bold text-3xl">Crear Cuenta</h1>
       <p class="font-body-md text-body-md text-on-surface-variant">Únete a la mejor plataforma de gestión</p>
+    </div>
+
+    <!-- Selector de tipo de cuenta -->
+    <div class="flex gap-sm mb-lg">
+      <button
+        type="button"
+        class="flex-1 py-sm rounded-xl border-2 font-label-bold text-sm transition-all flex items-center justify-center gap-xs"
+        [class.border-primary]="tipo() === 'cliente'"
+        [class.text-primary]="tipo() === 'cliente'"
+        [class.border-outline-variant]="tipo() !== 'cliente'"
+        [class.text-on-surface-variant]="tipo() !== 'cliente'"
+        [style.background]="tipo() === 'cliente' ? 'rgba(0,104,95,0.08)' : ''"
+        (click)="selectTipo('cliente')"
+      >
+        <span class="material-symbols-outlined text-[18px]">person</span>
+        Cliente
+      </button>
+      <button
+        type="button"
+        class="flex-1 py-sm rounded-xl border-2 font-label-bold text-sm transition-all flex items-center justify-center gap-xs"
+        [class.border-primary]="tipo() === 'profesional'"
+        [class.text-primary]="tipo() === 'profesional'"
+        [class.border-outline-variant]="tipo() !== 'profesional'"
+        [class.text-on-surface-variant]="tipo() !== 'profesional'"
+        [style.background]="tipo() === 'profesional' ? 'rgba(0,104,95,0.08)' : ''"
+        (click)="selectTipo('profesional')"
+      >
+        <span class="material-symbols-outlined text-[18px]">business_center</span>
+        Profesional
+      </button>
     </div>
 
     <!-- Error Message -->
@@ -16,27 +45,27 @@
     <!-- Form -->
     <form (submit)="onSubmit($event)" class="space-y-md" novalidate>
 
-      <!-- Username -->
+      <!-- Nombre Completo -->
       <div class="flex flex-col gap-xs">
-        <label class="font-label-bold text-label-bold text-on-surface-variant px-xs" for="username">Nombre de Usuario</label>
+        <label class="font-label-bold text-label-bold text-on-surface-variant px-xs" for="nombre">Nombre Completo</label>
         <div class="relative">
           <span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline">person</span>
           <input
             class="w-full pl-[44px] pr-md py-md bg-surface-container-lowest border border-outline-variant rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary input-glow transition-all"
-            id="username"
-            placeholder="juan_perez"
+            id="nombre"
+            placeholder="Juan Pérez"
             type="text"
-            [ngModel]="username()"
-            (ngModelChange)="username.set($event)"
-            (blur)="touch('username')"
-            name="username"
-            autocomplete="username"
+            [ngModel]="nombre()"
+            (ngModelChange)="nombre.set($event)"
+            (blur)="touch('nombre')"
+            name="nombre"
+            autocomplete="name"
           >
         </div>
-        @if (touched().username) {
+        @if (touched().nombre) {
           <ul class="text-xs pl-xs space-y-[2px]">
-            <li [class]="usernameMinLength() ? 'text-green-600' : 'text-red-500'">
-              <span class="mr-1">{{ usernameMinLength() ? '✓' : '✗' }}</span>Mínimo 4 caracteres
+            <li [class]="nombreValid() ? 'text-green-600' : 'text-red-500'">
+              <span class="mr-1">{{ nombreValid() ? '✓' : '✗' }}</span>Mínimo 4 caracteres
             </li>
           </ul>
         }
@@ -63,6 +92,32 @@
           <ul class="text-xs pl-xs space-y-[2px]">
             <li [class]="emailValid() ? 'text-green-600' : 'text-red-500'">
               <span class="mr-1">{{ emailValid() ? '✓' : '✗' }}</span>Correo válido (contiene &#64; y dominio)
+            </li>
+          </ul>
+        }
+      </div>
+
+      <!-- Teléfono -->
+      <div class="flex flex-col gap-xs">
+        <label class="font-label-bold text-label-bold text-on-surface-variant px-xs" for="telefono">Teléfono</label>
+        <div class="relative">
+          <span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline">phone</span>
+          <input
+            class="w-full pl-[44px] pr-md py-md bg-surface-container-lowest border border-outline-variant rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary input-glow transition-all"
+            id="telefono"
+            placeholder="099 123 456"
+            type="tel"
+            [ngModel]="telefono()"
+            (ngModelChange)="telefono.set($event)"
+            (blur)="touch('telefono')"
+            name="telefono"
+            autocomplete="tel"
+          >
+        </div>
+        @if (touched().telefono) {
+          <ul class="text-xs pl-xs space-y-[2px]">
+            <li [class]="telefonoValid() ? 'text-green-600' : 'text-red-500'">
+              <span class="mr-1">{{ telefonoValid() ? '✓' : '✗' }}</span>Mínimo 7 dígitos
             </li>
           </ul>
         }
@@ -132,6 +187,62 @@
         }
       </div>
 
+      <!-- Campos adicionales para profesional -->
+      @if (tipo() === 'profesional') {
+        <div class="pt-xs border-t border-outline-variant/30">
+          <p class="font-label-bold text-label-bold text-on-surface-variant mb-md text-xs uppercase tracking-wider">
+            Datos del negocio
+          </p>
+
+          <!-- Nombre del negocio -->
+          <div class="flex flex-col gap-xs mb-md">
+            <label class="font-label-bold text-label-bold text-on-surface-variant px-xs" for="nombreNegocio">Nombre del Negocio</label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline">store</span>
+              <input
+                class="w-full pl-[44px] pr-md py-md bg-surface-container-lowest border border-outline-variant rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary input-glow transition-all"
+                id="nombreNegocio"
+                placeholder="Mi Negocio"
+                type="text"
+                [ngModel]="nombreNegocio()"
+                (ngModelChange)="nombreNegocio.set($event)"
+                (blur)="touch('nombreNegocio')"
+                name="nombreNegocio"
+              >
+            </div>
+            @if (touched().nombreNegocio) {
+              <ul class="text-xs pl-xs space-y-[2px]">
+                <li [class]="nombreNegocioValid() ? 'text-green-600' : 'text-red-500'">
+                  <span class="mr-1">{{ nombreNegocioValid() ? '✓' : '✗' }}</span>Mínimo 4 caracteres
+                </li>
+              </ul>
+            }
+          </div>
+
+          <!-- Descripción -->
+          <div class="flex flex-col gap-xs">
+            <label class="font-label-bold text-label-bold text-on-surface-variant px-xs" for="descripcion">Descripción del negocio</label>
+            <textarea
+              class="w-full px-md py-md bg-surface-container-lowest border border-outline-variant rounded-xl font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary input-glow transition-all resize-none"
+              id="descripcion"
+              placeholder="Describe brevemente tus servicios..."
+              rows="3"
+              [ngModel]="descripcion()"
+              (ngModelChange)="descripcion.set($event)"
+              (blur)="touch('descripcion')"
+              name="descripcion"
+            ></textarea>
+            @if (touched().descripcion) {
+              <ul class="text-xs pl-xs space-y-[2px]">
+                <li [class]="descripcionValid() ? 'text-green-600' : 'text-red-500'">
+                  <span class="mr-1">{{ descripcionValid() ? '✓' : '✗' }}</span>Mínimo 6 caracteres
+                </li>
+              </ul>
+            }
+          </div>
+        </div>
+      }
+
       <!-- Submit -->
       <div class="pt-sm">
         <button
@@ -142,9 +253,9 @@
         >
           @if (loading()) {
             <span class="animate-spin mr-sm h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
-            Verificando...
+            Creando cuenta...
           } @else {
-            Continuar
+            Crear Cuenta
           }
         </button>
       </div>
@@ -157,7 +268,6 @@
       </p>
     </div>
 
-    <!-- Footer Small Links -->
     <div class="mt-lg flex justify-center gap-md border-t border-outline-variant pt-md">
       <a class="font-caption text-caption text-outline hover:text-primary transition-colors" href="#">Términos</a>
       <a class="font-caption text-caption text-outline hover:text-primary transition-colors" href="#">Privacidad</a>

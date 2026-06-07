@@ -1,4 +1,5 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://taller-php-2026-backend.test/api',
+  apiUrl: 'http://localhost:8080/api',
+  googleRedirectUrl: 'http://localhost:8080/api/auth/google/redirect',
 };
