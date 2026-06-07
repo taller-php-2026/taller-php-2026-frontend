@@ -107,6 +107,13 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/reservas/reservas').then((m) => m.Reservas),
       },
       {
+        path: 'metricas-profesional',
+        loadComponent: () =>
+          import('./pages/metricas-profesional/metricas-profesional').then(
+            (m) => m.MetricasProfesional,
+          ),
+      },
+      {
         path: 'servicio/:id/seleccionar-profesional',
         loadComponent: () =>
           import('@pages/select-professional/select-professional.component').then(

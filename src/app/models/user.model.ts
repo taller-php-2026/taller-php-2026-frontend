@@ -3,4 +3,5 @@ export interface UserProfile {
   email: string;
   picture: string;
   type?: 'cliente' | 'profesional';
+  idUsuario?: number;
 }

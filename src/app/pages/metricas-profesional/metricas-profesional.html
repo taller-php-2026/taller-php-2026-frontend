@@ -1,0 +1,244 @@
+<main class="max-w-7xl mx-auto px-lg py-xl">
+  <!-- Cabecera y Filtros -->
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-lg mb-xl">
+    <div>
+      <div class="flex items-center gap-sm mb-xs">
+        <button (click)="volver()" class="p-xs hover:bg-surface-container rounded-full transition-colors flex items-center justify-center">
+          <span class="material-symbols-outlined text-on-surface-variant">arrow_back</span>
+        </button>
+        <h2 class="font-display-lg text-display-lg text-on-surface">Dashboard de Métricas</h2>
+      </div>
+      <p class="text-body-md text-secondary">Análisis exhaustivo de tu rendimiento operativo y financiero.</p>
+    </div>
+    
+    <div class="flex items-center gap-md">
+      <!-- Selector de Rango de Fecha -->
+      <div class="bg-white px-md py-sm rounded-lg shadow-sm flex items-center gap-sm border border-outline-variant/20">
+        <span class="material-symbols-outlined text-primary text-[20px]">calendar_today</span>
+        <select (change)="cambiarFiltro($event)" class="border-none bg-transparent text-label-bold font-label-bold focus:ring-0 py-0 cursor-pointer text-sm outline-none">
+          <option value="30">Últimos 30 días</option>
+          <option value="90">Últimos 90 días</option>
+          <option value="365">Últimos 365 días</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  @if (cargando()) {
+    <!-- Estado de Carga -->
+    <div class="flex flex-col items-center justify-center py-20 gap-md">
+      <div class="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+      <p class="text-on-surface-variant font-label-bold text-sm">Cargando métricas de tu agenda...</p>
+    </div>
+  } @else {
+    <!-- Grid de KPIs Principales -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-lg mb-xl">
+      <!-- KPI: Total Reservas -->
+      <div class="soft-ui-card p-lg border border-outline-variant/10">
+        <div class="flex justify-between items-start mb-md">
+          <div class="p-sm bg-primary/10 text-primary rounded-lg">
+            <span class="material-symbols-outlined">event_available</span>
+          </div>
+          <span class="text-caption font-label-bold text-primary bg-primary/10 px-sm py-xs rounded-full">Activo</span>
+        </div>
+        <p class="text-secondary text-caption uppercase tracking-wider font-bold mb-xs">Total de Turnos</p>
+        <h3 class="text-display-lg font-display-lg text-on-surface mb-md">{{ totalReservas() }}</h3>
+        <div class="flex justify-between pt-md border-t border-outline-variant/20 text-caption">
+          <span class="text-secondary">Completados: <b class="text-on-surface">{{ reservasCompletadas() }}</b></span>
+          <span class="text-secondary">Pendientes: <b class="text-on-surface">{{ reservasPendientes() }}</b></span>
+        </div>
+      </div>
+
+      <!-- KPI: Ingresos Totales -->
+      <div class="soft-ui-card p-lg border border-outline-variant/10">
+        <div class="flex justify-between items-start mb-md">
+          <div class="p-sm bg-tertiary/10 text-tertiary rounded-lg">
+            <span class="material-symbols-outlined">payments</span>
+          </div>
+          <span class="text-caption font-label-bold text-tertiary bg-tertiary-container/20 px-sm py-xs rounded-full">Estimado</span>
+        </div>
+        <p class="text-secondary text-caption uppercase tracking-wider font-bold mb-xs">Ingresos Estimados</p>
+        <h3 class="text-display-lg font-display-lg text-on-surface mb-md">${{ ingresosTotales() | number:'1.2-2' }}</h3>
+        <div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+          <div class="h-full bg-primary" [style.width.%]="100"></div>
+        </div>
+      </div>
+
+      <!-- KPI: Tasa de Completitud -->
+      <div class="soft-ui-card p-lg border border-outline-variant/10">
+        <div class="flex justify-between items-start mb-md">
+          <div class="p-sm bg-secondary/10 text-secondary rounded-lg">
+            <span class="material-symbols-outlined">autorenew</span>
+          </div>
+          <span class="text-caption font-label-bold text-on-secondary-fixed-variant bg-secondary-container px-sm py-xs rounded-full">
+            {{ tasaCompletitud() }}%
+          </span>
+        </div>
+        <p class="text-secondary text-caption uppercase tracking-wider font-bold mb-xs">Tasa de Completitud</p>
+        <h3 class="text-display-lg font-display-lg text-on-surface mb-md">{{ tasaCompletitud() }}%</h3>
+        <div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+          <div class="h-full bg-primary" [style.width.%]="tasaCompletitud()"></div>
+        </div>
+      </div>
+
+      <!-- KPI: Calificación Promedio -->
+      <div class="soft-ui-card p-lg border border-outline-variant/10">
+        <div class="flex justify-between items-start mb-md">
+          <div class="p-sm bg-primary/10 text-primary rounded-lg">
+            <span class="material-symbols-outlined">star</span>
+          </div>
+          <span class="text-caption font-label-bold text-primary bg-primary-fixed-dim/20 px-sm py-xs rounded-full">General</span>
+        </div>
+        <p class="text-secondary text-caption uppercase tracking-wider font-bold mb-xs">Calificación Promedio</p>
+        <h3 class="text-display-lg font-display-lg text-on-surface mb-md">{{ promedioRating() | number:'1.1-1' }}</h3>
+        <div class="flex items-center gap-xs text-caption text-secondary">
+          <span class="material-symbols-outlined text-[14px] text-primary">trending_up</span>
+          <span>Excelente reputación del servicio</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid de Gráficos de Tendencias y Modalidades -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-lg mb-xl">
+      <!-- Tendencia de Reservas Semanal -->
+      <div class="lg:col-span-8 bg-white soft-ui-card p-lg flex flex-col justify-between border border-outline-variant/10">
+        <div>
+          <div class="flex justify-between items-center mb-xl">
+            <h4 class="text-title-sm font-title-sm text-on-surface">Tendencia Semanal de Operaciones</h4>
+            <div class="flex gap-md">
+              <div class="flex items-center gap-xs">
+                <div class="w-2 h-2 rounded-full bg-primary"></div>
+                <span class="text-caption text-secondary">Completadas</span>
+              </div>
+              <div class="flex items-center gap-xs">
+                <div class="w-2 h-2 rounded-full bg-error"></div>
+                <span class="text-caption text-secondary">Canceladas</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Pseudo Bar Chart -->
+          <div class="flex items-end gap-md h-64 mb-lg px-md">
+            @for (dia of operacionesSemanales(); track dia.nombre) {
+              <div class="flex-1 flex flex-col justify-end gap-xs h-full group">
+                <!-- Barra de Canceladas (arriba) -->
+                @if (dia.canceladas > 0) {
+                  <div class="w-full bg-error/20 rounded-t-lg transition-all" [style.height.%]="dia.canceladas * 10" title="Canceladas: {{ dia.canceladas }}"></div>
+                }
+                <!-- Barra de Completadas -->
+                <div class="w-full bg-primary rounded-t-lg transition-all group-hover:brightness-90" [style.height.%]="dia.pct || 5" title="Completadas: {{ dia.completadas }}"></div>
+                <span class="text-[10px] text-center text-outline uppercase font-bold mt-sm">{{ dia.nombre }}</span>
+              </div>
+            }
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-3 gap-lg pt-lg border-t border-outline-variant/20">
+          <div class="text-primary">
+            <p class="text-caption font-bold uppercase">Completadas</p>
+            <p class="text-headline-md font-headline-md">{{ reservasCompletadas() }}</p>
+          </div>
+          <div class="text-error border-x border-outline-variant/20 px-lg text-center">
+            <p class="text-caption font-bold uppercase">Canceladas</p>
+            <p class="text-headline-md font-headline-md">{{ reservasCanceladas() }}</p>
+          </div>
+          <div class="text-on-secondary-fixed-variant text-right">
+            <p class="text-caption font-bold uppercase">En Agenda / Pendiente</p>
+            <p class="text-headline-md font-headline-md">{{ reservasPendientes() }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Distribución por Modalidad -->
+      <div class="lg:col-span-4 bg-white soft-ui-card p-lg flex flex-col border border-outline-variant/10">
+        <h4 class="text-title-sm font-title-sm text-on-surface mb-xl">Modalidad de Servicios</h4>
+        
+        <div class="relative flex-1 flex items-center justify-center mb-xl">
+          <!-- Donut de Visualización Sencilla -->
+          <div class="w-44 h-44 rounded-full border-[16px] border-primary flex items-center justify-center relative">
+            <div class="text-center">
+              <span class="text-display-md font-display-md text-on-surface">
+                {{ totalReservas() > 0 ? Math.round((modalidadStats().presencial / totalReservas()) * 100) : 0 }}%
+              </span>
+              <p class="text-[10px] text-secondary uppercase font-bold">Presencial</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-md">
+          <div class="flex items-center justify-between p-sm hover:bg-surface-container rounded-lg transition-colors">
+            <div class="flex items-center gap-sm">
+              <div class="w-3 h-3 rounded-full bg-primary"></div>
+              <span class="text-body-sm text-on-surface">Presencial</span>
+            </div>
+            <span class="text-label-bold font-label-bold">{{ modalidadStats().presencial }} turnos</span>
+          </div>
+          <div class="flex items-center justify-between p-sm hover:bg-surface-container rounded-lg transition-colors">
+            <div class="flex items-center gap-sm">
+              <div class="w-3 h-3 rounded-full bg-tertiary-container"></div>
+              <span class="text-body-sm text-on-surface">Virtual (Videollamada)</span>
+            </div>
+            <span class="text-label-bold font-label-bold">{{ modalidadStats().virtual }} turnos</span>
+          </div>
+          <div class="flex items-center justify-between p-sm hover:bg-surface-container rounded-lg transition-colors">
+            <div class="flex items-center gap-sm">
+              <div class="w-3 h-3 rounded-full bg-secondary-container"></div>
+              <span class="text-body-sm text-on-surface">Híbrida</span>
+            </div>
+            <span class="text-label-bold font-label-bold">{{ modalidadStats().hibrido }} turnos</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid de Métricas de Servicios e Ingresos -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-lg">
+      <!-- Ingresos por Categoría / Servicio -->
+      <div class="bg-white soft-ui-card p-lg border border-outline-variant/10">
+        <div class="flex justify-between items-center mb-xl">
+          <h4 class="text-title-sm font-title-sm text-on-surface">Ingresos por Servicio (Top 4)</h4>
+          <span class="text-caption font-bold text-primary">Detalle de Ventas</span>
+        </div>
+        
+        <div class="space-y-xl">
+          @for (serv of ingresosPorServicio(); track serv.nombre) {
+            <div>
+              <div class="flex justify-between mb-xs">
+                <span class="text-body-sm font-label-bold">{{ serv.nombre }}</span>
+                <span class="text-body-sm text-secondary font-bold">${{ serv.monto | number:'1.2-2' }}</span>
+              </div>
+              <div class="w-full h-2 bg-surface-container rounded-full">
+                <div class="h-full bg-primary rounded-full" [style.width.%]="porcentajeIngreso(serv.monto)"></div>
+              </div>
+            </div>
+          } @empty {
+            <p class="text-center text-on-surface-variant py-10">No se registran ingresos en el período seleccionado.</p>
+          }
+        </div>
+      </div>
+
+      <!-- Listado de Reservas Recientes de este Profesional -->
+      <div class="bg-white soft-ui-card p-lg border border-outline-variant/10 flex flex-col">
+        <h4 class="text-title-sm font-title-sm text-on-surface mb-lg">Turnos Recientes</h4>
+        
+        <div class="divide-y divide-outline-variant/10 flex-1 overflow-y-auto max-h-[320px]">
+          @for (res of reservasFiltradasPorFecha().slice(0, 5); track res.idReserva) {
+            <div class="py-md flex justify-between items-center gap-md">
+              <div>
+                <p class="font-label-bold text-on-surface text-sm">{{ res.cliente?.usuario?.nombre || 'Cliente' }}</p>
+                <p class="text-caption text-secondary">{{ res.servicio?.nombre }} • {{ res.fechaReserva }}</p>
+              </div>
+              <div>
+                <span [class]="res.estado === 'completada' ? 'bg-primary/10 text-primary' : 'bg-secondary-container text-on-secondary-container'" class="text-[10px] uppercase tracking-wider px-sm py-0.5 rounded-full font-bold">
+                  {{ res.estado }}
+                </span>
+              </div>
+            </div>
+          } @empty {
+            <p class="text-center text-on-surface-variant py-10">No hay reservas recientes registradas en este período.</p>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</main>
