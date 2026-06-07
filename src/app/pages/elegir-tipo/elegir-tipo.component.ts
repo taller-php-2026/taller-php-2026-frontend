@@ -146,9 +146,16 @@ export class ElegirTipoComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (!this.auth.hasPendingUser && !this.auth.isAuthenticated()) {
+    // Sesión completa con tipo → ya puede usar la app
+    if (this.auth.isAuthenticated() && this.auth.userType()) {
+      this.router.navigate(['/']);
+      return;
+    }
+    // Sin ninguna sesión → debe loguearse primero
+    if (!this.auth.isAuthenticated()) {
       this.router.navigate(['/login']);
     }
+    // Caso válido: autenticado pero sin tipo (sesión parcial de Google OAuth)
   }
 
   completarRegistro() {
@@ -159,11 +166,36 @@ export class ElegirTipoComponent implements OnInit {
     }
     this.loading.set(true);
     this.errorMsg.set('');
-    setTimeout(() => {
-      this.auth.setUserType(this.selectedRole);
-      this.auth.completePendingLogin();
-      this.loading.set(false);
-      this.router.navigate(['/']);
-    }, 600);
+
+    const telefono = this.selectedCountry.dial + this.phone().replace(/\s/g, '');
+    const payload =
+      this.selectedRole === 'profesional'
+        ? {
+            tipo: 'profesional' as const,
+            telefono,
+            nombreNegocio: this.nombreNegocio().trim(),
+            descripcion: this.descripcion().trim(),
+          }
+        : { tipo: 'cliente' as const, telefono };
+
+    this.auth.completarPerfil(payload).subscribe({
+      next: () => {
+        this.loading.set(false);
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        this.loading.set(false);
+        if (err.status === 422 && err.error?.errors) {
+          const msgs = Object.values(err.error.errors as Record<string, string[]>)
+            .flat()
+            .join(' ');
+          this.errorMsg.set(msgs);
+        } else if (err.error?.message) {
+          this.errorMsg.set(err.error.message);
+        } else {
+          this.errorMsg.set('Error al completar el perfil. Intenta de nuevo.');
+        }
+      },
+    });
   }
 }

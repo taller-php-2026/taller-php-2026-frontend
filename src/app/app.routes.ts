@@ -15,6 +15,20 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/login/login.component').then((m) => m.LoginComponent),
   },
   {
+    path: 'auth/callback',
+    loadComponent: () =>
+      import('./pages/auth-callback/auth-callback.component').then(
+        (m) => m.AuthCallbackComponent,
+      ),
+  },
+  {
+    path: 'auth/google/callback',
+    loadComponent: () =>
+      import('./pages/auth-callback/auth-callback.component').then(
+        (m) => m.AuthCallbackComponent,
+      ),
+  },
+  {
     path: 'elegir-tipo',
     loadComponent: () =>
       import('./pages/elegir-tipo/elegir-tipo.component').then((m) => m.ElegirTipoComponent),
