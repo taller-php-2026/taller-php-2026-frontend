@@ -1,67 +1,63 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Calendar } from '@pages/select-time-date/components/calendar/calendar.component';
 import { Layout } from '@shared/layout/layout.component';
 import { StepsComponent } from '@components/steps/steps.component';
+import { Calendar } from './components/calendar/calendar.component';
+import { ScheduleService } from 'app/services/schedule.service';
+import { BookingStateService } from 'app/services/booking-state.service';
+import { Slot } from 'app/models/schedule.model';
+import { NgClass } from '@angular/common';
 import { Service } from 'app/models/service.model';
 import { ServicesService } from 'app/services/services.service';
 import { NgIcon } from '@ng-icons/core';
-import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-select-time-date',
   templateUrl: './select-time-date.component.html',
-  imports: [Layout, Calendar, StepsComponent, NgIcon, NgClass, StepsComponent],
+  imports: [Layout, StepsComponent, Calendar, NgClass, NgIcon],
 })
-export class SelectTimeDateComponent {
-  private servicesService = inject(ServicesService);
+export class SelectTimeDateComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private scheduleService = inject(ScheduleService);
+  private serviceService = inject(ServicesService);
+  private bookingState = inject(BookingStateService);
   private cdr = inject(ChangeDetectorRef);
 
   serviceId: string | null = null;
   service: Service | null = null;
-
+  slots: Slot[] = [];
   selectedDate: Date | null = null;
-  selectedTime: string | null = null;
-
-  schedules: { id: number; time: string }[] = [];
+  selectedSlot: Slot | null = null;
 
   onDateSelected(date: Date) {
     this.selectedDate = date;
+    const fecha = date.toISOString().split('T')[0];
+
+    this.scheduleService.getSlots(4, fecha, 1).subscribe((response) => {
+      this.slots = response.data.slots_disponibles;
+      this.cdr.detectChanges();
+    });
   }
 
-  onTimeSelected(time: string) {
-    this.selectedTime = time;
+  selectSlot(slot: Slot) {
+    this.selectedSlot = slot;
+    this.bookingState.selectedTime = slot.horaInicio;
+    this.bookingState.selectedDate = this.selectedDate;
   }
 
   goToNextStep() {
     this.router.navigate([`/servicio/${this.serviceId}/pago`]);
   }
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-  ) {}
-
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
       this.serviceId = params.get('id');
 
-      this.servicesService.getServiceById(this.serviceId!).subscribe((response) => {
+      this.serviceService.getServiceById(this.serviceId!).subscribe((response) => {
         this.service = response.data;
         this.cdr.detectChanges();
       });
-
-      this.schedules = [
-        { id: 1, time: '09:00 AM' },
-        { id: 2, time: '10:00 AM' },
-        { id: 3, time: '11:00 AM' },
-        { id: 4, time: '12:00 PM' },
-        { id: 5, time: '01:00 PM' },
-        { id: 6, time: '02:00 PM' },
-        { id: 7, time: '03:00 PM' },
-        { id: 8, time: '04:00 PM' },
-        { id: 9, time: '05:00 PM' },
-      ];
     });
   }
 }

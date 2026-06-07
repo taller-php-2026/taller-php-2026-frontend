@@ -1,21 +1,18 @@
 @if (service) {
-<div class="w-screen bg-primary mx-auto">
-
-
+<div class="w-screen bg-primary">
     <div class="w-3/4 flex flex-col mx-auto py-16 text-white">
         <h3 class="text-4xl font-bold mb-4">{{service.nombre}}</h3>
-        <p class="text-lg"> {{service.descripcion}} </p>
+        <p class="text-lg">{{service.descripcion}}</p>
         <div class="flex items-center">
             <ng-icon name="heroClock" color="white" size="30" />
-            <p class="text-lg ml-2 my-2"> {{service.duracionMinutos}} min</p>
+            <p class="text-lg ml-2 my-2">{{service.duracionMinutos}} min</p>
         </div>
         <div class="flex items-center">
             <ng-icon name="heroCurrencyDollar" color="white" size="30" />
-            <p class="text-lg ml-2 my-2"> {{service.precio.toFixed(2)}} </p>
+            <p class="text-lg ml-2 my-2">{{service.precio.toFixed(2)}}</p>
         </div>
     </div>
 </div>
-
 
 <app-layout class="mt-10">
     <app-steps [currentStep]="2"></app-steps>
@@ -31,28 +28,33 @@
         <div class="flex flex-col">
             <p class="font-semibold text-center">Horarios disponibles:</p>
 
+            @if (slots.length === 0) {
+            <p class="text-gray-400 text-sm mt-4">No hay horarios disponibles para esta fecha.</p>
+            } @else {
             <div class="grid grid-cols-3 gap-4 mt-4">
-                @for (schedule of schedules; track schedule.id) {
-                <button class="border border-primary text-gray-800 font-bold py-2 px-4 rounded"
-                    [class.bg-primary!]="selectedTime === schedule.time"
-                    [class.text-white!]="selectedTime === schedule.time" (click)="onTimeSelected(schedule.time)">
-                    {{ schedule.time }}
+                @for (slot of slots; track slot.horaInicio) {
+                <button class="border text-sm font-medium py-2 px-4 rounded-lg transition-all duration-200" [ngClass]="selectedSlot?.horaInicio === slot.horaInicio
+                            ? 'bg-primary text-white border-primary'
+                            : 'border-gray-300 text-gray-800 hover:border-primary'" (click)="selectSlot(slot)">
+                    {{ slot.horaInicio }} - {{ slot.horaFin }}
                 </button>
                 }
             </div>
+            }
         </div>
     </section>
 
     <div class="flex justify-end mt-6">
         <button class="text-white font-bold py-2 px-4 rounded transition-colors duration-200"
-            [ngClass]="selectedTime && selectedDate ? 'bg-primary cursor-pointer' : 'bg-gray-500 cursor-not-allowed opacity-50'"
-            [disabled]="!selectedTime || !selectedDate" (click)="goToNextStep()">
+            [ngClass]="selectedSlot && selectedDate ? 'bg-primary cursor-pointer' : 'bg-gray-500 cursor-not-allowed opacity-50'"
+            [disabled]="!selectedSlot || !selectedDate" (click)="goToNextStep()">
             Siguiente
         </button>
     </div>
 </app-layout>
+
 } @else {
-<div class="w-screen flex flex-col mx-auto py-16 text-white bg-primary ">
+<div class="w-screen flex flex-col mx-auto py-16 text-white bg-primary">
     <div class="w-3/4 flex flex-col mx-auto">
         <h3 class="text-4xl font-bold mb-4">Servicio no encontrado</h3>
         <p class="text-lg">El servicio que estás buscando no existe o no está disponible.</p>
