@@ -15,4 +15,8 @@ export class ProfessionalCard {
   selectProfessional() {
     this.selectedProfessional.emit(this.professional.idUsuario);
   }
+
+  onImgError(event: Event) {
+    (event.target as HTMLImageElement).src = 'assets/placeholders/user-placeholder.svg';
+  }
 }

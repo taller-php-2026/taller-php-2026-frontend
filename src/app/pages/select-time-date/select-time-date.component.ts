@@ -32,9 +32,18 @@ export class SelectTimeDateComponent implements OnInit {
 
   onDateSelected(date: Date) {
     this.selectedDate = date;
-    const fecha = date.toISOString().split('T')[0];
 
-    this.scheduleService.getSlots(4, fecha, 1).subscribe((response) => {
+    const profId = this.bookingState.professionalId;
+    const svcId = this.bookingState.serviceId;
+
+    if (!profId || !svcId) {
+      // Estado de reserva incompleto: volver al paso anterior
+      this.router.navigate(['/']);
+      return;
+    }
+
+    const fecha = date.toISOString().split('T')[0];
+    this.scheduleService.getSlots(profId, fecha, svcId).subscribe((response) => {
       this.slots = response.data.slots_disponibles;
       this.cdr.detectChanges();
     });

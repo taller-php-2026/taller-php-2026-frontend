@@ -4,6 +4,9 @@ export interface UserProfile {
   email: string;
   picture: string;
   type?: 'cliente' | 'profesional';
+  telefono?: string;
+  imagenPerfilUrl?: string;
+  imagenPerfilPublicId?: string;
 }
 
 export interface BackendUsuario {
@@ -14,6 +17,8 @@ export interface BackendUsuario {
   activo?: boolean;
   roles?: string[];
   tipoPrincipal?: 'cliente' | 'profesional' | null;
+  imagenPerfilUrl?: string;
+  imagenPerfilPublicId?: string;
 }
 
 export interface AuthResponse {
