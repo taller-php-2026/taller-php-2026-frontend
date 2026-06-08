@@ -141,6 +141,13 @@ export const routes: Routes = [
           import('./pages/pago/pago.component').then((m) => m.PagoSeguroComponent),
         canActivate: [bookingStep3Guard],
       },
+      {
+        path: 'panel-administrador',
+        loadComponent: () =>
+          import('./pages/panel-administrador/panel-administrador.component').then(
+            (m) => m.PanelAdministradorComponent,
+          ),
+      },
     ],
   },
 

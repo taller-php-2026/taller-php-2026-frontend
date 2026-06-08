@@ -1,0 +1,282 @@
+<div class="min-h-screen bg-slate-50 text-slate-900 pb-12">
+  <!-- TopAppBar -->
+  <header class="h-16 sticky top-0 bg-white flex justify-between items-center px-6 border-b border-slate-200 z-40 shadow-sm">
+    <div class="flex items-center gap-4">
+      <h1 class="text-xl font-bold text-teal-700">AdminPro</h1>
+      <h2 class="text-lg font-semibold text-slate-700">Super Admin Dashboard</h2>
+    </div>
+    <div class="flex items-center gap-4">
+      <a routerLink="/" class="text-sm font-medium text-slate-600 hover:text-teal-700 transition-colors">Volver al Inicio</a>
+      <button (click)="cargarDatos()" class="p-2 text-slate-600 hover:bg-slate-100 rounded-full transition-all" title="Recargar">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Loading & Error states -->
+  <div *ngIf="loading()" class="flex flex-col items-center justify-center pt-24">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-700"></div>
+    <p class="mt-4 text-slate-600 font-medium">Cargando estadísticas...</p>
+  </div>
+
+  <div *ngIf="error() && !loading()" class="max-w-xl mx-auto mt-12 p-6 bg-red-50 border border-red-200 rounded-xl text-center">
+    <p class="text-red-700 font-semibold mb-4">{{ error() }}</p>
+    <button (click)="cargarDatos()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium">
+      Reintentar
+    </button>
+  </div>
+
+  <!-- Main Grid -->
+  <div *ngIf="!loading()" class="max-w-[1600px] mx-auto px-6 pt-6 space-y-6">
+    <!-- KPI Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Usuarios Totales -->
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 transition-all hover:shadow-md">
+        <div class="flex justify-between items-start mb-4">
+          <div class="p-3 bg-teal-50 text-teal-700 rounded-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.97 5.97 0 0 0-.75-2.906m-.182-2.906a4.5 4.5 0 1 1-6.196-6.196m6.196 6.196a4.5 4.5 0 0 1-6.196 6.196m1.196-1.196-.001-.031a5.97 5.97 0 0 0-.75-2.906m.882 2.29A4.494 4.494 0 0 1 12 15c-1.327 0-2.5-.578-3.308-1.504m0 0a6 6 0 0 0-.75-2.906M9 15.75a9.094 9.094 0 0 1-3.741-.479 3 3 0 0 1 4.682-2.72m-.94 3.198.002.031c0 .225.012.447.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.72m0 0a5.97 5.97 0 0 1 .75-2.906m-.18-2.906a4.5 4.5 0 1 0 6.196-6.196m-6.196 6.196a4.5 4.5 0 0 0 6.196 6.196" />
+            </svg>
+          </div>
+          <span class="text-xs font-semibold text-teal-700 bg-teal-50 px-2.5 py-1 rounded-full">Total</span>
+        </div>
+        <h3 class="text-slate-500 text-sm font-medium mb-1">Usuarios Totales</h3>
+        <p class="text-3xl font-bold text-slate-800 mb-4">{{ metricas().usuarios?.total }}</p>
+        <div class="flex flex-col gap-2 pt-3 border-t border-slate-100 text-xs">
+          <div class="flex justify-between">
+            <span class="text-slate-500">Clientes</span>
+            <span class="font-bold text-slate-700">{{ metricas().usuarios?.clientes }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Profesionales</span>
+            <span class="font-bold text-slate-700">{{ metricas().usuarios?.profesionales }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Administradores</span>
+            <span class="font-bold text-slate-700">{{ metricas().usuarios?.administradores }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ingresos de Pagos -->
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 transition-all hover:shadow-md">
+        <div class="flex justify-between items-start mb-4">
+          <div class="p-3 bg-amber-50 text-amber-700 rounded-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75m-.75-1.5h1.5m-1.5 18.25h1.5m10.5-18v1.875c0 .621.504 1.125 1.125 1.125H18M4.5 9h9.186M9 10.125l3.563-3.563m0 0a2.25 2.25 0 1 0-3.18 3.18l3.562-3.563m0 0V9m3 11.25a9 9 0 0 1-9-9v-3.75h1.875c.621 0 1.125-.504 1.125-1.125V3.75h3.75a9 9 0 0 1 9 9v3.75h-1.875a1.125 1.125 0 0 0-1.125 1.125v1.875Z" />
+            </svg>
+          </div>
+          <span class="text-xs font-semibold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full">Aprobados</span>
+        </div>
+        <h3 class="text-slate-500 text-sm font-medium mb-1">Ingresos de Pagos</h3>
+        <p class="text-3xl font-bold text-slate-800 mb-4">${{ metricas().pagos?.montoTotalAprobado | number:'1.2-2' }}</p>
+        <div class="flex flex-col gap-2 pt-3 border-t border-slate-100 text-xs">
+          <div class="flex justify-between">
+            <span class="text-slate-500">Transacciones aprobadas</span>
+            <span class="font-bold text-slate-700">{{ metricas().pagos?.cantidadAprobados }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gestión de Reservas -->
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 transition-all hover:shadow-md">
+        <div class="flex justify-between items-start mb-4">
+          <div class="p-3 bg-blue-50 text-blue-700 rounded-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+            </svg>
+          </div>
+          <span class="text-xs font-semibold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full">Reservas</span>
+        </div>
+        <h3 class="text-slate-500 text-sm font-medium mb-1">Reservas Totales</h3>
+        <p class="text-3xl font-bold text-slate-800 mb-4">{{ metricas().reservas?.total }}</p>
+        <div class="grid grid-cols-3 gap-2 text-center pt-3 border-t border-slate-100 text-xs">
+          <div>
+            <p class="text-slate-500">Pend.</p>
+            <p class="font-bold text-teal-600">{{ metricas().reservas?.pendientes }}</p>
+          </div>
+          <div>
+            <p class="text-slate-500">Conf.</p>
+            <p class="font-bold text-slate-700">{{ metricas().reservas?.confirmadas }}</p>
+          </div>
+          <div>
+            <p class="text-slate-500">Canc.</p>
+            <p class="font-bold text-red-600">{{ metricas().reservas?.canceladas }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paquetes y Sesiones -->
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 transition-all hover:shadow-md">
+        <div class="flex justify-between items-start mb-4">
+          <div class="p-3 bg-purple-50 text-purple-700 rounded-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+            </svg>
+          </div>
+          <span class="text-xs font-semibold text-purple-700 bg-purple-50 px-2.5 py-1 rounded-full">Sesiones</span>
+        </div>
+        <h3 class="text-slate-500 text-sm font-medium mb-1">Sesiones Vendidas</h3>
+        <p class="text-3xl font-bold text-slate-800 mb-4">{{ metricas().paquetes?.sesionesVendidas }}</p>
+        <div class="flex flex-col gap-2 pt-3 border-t border-slate-100 text-xs">
+          <div class="flex justify-between">
+            <span class="text-slate-500">Usadas</span>
+            <span class="font-bold text-slate-700">{{ metricas().paquetes?.sesionesUsadas }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Restantes</span>
+            <span class="font-bold text-slate-700">{{ metricas().paquetes?.sesionesRestantes }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Segundas estadísticas y Modos -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Distribución por Modalidad -->
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 col-span-1">
+        <h3 class="text-base font-semibold mb-6 text-slate-800">Distribución de Servicios por Modalidad</h3>
+        <div class="space-y-4">
+          <div>
+            <div class="flex justify-between text-sm mb-1">
+              <span class="text-slate-600 font-medium">Presenciales</span>
+              <span class="font-bold text-slate-800">{{ metricas().servicios?.presenciales }}</span>
+            </div>
+            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+              <div class="bg-teal-600 h-full rounded-full" [style.width.%]="(metricas().servicios?.presenciales / metricas().servicios?.total) * 100 || 0"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between text-sm mb-1">
+              <span class="text-slate-600 font-medium">Virtuales</span>
+              <span class="font-bold text-slate-800">{{ metricas().servicios?.virtuales }}</span>
+            </div>
+            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+              <div class="bg-blue-600 h-full rounded-full" [style.width.%]="(metricas().servicios?.virtuales / metricas().servicios?.total) * 100 || 0"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between text-sm mb-1">
+              <span class="text-slate-600 font-medium">Híbridos</span>
+              <span class="font-bold text-slate-800">{{ metricas().servicios?.hibridos }}</span>
+            </div>
+            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+              <div class="bg-purple-600 h-full rounded-full" [style.width.%]="(metricas().servicios?.hibridos / metricas().servicios?.total) * 100 || 0"></div>
+            </div>
+          </div>
+          <div class="pt-4 border-t border-slate-100 flex justify-between text-sm font-semibold text-slate-700">
+            <span>Total Servicios</span>
+            <span>{{ metricas().servicios?.total }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resumen de Paquetes -->
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 col-span-2" *ngIf="resumenPaquetes()">
+        <h3 class="text-base font-semibold mb-4 text-slate-800">Resumen Financiero y Estado de Paquetes</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div class="p-4 bg-slate-50 rounded-lg">
+            <p class="text-xs text-slate-500">Monto Aprobado</p>
+            <p class="text-xl font-bold text-teal-700">${{ resumenPaquetes().montoTotalAprobado | number:'1.2-2' }}</p>
+          </div>
+          <div class="p-4 bg-slate-50 rounded-lg">
+            <p class="text-xs text-slate-500">Paquetes Activos</p>
+            <p class="text-xl font-bold text-slate-800">{{ resumenPaquetes().activos }}</p>
+          </div>
+          <div class="p-4 bg-slate-50 rounded-lg">
+            <p class="text-xs text-slate-500">Agotados</p>
+            <p class="text-xl font-bold text-slate-800">{{ resumenPaquetes().agotados }}</p>
+          </div>
+          <div class="p-4 bg-slate-50 rounded-lg">
+            <p class="text-xs text-slate-500">Pendientes de Pago</p>
+            <p class="text-xl font-bold text-slate-800">{{ resumenPaquetes().pendientes }}</p>
+          </div>
+        </div>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span class="text-slate-600">Total Paquetes Comprados:</span>
+            <span class="font-semibold">{{ resumenPaquetes().totalComprados }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-600">Cancelados:</span>
+            <span class="font-semibold text-red-600">{{ resumenPaquetes().cancelados }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tables Section -->
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+      <!-- Reservas por Servicio -->
+      <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+        <div class="p-6 border-b border-slate-100">
+          <h3 class="text-base font-semibold text-slate-800">Reservas por Servicio</h3>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-100">
+                <th class="px-6 py-3">Servicio</th>
+                <th class="px-6 py-3">Modalidad</th>
+                <th class="px-6 py-3 text-center">Total Reservas</th>
+                <th class="px-6 py-3 text-center">Completadas</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-sm text-slate-700">
+              <tr *ngFor="let item of reservasServicio()" class="hover:bg-slate-50/55 transition-colors">
+                <td class="px-6 py-4 font-medium">{{ item.nombre }}</td>
+                <td class="px-6 py-4">
+                  <span class="px-2 py-1 rounded-full text-xs font-medium"
+                        [ngClass]="{
+                          'bg-teal-50 text-teal-700': item.modalidad === 'presencial',
+                          'bg-blue-50 text-blue-700': item.modalidad === 'virtual',
+                          'bg-purple-50 text-purple-700': item.modalidad === 'hibrida'
+                        }">
+                    {{ item.modalidad }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-center font-bold">{{ item.totalReservas }}</td>
+                <td class="px-6 py-4 text-center text-teal-700">{{ item.completadas }}</td>
+              </tr>
+              <tr *ngIf="reservasServicio().length === 0">
+                <td colspan="4" class="px-6 py-8 text-center text-slate-400">No hay datos de reservas por servicio.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Rendimiento por Profesional -->
+      <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+        <div class="p-6 border-b border-slate-100">
+          <h3 class="text-base font-semibold text-slate-800">Rendimiento por Profesional (Reservas)</h3>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-100">
+                <th class="px-6 py-3">Profesional</th>
+                <th class="px-6 py-3 text-center">Reservas Totales</th>
+                <th class="px-6 py-3 text-center text-teal-700">Completadas</th>
+                <th class="px-6 py-3 text-center text-red-600">Canceladas</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-sm text-slate-700">
+              <tr *ngFor="let prof of reservasProfesional()" class="hover:bg-slate-50/55 transition-colors">
+                <td class="px-6 py-4 font-semibold">{{ prof.nombreNegocio }}</td>
+                <td class="px-6 py-4 text-center font-bold">{{ prof.totalReservas }}</td>
+                <td class="px-6 py-4 text-center text-teal-700">{{ prof.completadas }}</td>
+                <td class="px-6 py-4 text-center text-red-600">{{ prof.canceladas }}</td>
+              </tr>
+              <tr *ngIf="reservasProfesional().length === 0">
+                <td colspan="4" class="px-6 py-8 text-center text-slate-400">No hay datos de rendimiento de profesionales.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

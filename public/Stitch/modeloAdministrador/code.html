@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AdminPro - Super Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#006a61",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed-dim": "#6bd8cb",
+                    "surface-dim": "#cbdbf5",
+                    "secondary-fixed-dim": "#c3c7cb",
+                    "outline": "#6d7a77",
+                    "on-secondary-fixed-variant": "#43474b",
+                    "surface-container-high": "#dce9ff",
+                    "inverse-surface": "#213145",
+                    "primary-fixed": "#89f5e7",
+                    "on-error-container": "#93000a",
+                    "primary": "#00685f",
+                    "surface-container-low": "#eff4ff",
+                    "on-tertiary-fixed": "#201c00",
+                    "surface-variant": "#d3e4fe",
+                    "on-tertiary-fixed-variant": "#4f4800",
+                    "tertiary-fixed-dim": "#d7c957",
+                    "on-secondary": "#ffffff",
+                    "on-surface-variant": "#3d4947",
+                    "on-tertiary-container": "#474000",
+                    "surface-container-highest": "#d3e4fe",
+                    "error-container": "#ffdad6",
+                    "surface-bright": "#f8f9ff",
+                    "outline-variant": "#bcc9c6",
+                    "secondary": "#5a5f62",
+                    "on-background": "#0b1c30",
+                    "on-secondary-container": "#5e6367",
+                    "tertiary-container": "#baad3e",
+                    "inverse-on-surface": "#eaf1ff",
+                    "on-primary-container": "#f4fffc",
+                    "inverse-primary": "#6bd8cb",
+                    "background": "#f8f9ff",
+                    "error": "#ba1a1a",
+                    "on-primary": "#ffffff",
+                    "tertiary": "#695f00",
+                    "on-surface": "#0b1c30",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-fixed": "#f4e570",
+                    "on-primary-fixed": "#00201d",
+                    "on-error": "#ffffff",
+                    "on-secondary-fixed": "#171c1f",
+                    "secondary-container": "#dce0e4",
+                    "surface-container": "#e5eeff",
+                    "surface": "#f8f9ff",
+                    "on-primary-fixed-variant": "#005049",
+                    "secondary-fixed": "#dfe3e7",
+                    "primary-container": "#008378"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "sm": "8px",
+                    "container-padding": "24px",
+                    "xl": "32px",
+                    "lg": "24px",
+                    "unit": "4px",
+                    "md": "16px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "label-bold": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "caption": ["Inter"],
+                    "title-sm": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "label-bold": ["14px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "caption": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "title-sm": ["18px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "display-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .soft-shadow {
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.04);
+        }
+        .soft-shadow-hover:hover {
+            box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+        .chart-bar { transition: height 1s ease-in-out; }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- Main Content Area -->
+<main class="min-h-screen">
+<!-- TopAppBar -->
+<header class="h-16 fixed top-0 right-0 left-0 bg-surface flex justify-between items-center px-lg border-b border-outline-variant z-40">
+<div class="flex items-center gap-lg flex-1">
+<div class="flex items-center gap-sm">
+<h1 class="font-display-lg text-headline-md text-primary mr-md">AdminPro</h1>
+<h2 class="font-headline-md text-headline-md text-on-surface">Dashboard</h2>
+</div>
+<div class="relative w-64 ml-lg">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-secondary">search</span>
+<input class="w-full pl-xl pr-md py-xs bg-surface-container-low border border-outline-variant rounded-full text-body-sm focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="Buscar métricas..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<nav class="hidden lg:flex items-center gap-md mr-lg border-r border-outline-variant pr-lg">
+<a class="text-primary font-label-bold" href="#">Dashboard</a>
+<a class="text-secondary font-body-sm hover:text-primary transition-colors" href="#">Servicios</a>
+<a class="text-secondary font-body-sm hover:text-primary transition-colors" href="#">Profesionales</a>
+<a class="text-secondary font-body-sm hover:text-primary transition-colors" href="#">Reservas</a>
+</nav>
+<div class="flex bg-surface-container-low rounded-lg p-xs">
+<button class="px-md py-xs text-caption font-label-bold bg-white soft-shadow rounded-md">30 días</button>
+<button class="px-md py-xs text-caption font-label-bold text-secondary hover:text-primary">90 días</button>
+<button class="px-md py-xs text-caption font-label-bold text-secondary hover:text-primary">Año</button>
+</div>
+<div class="flex items-center gap-sm">
+<button class="p-sm text-on-surface-variant hover:bg-surface-container-low rounded-full transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-sm text-on-surface-variant hover:bg-surface-container-low rounded-full transition-all">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-primary-container flex items-center justify-center overflow-hidden border border-primary/20">
+<img alt="Super Admin Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCI4ZzvgFz59Ij5nr1DzMGDVtm4drVfZNyjoPaiZUEyZ9qQsVdnZ9QZURfV_-YhoiuEqBb8o7103RMN4cVoPRP9gOXecaw9-qwM6D-aJhBDp_GSe89UGUcYHjNTL-ewXKkDLMVh7f9z3nRVgo6FdRp2ggLgkFCkPQ1F9Egd8ynFUNqn4vs7Ft7UbmnpYlTU5vtqjb32Udypnt-zEJsU-FfvFFC7UmQwodFcoX0VdC9LrNRJk06H2W1OFGb9sdrvmTBV9d19ks3NZgL8"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<div class="pt-24 px-lg pb-xl max-w-[1600px] mx-auto space-y-lg">
+<!-- KPI Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-lg">
+<!-- Usuarios Totales -->
+<div class="bg-white p-md rounded-xl soft-shadow soft-shadow-hover transition-all">
+<div class="flex justify-between items-start mb-md">
+<div class="p-sm bg-primary-container rounded-lg text-on-primary-container">
+<span class="material-symbols-outlined">group</span>
+</div>
+<span class="text-primary font-label-bold text-caption bg-primary-fixed px-sm py-[2px] rounded-full">+12%</span>
+</div>
+<h3 class="text-secondary font-body-sm mb-xs">Usuarios Totales</h3>
+<p class="text-display-lg font-display-lg text-on-surface mb-md">12,842</p>
+<div class="flex flex-col gap-xs pt-sm border-t border-outline-variant/30">
+<div class="flex justify-between text-caption">
+<span class="text-secondary">Clientes</span>
+<span class="font-label-bold text-on-surface">11,200</span>
+</div>
+<div class="flex justify-between text-caption">
+<span class="text-secondary">Profesionales</span>
+<span class="font-label-bold text-on-surface">1,580</span>
+</div>
+<div class="flex justify-between text-caption">
+<span class="text-secondary">Admins</span>
+<span class="font-label-bold text-on-surface">62</span>
+</div>
+</div>
+</div>
+<!-- Ingresos de Pagos -->
+<div class="bg-white p-md rounded-xl soft-shadow soft-shadow-hover transition-all">
+<div class="flex justify-between items-start mb-md">
+<div class="p-sm bg-tertiary-fixed text-on-tertiary-fixed rounded-lg">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<span class="text-on-tertiary-fixed-variant font-label-bold text-caption bg-tertiary-fixed-dim px-sm py-[2px] rounded-full">Meta 85%</span>
+</div>
+<h3 class="text-secondary font-body-sm mb-xs">Ingresos de Pagos</h3>
+<p class="text-display-lg font-display-lg text-on-surface mb-md">$45,200</p>
+<div class="w-full bg-surface-container-low h-2 rounded-full overflow-hidden mb-sm">
+<div class="bg-tertiary h-full rounded-full" style="width: 85%;"></div>
+</div>
+<p class="text-caption text-secondary">Monto total aprobado este mes</p>
+</div>
+<!-- Gestión de Turnos -->
+<div class="bg-white p-md rounded-xl soft-shadow soft-shadow-hover transition-all">
+<div class="flex justify-between items-start mb-md">
+<div class="p-sm bg-secondary-container text-on-secondary-container rounded-lg">
+<span class="material-symbols-outlined">calendar_today</span>
+</div>
+<span class="text-secondary font-label-bold text-caption bg-secondary-fixed px-sm py-[2px] rounded-full">Activos</span>
+</div>
+<h3 class="text-secondary font-body-sm mb-xs">Gestión de Turnos</h3>
+<p class="text-display-lg font-display-lg text-on-surface mb-md">1,535</p>
+<div class="grid grid-cols-3 gap-xs text-center pt-sm border-t border-outline-variant/30">
+<div>
+<p class="text-caption text-secondary">Pend.</p>
+<p class="font-label-bold text-primary">245</p>
+</div>
+<div>
+<p class="text-caption text-secondary">Conf.</p>
+<p class="font-label-bold text-on-surface">1,120</p>
+</div>
+<div>
+<p class="text-caption text-secondary">Canc.</p>
+<p class="font-label-bold text-error">170</p>
+</div>
+</div>
+</div>
+<!-- Paquetes -->
+<div class="bg-white p-md rounded-xl soft-shadow soft-shadow-hover transition-all">
+<div class="flex justify-between items-start mb-md">
+<div class="p-sm bg-primary text-on-primary rounded-lg">
+<span class="material-symbols-outlined">inventory_2</span>
+</div>
+<span class="text-primary font-label-bold text-caption bg-primary-fixed px-sm py-[2px] rounded-full">+5.4%</span>
+</div>
+<h3 class="text-secondary font-body-sm mb-xs">Sesiones Vendidas</h3>
+<p class="text-display-lg font-display-lg text-on-surface mb-md">4,890</p>
+<div class="flex items-center gap-sm">
+<div class="flex-1 flex flex-col gap-1">
+<div class="flex justify-between text-caption">
+<span class="text-secondary">Usadas (72%)</span>
+<span class="font-label-bold">3,520</span>
+</div>
+<div class="w-full bg-surface-container-low h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full" style="width: 72%;"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Graphs Section -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+<!-- Distribution Chart (Simulated Ring) -->
+<div class="bg-white p-lg rounded-xl soft-shadow col-span-1">
+<h3 class="font-title-sm text-title-sm mb-lg">Distribución por Modalidad</h3>
+<div class="relative w-48 h-48 mx-auto mb-lg">
+<svg class="w-full h-full rotate-[-90deg]" viewbox="0 0 36 36">
+<circle cx="18" cy="18" fill="transparent" r="15.915" stroke="#f1f5f9" stroke-width="3"></circle>
+<!-- Presencial 60% -->
+<circle cx="18" cy="18" fill="transparent" r="15.915" stroke="#00685f" stroke-dasharray="60 40" stroke-dashoffset="0" stroke-width="3"></circle>
+<!-- Virtual 30% -->
+<circle cx="18" cy="18" fill="transparent" r="15.915" stroke="#008378" stroke-dasharray="30 70" stroke-dashoffset="-60" stroke-width="3"></circle>
+<!-- Híbrido 10% -->
+<circle cx="18" cy="18" fill="transparent" r="15.915" stroke="#6bd8cb" stroke-dasharray="10 90" stroke-dashoffset="-90" stroke-width="3"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-display-lg font-display-lg">100%</span>
+<span class="text-caption text-secondary">Total</span>
+</div>
+</div>
+<div class="space-y-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-sm">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+<span class="text-body-sm text-on-surface">Presenciales</span>
+</div>
+<span class="font-label-bold">60%</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-sm">
+<div class="w-3 h-3 rounded-full bg-primary-container"></div>
+<span class="text-body-sm text-on-surface">Virtuales</span>
+</div>
+<span class="font-label-bold">30%</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-sm">
+<div class="w-3 h-3 rounded-full bg-primary-fixed-dim"></div>
+<span class="text-body-sm text-on-surface">Híbridos</span>
+</div>
+<span class="font-label-bold">10%</span>
+</div>
+</div>
+</div>
+<!-- Tendencia de Reservas (Simulated Bars) -->
+<div class="bg-white p-lg rounded-xl soft-shadow col-span-2">
+<div class="flex justify-between items-center mb-lg">
+<h3 class="font-title-sm text-title-sm">Tendencia de Reservas</h3>
+<div class="flex gap-md">
+<div class="flex items-center gap-xs">
+<div class="w-3 h-3 rounded-sm bg-primary"></div>
+<span class="text-caption text-secondary">Completadas</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-3 h-3 rounded-sm bg-error/40"></div>
+<span class="text-caption text-secondary">Canceladas</span>
+</div>
+</div>
+</div>
+<div class="h-64 flex items-end justify-between gap-sm pt-md">
+<div class="flex-1 flex flex-col items-center gap-xs">
+<div class="w-full flex items-end gap-1 px-sm h-full">
+<div class="flex-1 bg-primary rounded-t-sm chart-bar" style="height: 70%;"></div>
+<div class="flex-1 bg-error/40 rounded-t-sm chart-bar" style="height: 15%;"></div>
+</div>
+<span class="text-caption text-secondary">Lun</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-xs">
+<div class="w-full flex items-end gap-1 px-sm h-full">
+<div class="flex-1 bg-primary rounded-t-sm chart-bar" style="height: 85%;"></div>
+<div class="flex-1 bg-error/40 rounded-t-sm chart-bar" style="height: 10%;"></div>
+</div>
+<span class="text-caption text-secondary">Mar</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-xs">
+<div class="w-full flex items-end gap-1 px-sm h-full">
+<div class="flex-1 bg-primary rounded-t-sm chart-bar" style="height: 60%;"></div>
+<div class="flex-1 bg-error/40 rounded-t-sm chart-bar" style="height: 25%;"></div>
+</div>
+<span class="text-caption text-secondary">Mié</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-xs">
+<div class="w-full flex items-end gap-1 px-sm h-full">
+<div class="flex-1 bg-primary rounded-t-sm chart-bar" style="height: 95%;"></div>
+<div class="flex-1 bg-error/40 rounded-t-sm chart-bar" style="height: 5%;"></div>
+</div>
+<span class="text-caption text-secondary">Jue</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-xs">
+<div class="w-full flex items-end gap-1 px-sm h-full">
+<div class="flex-1 bg-primary rounded-t-sm chart-bar" style="height: 80%;"></div>
+<div class="flex-1 bg-error/40 rounded-t-sm chart-bar" style="height: 12%;"></div>
+</div>
+<span class="text-caption text-secondary">Vie</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-xs">
+<div class="w-full flex items-end gap-1 px-sm h-full">
+<div class="flex-1 bg-primary rounded-t-sm chart-bar" style="height: 40%;"></div>
+<div class="flex-1 bg-error/40 rounded-t-sm chart-bar" style="height: 8%;"></div>
+</div>
+<span class="text-caption text-secondary">Sáb</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-xs">
+<div class="w-full flex items-end gap-1 px-sm h-full">
+<div class="flex-1 bg-primary rounded-t-sm chart-bar" style="height: 30%;"></div>
+<div class="flex-1 bg-error/40 rounded-t-sm chart-bar" style="height: 5%;"></div>
+</div>
+<span class="text-caption text-secondary">Dom</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Tables Section -->
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-lg">
+<!-- Top 5 Servicios -->
+<div class="bg-white rounded-xl soft-shadow overflow-hidden">
+<div class="p-lg border-b border-outline-variant">
+<h3 class="font-title-sm text-title-sm">Top 5 Servicios más reservados</h3>
+</div>
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low text-caption text-secondary uppercase tracking-wider">
+<th class="px-lg py-md font-label-bold">Servicio</th>
+<th class="px-lg py-md font-label-bold">Reservas</th>
+<th class="px-lg py-md font-label-bold">Rating</th>
+<th class="px-lg py-md font-label-bold">Tendencia</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-lg py-md font-body-sm">Consulta Psicológica</td>
+<td class="px-lg py-md font-label-bold">1,240</td>
+<td class="px-lg py-md">
+<div class="flex items-center gap-xs text-tertiary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-bold">4.9</span>
+</div>
+</td>
+<td class="px-lg py-md text-primary">
+<span class="material-symbols-outlined">trending_up</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-lg py-md font-body-sm">Fisioterapia Deportiva</td>
+<td class="px-lg py-md font-label-bold">982</td>
+<td class="px-lg py-md">
+<div class="flex items-center gap-xs text-tertiary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-bold">4.8</span>
+</div>
+</td>
+<td class="px-lg py-md text-primary">
+<span class="material-symbols-outlined">trending_up</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-lg py-md font-body-sm">Asesoría Nutricional</td>
+<td class="px-lg py-md font-label-bold">754</td>
+<td class="px-lg py-md">
+<div class="flex items-center gap-xs text-tertiary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-bold">4.7</span>
+</div>
+</td>
+<td class="px-lg py-md text-secondary">
+<span class="material-symbols-outlined">trending_flat</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-lg py-md font-body-sm">Clase Personalizada Yoga</td>
+<td class="px-lg py-md font-label-bold">612</td>
+<td class="px-lg py-md">
+<div class="flex items-center gap-xs text-tertiary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-bold">4.9</span>
+</div>
+</td>
+<td class="px-lg py-md text-primary">
+<span class="material-symbols-outlined">trending_up</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-lg py-md font-body-sm">Coaching Ejecutivo</td>
+<td class="px-lg py-md font-label-bold">430</td>
+<td class="px-lg py-md">
+<div class="flex items-center gap-xs text-tertiary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-bold">4.6</span>
+</div>
+</td>
+<td class="px-lg py-md text-error">
+<span class="material-symbols-outlined">trending_down</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Rendimiento por Profesional -->
+<div class="bg-white rounded-xl soft-shadow overflow-hidden">
+<div class="p-lg border-b border-outline-variant">
+<h3 class="font-title-sm text-title-sm">Rendimiento por Profesional</h3>
+</div>
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low text-caption text-secondary uppercase tracking-wider">
+<th class="px-lg py-md font-label-bold">Profesional</th>
+<th class="px-lg py-md font-label-bold">Especialidad</th>
+<th class="px-lg py-md font-label-bold">Reservas</th>
+<th class="px-lg py-md font-label-bold">Calificación</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-lg py-md">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-secondary-container">
+<img alt="Dr. Carlos Ruiz" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyf7WyD8Q9eUX6Z6lnTr0OA45kxnZMa3bcfKpX4H0Gjl6C9xNAgVGyWcKYuI9ZIQvUB4Y9N8qFRYFPgVzFgYdHyfgUIFRSOnmY3uRrVHgWBVnpeG0o9UUZEKSJElPoNjXYzJE_WffUVndCi1s_rAsB_b3rxH2-4OnoHntu-AeAFBOd8Jij6PHCmHEkDiud-ZtOS94z5wQh_UnzfC4yRuLN0oIhPXCLuwOOoTeOVdM9aKfPj5oDbYpt5wVcNl1e0HYCM1uvSHNATg_2"/>
+</div>
+<span class="font-body-sm font-label-bold">Dr. Carlos Ruiz</span>
+</div>
+</td>
+<td class="px-lg py-md text-body-sm text-secondary">Cardiología</td>
+<td class="px-lg py-md font-label-bold">342</td>
+<td class="px-lg py-md">
+<span class="bg-primary-container text-on-primary-container px-sm py-xs rounded-full text-caption font-label-bold">4.9/5.0</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-lg py-md">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-secondary-container">
+<img alt="Dra. Elena Gómez" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDstoslU3F47yqu7VAz_4eoBQUPp_M3hSd0dWyzpOXfa189eqtMgzy__Zw-hHL6jXHYrXORXqOF0w4PW3ai7HaoMgy6sN1wYbpv-MNTSmxZSCKE2zwRttNpDM1WoD6ivoKAxsBdZYcKLSQjWXLqqpORR_n5CWEd5obNZ_W1jYBOiUd_rNSlvQci0HNMfffYcsziLauvmtBMTU4BoxogvzmpUlNzvCTwQd7taVWnYf6gf6rc26Bdr2tsX8aRFhnleikOfFbg9rwXHMFg"/>
+</div>
+<span class="font-body-sm font-label-bold">Dra. Elena Gómez</span>
+</div>
+</td>
+<td class="px-lg py-md text-body-sm text-secondary">Psicología</td>
+<td class="px-lg py-md font-label-bold">289</td>
+<td class="px-lg py-md">
+<span class="bg-primary-container text-on-primary-container px-sm py-xs rounded-full text-caption font-label-bold">4.8/5.0</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-lg py-md">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-secondary-container">
+<img alt="Lic. Marcos Pérez" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBN50mv5WZs0CeCMDTpvyjFrNPos7jjTwEmJxGw7uW9SXTPoq85tkD1RFViDMv8RsICgEF5J7wV8CQUWcPiBtCMy0m8swn_ZwtmARmj3uZmLUNzL-jPMyLxfBEmYk3cTLbJGpVbqSM3k6b00Tqt4VduhpNcXOrXZ8pwfYCGgHfnbKneDVKX5B1Tiut57daIFlGyuOY7mqTCsOiMXcC0ZAG4NK6yDGOk2fVLZSdIKLEugyjucVieBsbKTfdSPsRZ5VKW8t6C62pOw6Ba"/>
+</div>
+<span class="font-body-sm font-label-bold">Lic. Marcos Pérez</span>
+</div>
+</td>
+<td class="px-lg py-md text-body-sm text-secondary">Kinesiología</td>
+<td class="px-lg py-md font-label-bold">256</td>
+<td class="px-lg py-md">
+<span class="bg-primary-container text-on-primary-container px-sm py-xs rounded-full text-caption font-label-bold">4.7/5.0</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-lg py-md">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-secondary-container">
+<img alt="Dra. Sofía Martínez" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDc_GPXPBCo4Jko720Ukg75IeYtpX4oTa57yd-nBGubN52If34W4LGfEZ1EcahSIXrism7I2OYrYXitQ1txkn-f8zqJALemGijjy3yQd-RcbwKiIWR2Z0WZXooVY3M6gm2Ahi3mc-7m1xDLTuN0CINKCflyQQR0ZYYG2y_6NGYxzr87_HXxnycjc7HGmBF2y4MnlwDiS_LwKCC3Z5EOUKVGQq5NhPwhfgStoqoXDRymu5WFOHKZzFLtohTg4VbP381vVy_aRkx_ReHM"/>
+</div>
+<span class="font-body-sm font-label-bold">Dra. Sofía Martínez</span>
+</div>
+</td>
+<td class="px-lg py-md text-body-sm text-secondary">Nutrición</td>
+<td class="px-lg py-md font-label-bold">210</td>
+<td class="px-lg py-md">
+<span class="bg-primary-container text-on-primary-container px-sm py-xs rounded-full text-caption font-label-bold">4.9/5.0</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Micro-interaction: Animated bars on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const bars = document.querySelectorAll('.chart-bar');
+            bars.forEach(bar => {
+                const height = bar.style.height;
+                bar.style.height = '0%';
+                setTimeout(() => {
+                    bar.style.height = height;
+                }, 300);
+            });
+        });
+    </script>
+</body></html>
