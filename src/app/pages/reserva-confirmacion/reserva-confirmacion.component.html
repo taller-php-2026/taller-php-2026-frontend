@@ -1,0 +1,27 @@
+<main class="confirmation-page">
+  <section class="confirmation-panel">
+    <div class="status-icon {{ statusClass() }}">
+      @if (status === 'approved') {
+        <span class="material-symbols-outlined">check_circle</span>
+      } @else if (status === 'pending' || status === 'unknown') {
+        <span class="material-symbols-outlined">pending</span>
+      } @else {
+        <span class="material-symbols-outlined">error</span>
+      }
+    </div>
+
+    <p class="eyebrow">Reserva #{{ idReserva }}</p>
+    <h1>{{ title() }}</h1>
+    <p class="message">{{ message() }}</p>
+
+    <div class="summary-row">
+      <span>Estado recibido</span>
+      <strong class="{{ statusClass() }}">{{ statusLabel() }}</strong>
+    </div>
+
+    <div class="actions">
+      <a routerLink="/reservas" class="primary-action">Ver mis reservas</a>
+      <a routerLink="/" class="secondary-action">Volver al inicio</a>
+    </div>
+  </section>
+</main>

@@ -2,6 +2,8 @@ export interface Slot {
   horaInicio: string;
   horaFin: string;
   idRegla: number;
+  /** El backend puede devolver idHorario directamente; si no, se usa idRegla como fallback */
+  idHorario?: number;
   idServicio: number;
   duracionMinutos: number;
 }

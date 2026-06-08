@@ -38,6 +38,10 @@ export class SelectProfessional {
   onProfessionalSelected(professionalId: number) {
     this.selectedProfessional = professionalId;
     this.bookingsService.setProfessionalId(professionalId);
+    const professional = this.professionals.find((p) => p.idUsuario === professionalId);
+    if (professional) {
+      this.bookingsService.setSelectedProfessional(professional);
+    }
   }
 
   ngOnInit() {
@@ -46,6 +50,7 @@ export class SelectProfessional {
 
       this.servicesService.getServiceById(this.serviceId!).subscribe((response) => {
         this.service = response.data;
+        this.bookingsService.setSelectedService(response.data);
         this.cdr.detectChanges();
         console.log('Servicio obtenido:', this.service);
       });

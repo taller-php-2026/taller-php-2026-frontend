@@ -121,6 +121,13 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/reservas/reservas').then((m) => m.Reservas),
       },
       {
+        path: 'reservas/:id/confirmacion',
+        loadComponent: () =>
+          import('./pages/reserva-confirmacion/reserva-confirmacion.component').then(
+            (m) => m.ReservaConfirmacionComponent,
+          ),
+      },
+      {
         path: 'servicio/:id/seleccionar-profesional',
         loadComponent: () =>
           import('@pages/select-professional/select-professional.component').then(

@@ -17,7 +17,7 @@ export const bookingStep3Guard: CanActivateFn = () => {
   const state = inject(BookingStateService);
   const router = inject(Router);
 
-  if (!state.professionalId || !state.selectedDate || !state.selectedTime) {
+  if (!state.createdReserva) {
     router.navigate(['/']);
     return false;
   }

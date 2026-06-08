@@ -1,11 +1,11 @@
-import { Component, inject, signal, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, signal, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CurrencyPipe } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
 import { Service } from 'app/models/service.model';
 import { ServicesService } from 'app/services/services.service';
+import { BookingStateService } from 'app/services/booking-state.service';
+import { ReservaService } from 'app/services/reserva.service';
 import { NgIcon } from '@ng-icons/core';
 import { StepsComponent } from '@components/steps/steps.component';
 import { Layout } from '@shared/layout/layout.component';
@@ -17,50 +17,35 @@ import { Layout } from '@shared/layout/layout.component';
   templateUrl: './pago.component.html',
   styleUrl: './pago.component.css',
 })
-export class PagoSeguroComponent implements OnInit, OnDestroy {
+export class PagoSeguroComponent implements OnInit {
   private router = inject(Router);
-  private http = inject(HttpClient);
   private servicesService = inject(ServicesService);
+  private bookingState = inject(BookingStateService);
+  private reservaService = inject(ReservaService);
   private cdr = inject(ChangeDetectorRef);
 
   serviceId: string | null = null;
   service: Service | null = null;
 
-  // URL del backend (Modificar segun corresponda)
-  private backendUrl = 'http://localhost:8000/api/pagos.php';
-
-  // Paso del flujo de pago: 'selector' | 'formulario_tarjeta' | 'efectivo' | 'mercadopago_portal' | 'procesando' | 'exito'
   paymentStatus = signal<
-    'selector' | 'formulario_tarjeta' | 'efectivo' | 'mercadopago_portal' | 'procesando' | 'exito'
+    'selector' | 'formulario_tarjeta' | 'efectivo' | 'procesando' | 'exito'
   >('selector');
 
-  // Estado final de la transacción: 'approved' | 'pending' | 'rejected'
   transactionStatus = signal<'approved' | 'pending' | 'rejected'>('approved');
 
-  // Método y proveedor seleccionados
   selectedMethod = signal<'mercadopago' | 'tarjeta_credito' | 'tarjeta_debito' | 'efectivo' | null>(
     null,
   );
   cashProvider = signal<'abitab' | 'redpagos'>('abitab');
 
-  // Errores
   errorMsg = signal('');
 
-  // Fallback cuando falla Mercado Pago oficial
-  useFallbackForm = signal(false);
-  fallbackCard = {
-    number: '',
-    name: '',
-    expiry: '',
-    cvv: '',
-  };
+  // Tarjeta: siempre usa el formulario propio (sin MP Brick)
+  useFallbackForm = signal(true);
+  fallbackCard = { number: '', name: '', expiry: '', cvv: '' };
 
-  // Controlador del Card Payment Brick de Mercado Pago
-  private cardPaymentBrickController: any = null;
-
-  // Datos simulados de la reserva
-  reservation: any = {
-    serviceName: 'Cargando...',
+  reservation = {
+    serviceName: '',
     duration: '',
     professionalName: '',
     professionalRole: '',
@@ -74,11 +59,13 @@ export class PagoSeguroComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
-    this.loadMockReservation();
-
+    if (!this.bookingState.createdReserva) {
+      this.router.navigate(['/']);
+      return;
+    }
+    this.buildReservationSummary();
     this.route.paramMap.subscribe((params) => {
       this.serviceId = params.get('id');
-
       this.servicesService.getServiceById(this.serviceId!).subscribe((response) => {
         this.service = response.data;
         this.cdr.detectChanges();
@@ -86,230 +73,140 @@ export class PagoSeguroComponent implements OnInit, OnDestroy {
     });
   }
 
-  private async loadMockReservation() {
-    try {
-      const data = await firstValueFrom(this.http.get<any>('/mock-reserva.json'));
-      this.reservation = data;
-    } catch (error) {
-      console.error('Error cargando mock de reserva:', error);
+  private buildReservationSummary() {
+    const svc = this.bookingState.selectedService;
+    const prof = this.bookingState.selectedProfessional;
+    const slot = this.bookingState.selectedSlot;
+    const date = this.bookingState.selectedDate;
+    const reserva = this.bookingState.createdReserva;
+
+    const serviceName = svc?.nombre ?? reserva?.servicioNombre ?? '';
+    const duracion = svc?.duracionMinutos ?? slot?.duracionMinutos ?? 0;
+    const precio = svc?.precio ?? reserva?.precio ?? 0;
+    const profName = prof?.usuario?.nombre ?? prof?.nombreNegocio ?? '';
+    const profRole = prof?.descripcion ?? '';
+    const fechaStr = date
+      ? date.toLocaleDateString('es-UY', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+      : (reserva?.fechaReserva ?? '');
+    const timeStr = slot?.horaInicio ?? reserva?.horarioInicio ?? this.bookingState.selectedTime ?? '';
+    const tax = +(precio * 0.22).toFixed(2);
+
+    this.reservation = {
+      serviceName,
+      duration: duracion ? `${duracion} min` : '',
+      professionalName: profName,
+      professionalRole: profRole,
+      date: fechaStr,
+      time: timeStr,
+      subtotal: precio,
+      tax,
+      total: +(precio + tax).toFixed(2),
+    };
+  }
+
+  /** Envía el pago real a POST /api/reservas/{idReserva}/pagar */
+  private submitPago(metodoPago: string): void {
+    const reserva = this.bookingState.createdReserva;
+    const idReserva = (reserva as any)?.reserva?.idReserva ?? reserva?.idReserva;
+    if (!idReserva) {
+      this.errorMsg.set('No se encontró la reserva. Volvé al inicio.');
+      this.paymentStatus.set('selector');
+      return;
     }
-  }
 
-  ngOnDestroy() {
-    this.cleanupBrick();
-  }
+    this.paymentStatus.set('procesando');
+    this.errorMsg.set('');
 
-  private cleanupBrick() {
-    if (this.cardPaymentBrickController) {
-      this.cardPaymentBrickController.unmount();
-      this.cardPaymentBrickController = null;
-    }
-  }
-
-  // Carga dinamica del SDK de Mercado Pago
-  private loadScript(src: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if (document.querySelector(`script[src="${src}"]`)) {
-        resolve();
-        return;
-      }
-      const script = document.createElement('script');
-      script.src = src;
-      script.onload = () => resolve();
-      script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
-      document.body.appendChild(script);
+    this.reservaService.pagarReserva(idReserva, { metodoPago }).subscribe({
+      next: () => {
+        this.transactionStatus.set('approved');
+        this.paymentStatus.set('exito');
+      },
+      error: (err) => {
+        const msg =
+          err.error?.message ??
+          (String(Object.values(err.error?.errors ?? {}).flat().join(' ')) || 'Error al procesar el pago.');
+        this.errorMsg.set(msg);
+        this.paymentStatus.set('selector');
+      },
     });
   }
 
-  // Seleccion del metodo de pago
-  async selectMethodOption(
+  selectMethodOption(
     option: 'mercadopago' | 'tarjeta_credito' | 'tarjeta_debito' | 'efectivo',
   ) {
     this.selectedMethod.set(option);
     this.errorMsg.set('');
-    this.cleanupBrick();
 
     if (option === 'tarjeta_credito' || option === 'tarjeta_debito') {
       this.paymentStatus.set('formulario_tarjeta');
-      setTimeout(() => {
-        this.initCardPaymentBrick();
-      }, 50);
     } else if (option === 'efectivo') {
       this.paymentStatus.set('efectivo');
     } else if (option === 'mercadopago') {
-      this.paymentStatus.set('mercadopago_portal');
+      this.iniciarCheckoutPro();
     }
   }
 
-  // Enviar transaccion al backend (PHP)
-  private async sendPaymentToBackend(paymentData: any): Promise<any> {
-    try {
-      return await firstValueFrom(this.http.post(this.backendUrl, paymentData));
-    } catch (error: any) {
-      console.error('Error enviando pago al backend:', error);
-      throw new Error(error?.error?.message || 'Error en la conexion con el servidor.');
+  /** Llama POST /api/reservas/{id}/mercadopago → redirige a checkout_url de MercadoPago */
+  iniciarCheckoutPro(): void {
+    const reserva = this.bookingState.createdReserva;
+    const idReserva = (reserva as any)?.reserva?.idReserva ?? reserva?.idReserva;
+
+    console.log('[Pago] Iniciando Checkout Pro');
+    console.log('[Pago] createdReserva', reserva);
+    console.log('[Pago] idReserva', idReserva);
+
+    if (!idReserva) {
+      this.errorMsg.set('No se encontró la reserva. Volvé al inicio para repetir el flujo.');
+      return;
     }
-  }
 
-  // Inicializar Card Payment Brick de Mercado Pago
-  private async initCardPaymentBrick() {
-    try {
-      await this.loadScript('https://sdk.mercadopago.com/js/v2');
+    this.paymentStatus.set('procesando');
+    this.errorMsg.set('');
 
-      const mp = new (window as any).MercadoPago('TEST-c04301ad-316c-4ccc-8b18-a921a8d891b4', {
-        locale: 'es-UY',
-      });
-
-      const bricksBuilder = mp.bricks();
-
-      const settings = {
-        initialization: {
-          amount: this.reservation.total,
-        },
-        customization: {
-          visual: {
-            style: {
-              theme: 'flat',
-            },
-          },
-          paymentMethods: {
-            maxInstallments: this.selectedMethod() === 'tarjeta_debito' ? 1 : 12,
-          },
-        },
-        callbacks: {
-          onReady: () => {
-            console.log('Card Payment Brick ready.');
-          },
-          onSubmit: async (formData: any) => {
-            console.log('Datos de Mercado Pago para procesar:', formData);
-
-            this.paymentStatus.set('procesando');
-
-            const payload = {
-              method: this.selectedMethod(),
-              reservation: this.reservation,
-              mercadoPagoData: formData,
-            };
-
-            try {
-              const response = await this.sendPaymentToBackend(payload);
-              if (response && response.status === 'approved') {
-                this.transactionStatus.set('approved');
-                this.paymentStatus.set('exito');
-              } else {
-                this.transactionStatus.set('rejected');
-                this.errorMsg.set(response?.message || 'Pago rechazado.');
-                this.paymentStatus.set('selector');
-              }
-            } catch (err: any) {
-              this.errorMsg.set(err.message || 'Error al procesar el pago con tarjeta.');
-              this.paymentStatus.set('selector');
-            }
-          },
-          onError: (error: any) => {
-            console.error('Card Payment Brick error:', error);
-            this.errorMsg.set('No se pudo inicializar la pasarela de tarjetas.');
-          },
-        },
-      };
-
-      this.cardPaymentBrickController = await bricksBuilder.create(
-        'cardPayment',
-        'cardPaymentBrick_container',
-        settings,
-      );
-    } catch (err) {
-      console.error(err);
-      this.useFallbackForm.set(true);
-    }
+    this.reservaService.crearPreferenciaMercadoPago(idReserva).subscribe({
+      next: (res) => {
+        console.log('[Pago] respuesta preferencia', res);
+        const checkoutUrl = res.data?.checkout_url;
+        if (checkoutUrl) {
+          window.location.href = checkoutUrl;
+        } else {
+          this.errorMsg.set('No se recibió la URL de pago. Intenta de nuevo.');
+          this.paymentStatus.set('selector');
+        }
+      },
+      error: (err) => {
+        console.error('[Pago] error preferencia', err);
+        const msg =
+          err.error?.message ??
+          (String(Object.values(err.error?.errors ?? {}).flat().join(' ')) || 'Error al crear la preferencia de pago.');
+        this.errorMsg.set(msg);
+        this.paymentStatus.set('selector');
+      },
+    });
   }
 
   async submitFallbackPayment() {
-    this.paymentStatus.set('procesando');
-    const payload = {
-      method: this.selectedMethod(),
-      reservation: this.reservation,
-      cardData: this.fallbackCard,
-    };
-    try {
-      try {
-        const response = await this.sendPaymentToBackend(payload);
-        if (response && response.status === 'approved') {
-          this.transactionStatus.set('approved');
-        } else {
-          this.transactionStatus.set('approved');
-        }
-      } catch (e) {
-        this.transactionStatus.set('approved');
-      }
-      this.paymentStatus.set('exito');
-    } catch (err: any) {
-      this.errorMsg.set(err.message || 'Error al procesar el pago.');
-      this.paymentStatus.set('selector');
-    }
+    this.submitPago(this.selectedMethod() ?? 'tarjeta_credito');
   }
 
   selectCashProvider(provider: 'abitab' | 'redpagos') {
     this.cashProvider.set(provider);
   }
 
-  // Pago en efectivo
-  async submitCashPayment() {
-    this.paymentStatus.set('procesando');
-    const payload = {
-      method: 'efectivo',
-      provider: this.cashProvider(),
-      reservation: this.reservation,
-    };
-
-    try {
-      try {
-        const response = await this.sendPaymentToBackend(payload);
-        this.transactionStatus.set('pending');
-      } catch (e) {
-        this.transactionStatus.set('pending');
-      }
-      this.paymentStatus.set('exito');
-    } catch (err: any) {
-      this.errorMsg.set(err.message || 'Error al procesar el pago en efectivo.');
-      this.paymentStatus.set('selector');
-    }
+  submitCashPayment() {
+    this.submitPago('efectivo');
   }
 
-  // Pago con Mercado Pago Cuenta
-  async submitWalletPayment() {
-    this.paymentStatus.set('procesando');
-    const payload = {
-      method: 'mercadopago',
-      reservation: this.reservation,
-    };
-
-    try {
-      try {
-        const response = await this.sendPaymentToBackend(payload);
-        this.transactionStatus.set('approved');
-      } catch (e) {
-        this.transactionStatus.set('approved');
-      }
-      this.paymentStatus.set('exito');
-    } catch (err: any) {
-      this.errorMsg.set(err.message || 'Error al procesar el pago con Mercado Pago.');
-      this.paymentStatus.set('selector');
-    }
+  submitWalletPayment() {
+    this.iniciarCheckoutPro();
   }
 
   resetToSelector() {
     this.paymentStatus.set('selector');
     this.selectedMethod.set(null);
     this.errorMsg.set('');
-    this.useFallbackForm.set(false);
-    this.fallbackCard = {
-      number: '',
-      name: '',
-      expiry: '',
-      cvv: '',
-    };
-    this.cleanupBrick();
+    this.fallbackCard = { number: '', name: '', expiry: '', cvv: '' };
   }
 
   goBack() {

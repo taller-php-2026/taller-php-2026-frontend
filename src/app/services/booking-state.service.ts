@@ -1,4 +1,8 @@
 import { Injectable } from '@angular/core';
+import { Service } from '../models/service.model';
+import { Professional } from '../models/professional.model';
+import { Slot } from '../models/schedule.model';
+import { ReservaCreada } from '../models/reserva.model';
 
 @Injectable({ providedIn: 'root' })
 export class BookingStateService {
@@ -7,11 +11,21 @@ export class BookingStateService {
   selectedDate: Date | null = null;
   selectedTime: string | null = null;
 
+  // Objetos completos para el resumen de pago
+  selectedService: Service | null = null;
+  selectedProfessional: Professional | null = null;
+  selectedSlot: Slot | null = null;
+  createdReserva: ReservaCreada | null = null;
+
   reset() {
     this.serviceId = null;
     this.professionalId = null;
     this.selectedDate = null;
     this.selectedTime = null;
+    this.selectedService = null;
+    this.selectedProfessional = null;
+    this.selectedSlot = null;
+    this.createdReserva = null;
   }
 
   setServiceId(id: number) {
@@ -29,4 +43,21 @@ export class BookingStateService {
   setSelectedTime(time: string) {
     this.selectedTime = time;
   }
+
+  setSelectedService(service: Service) {
+    this.selectedService = service;
+  }
+
+  setSelectedProfessional(professional: Professional) {
+    this.selectedProfessional = professional;
+  }
+
+  setSelectedSlot(slot: Slot) {
+    this.selectedSlot = slot;
+  }
+
+  setCreatedReserva(reserva: ReservaCreada) {
+    this.createdReserva = reserva;
+  }
 }
+
