@@ -12,4 +12,8 @@ import { Service } from 'app/models/service.model';
 })
 export class ServiceCardComponent {
   @Input() service!: Service;
+
+  onImgError(event: Event) {
+    (event.target as HTMLImageElement).src = 'assets/placeholders/service-placeholder.svg';
+  }
 }

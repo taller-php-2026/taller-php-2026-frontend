@@ -67,8 +67,11 @@ export class AuthService {
       idUsuario: backendUser.idUsuario,
       name: backendUser.nombre,
       email: backendUser.email,
-      picture: '',
+      picture: backendUser.imagenPerfilUrl ?? '',
       type: tipo ?? undefined,
+      telefono: backendUser.telefono,
+      imagenPerfilUrl: backendUser.imagenPerfilUrl,
+      imagenPerfilPublicId: backendUser.imagenPerfilPublicId,
     };
     localStorage.setItem('access_token', token);
     localStorage.setItem('user_session', JSON.stringify(user));
@@ -89,7 +92,10 @@ export class AuthService {
       idUsuario: backendUser.idUsuario,
       name: backendUser.nombre,
       email: backendUser.email,
-      picture: '',
+      picture: backendUser.imagenPerfilUrl ?? '',
+      telefono: backendUser.telefono,
+      imagenPerfilUrl: backendUser.imagenPerfilUrl,
+      imagenPerfilPublicId: backendUser.imagenPerfilPublicId,
     };
     localStorage.setItem('access_token', token);
     localStorage.setItem('user_session', JSON.stringify(user));
