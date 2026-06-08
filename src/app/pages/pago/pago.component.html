@@ -166,10 +166,7 @@
                 </div>
                 }
 
-                <!-- Contenedor del Brick Oficial (Card Payment) o Fallback Interactivo -->
-                @if (!useFallbackForm()) {
-                <div id="cardPaymentBrick_container" class="min-h-[300px]"></div>
-                } @else {
+                <!-- Contenedor de formulario de tarjeta (sin MP Brick) -->
                 <form (submit)="submitFallbackPayment()" class="space-y-4 max-w-md mx-auto">
                     <div class="space-y-1">
                         <label class="text-xs font-bold text-slate-500">Número de Tarjeta</label>
@@ -203,7 +200,6 @@
                         Confirmar Pago (Simulado)
                     </button>
                 </form>
-                }
 
             </div>
             }
@@ -270,69 +266,8 @@
             </div>
             }
 
-            <!-- PASO 4: REDIRECCIÓN/PORTAL SIMULADO DE MERCADO PAGO WALLET -->
-            @if (paymentStatus() === 'mercadopago_portal') {
-            <div
-                class="bg-slate-100 rounded-2xl shadow-md border border-slate-200 overflow-hidden max-w-md mx-auto transition-all duration-300">
 
-                <!-- Header azul oficial de Mercado Pago -->
-                <div class="bg-[#009ee3] p-5 flex justify-between items-center text-white">
-                    <div class="flex items-center gap-2">
-                        <!-- Logo Billetera Blanco -->
-                        <span class="material-symbols-outlined text-2xl font-bold">account_balance_wallet</span>
-                        <span class="font-black tracking-tight text-lg">mercado pago</span>
-                    </div>
-                    <span class="text-xs font-bold bg-white/20 px-2 py-0.5 rounded uppercase">sandbox</span>
-                </div>
-
-                <div class="p-6 bg-white space-y-6">
-                    <div class="text-center space-y-2">
-                        <h3 class="font-bold text-slate-700 text-base">Inicia sesión en tu cuenta para pagar</h3>
-                        <p class="text-xs text-slate-400">El cobro se realizará de forma segura desde tu billetera
-                            digital.
-                        </p>
-                    </div>
-
-                    <div class="space-y-4">
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-slate-500">E-mail o Teléfono</label>
-                            <input type="email" value="comprador_prueba@test.com" disabled
-                                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none text-slate-500 font-medium" />
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-slate-500">Contraseña</label>
-                            <input type="password" value="••••••••" disabled
-                                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none text-slate-500 font-medium" />
-                        </div>
-                    </div>
-
-                    <div class="bg-blue-50 p-4 rounded-xl flex justify-between items-center border border-blue-100">
-                        <div>
-                            <p class="text-xs font-bold text-blue-900">Saldo disponible</p>
-                            <p class="text-[10px] text-blue-700/70">Mercado Pago Wallet</p>
-                        </div>
-                        <p class="text-base font-black text-blue-900">{{ reservation.total |
-                            currency:'USD':'symbol':'1.2-2'
-                            }}</p>
-                    </div>
-
-                    <div class="flex gap-3">
-                        <button type="button" (click)="submitWalletPayment()"
-                            class="w-full bg-[#009ee3] hover:bg-[#008ad0] text-white py-3 rounded-xl font-bold text-sm transition-all flex justify-center items-center gap-2 cursor-pointer shadow-sm shadow-[#009ee3]/20">
-                            <span class="material-symbols-outlined text-[18px]">verified</span>
-                            Pagar con Saldo
-                        </button>
-                        <button type="button" (click)="resetToSelector()"
-                            class="w-full border border-slate-200 hover:bg-slate-50 text-slate-500 py-3 rounded-xl font-bold text-sm transition-all cursor-pointer">
-                            Cancelar
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-            }
-
-            <!-- ESTADO 5: PROCESANDO EL COBRO -->
+            <!-- PASO 4: PROCESANDO EL COBRO -->
             @if (paymentStatus() === 'procesando') {
             <div
                 class="bg-white rounded-2xl p-10 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center space-y-6 min-h-[400px]">
