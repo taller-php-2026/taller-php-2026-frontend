@@ -1,0 +1,20 @@
+.soft-shadow {
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.soft-shadow:hover {
+  box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

@@ -107,6 +107,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'gestionar-excepciones',
+        loadComponent: () =>
+          import('./pages/gestionar-excepciones/gestionar-excepciones').then(
+            (m) => m.GestionarExcepcionesComponent,
+          ),
+      },
+      {
         path: 'videollamada',
         loadComponent: () =>
           import('./pages/videollamada/videollamada').then((m) => m.Videollamada),

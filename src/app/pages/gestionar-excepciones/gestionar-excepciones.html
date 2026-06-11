@@ -1,0 +1,175 @@
+<header class="flex justify-between items-center px-lg py-md w-full sticky top-0 z-40 bg-surface-container-lowest shadow-sm">
+  <div class="flex items-center gap-md">
+    <button (click)="goBack()" class="flex items-center justify-center p-xs rounded-full hover:bg-surface-container-low transition-colors text-primary border border-transparent active:scale-95">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </button>
+    <h1 class="font-headline-md text-headline-md text-primary">Gestión de Excepciones</h1>
+  </div>
+  <div class="w-10"></div>
+</header>
+
+<main class="flex flex-col min-h-screen">
+  <div class="p-lg flex flex-col gap-xl flex-1 overflow-y-auto max-w-7xl mx-auto w-full">
+    
+    <!-- Top Section: Active Exceptions List -->
+    <section class="w-full">
+      <div class="mb-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md">
+        <div>
+          <h2 class="font-headline-md text-headline-md">Excepciones Activas</h2>
+          <p class="font-body-sm text-body-sm text-on-surface-variant">Gestione sus periodos de no disponibilidad y bloqueos de agenda.</p>
+        </div>
+        <div class="flex gap-sm">
+          <span class="bg-surface-container-high px-3 py-1 rounded-full text-caption font-label-bold flex items-center">
+            <span class="w-2 h-2 rounded-full bg-primary mr-2"></span> 
+            {{ excepciones().length }} Bloqueo(s) programado(s)
+          </span>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      @if (loading() && excepciones().length === 0) {
+        <div class="flex justify-center items-center py-20">
+          <span class="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></span>
+        </div>
+      } @else if (excepciones().length === 0) {
+        <!-- Empty State -->
+        <div class="bg-surface-container-lowest rounded-2xl p-xl border border-outline-variant/30 text-center shadow-sm">
+          <span class="material-symbols-outlined text-primary text-5xl mb-md">calendar_today</span>
+          <p class="font-title-sm text-title-sm text-on-surface mb-xs">No tienes bloqueos de agenda</p>
+          <p class="font-body-sm text-body-sm text-on-surface-variant">Todos tus horarios configurados están disponibles para reservas.</p>
+        </div>
+      } @else {
+        <!-- Grid of Exceptions -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
+          @for (exc of excepciones(); track exc.idExcepcion) {
+            <div class="bg-surface-container-lowest p-md rounded-2xl soft-shadow border border-outline-variant/30 relative overflow-hidden group">
+              <div class="absolute top-0 left-0 w-1 h-full bg-tertiary"></div>
+              <div class="flex justify-between items-start mb-3">
+                <div class="bg-tertiary/10 text-tertiary-container px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                  {{ exc.motivo ? 'Bloqueo' : 'Ausencia' }}
+                </div>
+                <span class="text-on-surface-variant font-caption text-caption">Agenda #{{ exc.idAgenda }}</span>
+              </div>
+              <h3 class="font-title-sm text-title-sm mb-1">{{ exc.motivo || 'Sin especificar motivo' }}</h3>
+              <div class="flex items-center text-on-surface-variant font-body-sm text-body-sm mb-4">
+                <span class="material-symbols-outlined text-[18px] mr-1">calendar_today</span>
+                {{ exc.fecha | date:'dd LLLL, yyyy':'':'es-ES' }}
+                <span class="mx-2 opacity-30">|</span>
+                <span class="material-symbols-outlined text-[18px] mr-1">schedule</span>
+                {{ exc.horaInicio.substring(0, 5) }} - {{ exc.horaFin.substring(0, 5) }}
+              </div>
+              <div class="flex justify-end pt-2 border-t border-outline-variant/20">
+                <button (click)="cancelarBloqueo(exc.idExcepcion)" class="text-error font-label-bold text-label-bold flex items-center hover:bg-error-container/20 px-3 py-1 rounded-lg transition-colors cursor-pointer">
+                  <span class="material-symbols-outlined mr-1">cancel</span> Cancelar
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </section>
+
+    <!-- Bottom Section: Create Block Panel -->
+    <section class="w-full">
+      <div class="bg-surface-container-lowest rounded-3xl soft-shadow border border-outline-variant/30 p-xl">
+        <div class="mb-lg">
+          <h3 class="font-headline-md text-headline-md text-primary mb-1">Crear Bloqueo</h3>
+          <p class="font-body-sm text-body-sm text-on-surface-variant">Configure un nuevo periodo de no disponibilidad.</p>
+        </div>
+
+        @if (agendasProfesional().length === 0) {
+          <!-- Warning when no agendas are found -->
+          <div class="bg-error-container text-on-error-container p-lg rounded-2xl border border-error/20 flex flex-col items-center gap-md text-center max-w-2xl mx-auto my-md shadow-sm">
+            <span class="material-symbols-outlined text-4xl text-error">warning</span>
+            <div>
+              <p class="font-title-sm text-title-sm mb-xs">No tienes agendas configuradas</p>
+              <p class="font-body-sm text-body-sm opacity-90">Para poder crear excepciones o bloqueos de disponibilidad, primero debes crear y configurar tus ciclos de agenda en el sistema.</p>
+            </div>
+            <button (click)="goToConfigurarAgendas()" class="bg-error text-white font-label-bold px-lg py-3 rounded-xl hover:brightness-110 active:scale-95 transition-all shadow-md cursor-pointer">
+              Configurar Mis Agendas
+            </button>
+          </div>
+        } @else {
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-xl">
+            <div class="space-y-lg">
+              <!-- Start Date & Time -->
+              <div>
+                <label class="font-label-bold text-label-bold mb-2 block">Fecha y Hora de Inicio</label>
+                <div class="relative">
+                  <input 
+                    class="w-full bg-background border border-outline-variant rounded-xl p-3 font-body-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" 
+                    type="datetime-local"
+                    [ngModel]="fechaHoraInicio()"
+                    (ngModelChange)="fechaHoraInicio.set($event)"
+                  />
+                </div>
+              </div>
+              <!-- End Date & Time -->
+              <div>
+                <label class="font-label-bold text-label-bold mb-2 block">Fecha y Hora de Fin</label>
+                <div class="relative">
+                  <input 
+                    class="w-full bg-background border border-outline-variant rounded-xl p-3 font-body-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" 
+                    type="datetime-local"
+                    [ngModel]="fechaHoraFin()"
+                    (ngModelChange)="fechaHoraFin.set($event)"
+                  />
+                </div>
+              </div>
+              <!-- Agenda Selector (in case the professional has multiple agendas) -->
+              @if (agendasProfesional().length > 1) {
+                <div>
+                  <label class="font-label-bold text-label-bold mb-2 block">Agenda Asociada</label>
+                  <select 
+                    class="w-full bg-background border border-outline-variant rounded-xl p-3 font-body-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                    [ngModel]="idAgendaSeleccionada()"
+                    (ngModelChange)="idAgendaSeleccionada.set($event)"
+                  >
+                    @for (agenda of agendasProfesional(); track agenda.idAgenda) {
+                      <option [value]="agenda.idAgenda">Agenda #{{ agenda.idAgenda }} (Ciclo: {{ agenda.ciclo?.nombre || agenda.idCiclo }})</option>
+                    }
+                  </select>
+                </div>
+              }
+            </div>
+
+            <div class="space-y-lg flex flex-col justify-between">
+              <!-- Reason Field -->
+              <div>
+                <label class="font-label-bold text-label-bold mb-2 block">Motivo</label>
+                <textarea 
+                  class="w-full bg-background border border-outline-variant rounded-xl p-3 font-body-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none" 
+                  placeholder="Ej: Congreso médico, Mantenimiento..." 
+                  rows="4"
+                  [ngModel]="motivo()"
+                  (ngModelChange)="motivo.set($event)"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-xl flex flex-col items-center">
+            <button 
+              (click)="confirmarBloqueo()"
+              [disabled]="loading() || agendasProfesional().length === 0"
+              class="w-full max-w-md bg-primary-container text-on-primary-container py-4 rounded-xl font-label-bold text-label-bold shadow-lg hover:brightness-110 active:scale-95 transition-all flex justify-center items-center gap-2 cursor-pointer disabled:opacity-50"
+            >
+              <span class="material-symbols-outlined">lock</span> Confirmar Bloqueo
+            </button>
+            <p class="text-center font-caption text-caption text-on-surface-variant mt-3 italic">Presione para aplicar cambios</p>
+          </div>
+        }
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- Toast Notification Container -->
+<div class="fixed bottom-lg right-lg z-50 flex flex-col gap-sm pointer-events-none">
+  @for (toast of toasts(); track $index) {
+    <div class="flex items-center bg-inverse-surface text-inverse-on-surface px-lg py-md rounded-xl shadow-lg animate-[slideInUp_0.4s_ease-out_forwards]">
+      <span class="material-symbols-outlined text-primary-fixed-dim mr-3">check_circle</span>
+      <span class="font-label-bold text-label-bold">{{ toast }}</span>
+    </div>
+  }
+</div>

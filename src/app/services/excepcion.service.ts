@@ -1,0 +1,41 @@
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environment';
+
+export interface ExcepcionPayload {
+  fecha: string;
+  horaInicio: string;
+  horaFin: string;
+  motivo?: string;
+  idAgenda: number;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class ExcepcionService {
+  private http = inject(HttpClient);
+  private apiUrl = `${environment.apiUrl}/excepciones-disponibilidad`;
+  private agendaUrl = `${environment.apiUrl}/agendas`;
+
+  // Obtener todas las agendas.
+  obtenerAgendas(): Observable<{ data: any[] }> {
+    return this.http.get<{ data: any[] }>(this.agendaUrl);
+  }
+
+  // Obtener todas las excepciones de disponibilidad.
+  obtenerExcepciones(): Observable<{ data: any[] }> {
+    return this.http.get<{ data: any[] }>(this.apiUrl);
+  }
+
+  // Crear una nueva excepción de disponibilidad.
+  crearExcepcion(payload: ExcepcionPayload): Observable<any> {
+    return this.http.post<any>(this.apiUrl, payload);
+  }
+
+  // Eliminar una excepción de disponibilidad.
+  eliminarExcepcion(idExcepcion: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/${idExcepcion}`);
+  }
+}
