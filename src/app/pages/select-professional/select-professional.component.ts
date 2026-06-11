@@ -52,7 +52,6 @@ export class SelectProfessional {
         this.service = response.data;
         this.bookingsService.setSelectedService(response.data);
         this.cdr.detectChanges();
-        console.log('Servicio obtenido:', this.service);
       });
 
       this.servicesService.getProfessionalsByService(this.serviceId!).subscribe((response) => {
