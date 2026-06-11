@@ -22,7 +22,12 @@
     <section class="flex items-start justify-center space-x-10 mt-6">
         <div class="flex flex-col">
             <p class="font-semibold text-center">Seleccione una fecha:</p>
-            <app-calendar class="mt-4" (dateSelected)="onDateSelected($event)"></app-calendar>
+            <app-calendar
+                class="mt-4"
+                [diasConDisponibilidad]="diasConDisponibilidad"
+                (visibleMonthChanged)="onVisibleMonthChanged($event)"
+                (dateSelected)="onDateSelected($event)">
+            </app-calendar>
         </div>
 
         <div class="flex flex-col">

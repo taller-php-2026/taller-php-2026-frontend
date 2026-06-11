@@ -1,9 +1,7 @@
 import { Component, inject, signal, OnInit, computed } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { environment } from '@env/environment';
+import { ServicesService } from '../../services/services.service';
 
 @Component({
   selector: 'app-configurar-servicios',
@@ -14,8 +12,7 @@ import { environment } from '@env/environment';
 })
 export class ConfigurarServiciosComponent implements OnInit {
   private router = inject(Router);
-  private http = inject(HttpClient);
-  private authService = inject(AuthService);
+  private servicesService = inject(ServicesService);
 
   servicios = signal<any[]>([]);
   cargando = signal<boolean>(true);
@@ -27,14 +24,9 @@ export class ConfigurarServiciosComponent implements OnInit {
   }
 
   cargarServicios(): void {
-    const idProf = this.authService.currentUser()?.idUsuario;
-    if (!idProf) {
-      this.cargando.set(false);
-      return;
-    }
     this.cargando.set(true);
 
-    this.http.get<any>(`${environment.apiUrl}/servicios/buscar?idProfesional=${idProf}`).subscribe({
+    this.servicesService.getMyProfessionalServices().subscribe({
       next: (res) => {
         const list = res.data || [];
         const mapped = list.map((s: any) => ({

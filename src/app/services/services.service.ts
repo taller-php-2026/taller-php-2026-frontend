@@ -22,6 +22,8 @@ export class ServicesService {
     return this.http.get<{ data: any[] }>(`${this.apiUrl}/${serviceId}/profesionales`);
   }
 
+  getMyProfessionalServices(): Observable<{ data: Service[] }> {
+    return this.http.get<{ data: Service[] }>(`${environment.apiUrl}/me/profesional/servicios`);
   getFilteredServices(filtros: FilteredService): Observable<{ data: Service[]; meta: any }> {
     const params = new HttpParams({ fromObject: filtros as any });
     return this.http.get<{ data: Service[]; meta: any }>(`${this.apiUrl}/buscar`, { params });

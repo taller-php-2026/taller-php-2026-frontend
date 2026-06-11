@@ -18,7 +18,6 @@ export interface ReglaDisponibilidadPayload {
   bufferMinutos: number;
   activa: boolean;
   idAgenda: number;
-  idProfesional: number;
 }
 
 @Injectable({
@@ -30,6 +29,7 @@ export class AgendaService {
   private rangosUrl = `${environment.apiUrl}/rangos-horarios`;
   private agendasUrl = `${environment.apiUrl}/agendas`;
   private reglasUrl = `${environment.apiUrl}/reglas-disponibilidad`;
+  private misAgendasUrl = `${environment.apiUrl}/me/profesional/agendas`;
 
   // Obtener todos los ciclos.
   obtenerCiclos(): Observable<{ data: any[] }> {
@@ -59,6 +59,11 @@ export class AgendaService {
   // Obtener todas las agendas.
   obtenerAgendas(): Observable<{ data: any[] }> {
     return this.http.get<{ data: any[] }>(this.agendasUrl);
+  }
+
+  // Obtener agendas del profesional autenticado.
+  obtenerMisAgendas(): Observable<{ data: any[] }> {
+    return this.http.get<{ data: any[] }>(this.misAgendasUrl);
   }
 
   // Crear una regla de disponibilidad para una agenda.

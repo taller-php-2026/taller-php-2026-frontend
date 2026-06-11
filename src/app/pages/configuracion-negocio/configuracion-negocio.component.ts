@@ -2,10 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { UpperCasePipe, CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
-import { of, switchMap } from 'rxjs';
-import { environment } from '@env/environment';
 
 interface Country {
   code: string;
@@ -26,7 +23,6 @@ interface Country {
 })
 export class ConfiguracionNegocioComponent implements OnInit {
   private router = inject(Router);
-  private http = inject(HttpClient);
   authService = inject(AuthService);
 
   countries: Country[] = [
@@ -85,26 +81,45 @@ export class ConfiguracionNegocioComponent implements OnInit {
     const user = this.authService.currentUser();
     if (user?.idUsuario) {
       this.brandConfigKey = `brand_config_${user.idUsuario}`;
-      this.cargarDatosNegocio(user.idUsuario);
-      this.cargarDatosUsuario(user.idUsuario);
+      this.cargarConfiguracionVisual();
+      this.cargarMiPerfil();
     } else {
       this.errorMsg.set('No se pudo identificar al profesional actual.');
     }
   }
 
-  cargarDatosNegocio(id: number) {
-    this.http.get<any>(`${environment.apiUrl}/profesionales/${id}`).subscribe({
+  cargarMiPerfil() {
+    this.authService.getMe().subscribe({
       next: (res) => {
-        const prof = res.data;
-        if (prof) {
-          this.businessName.set(prof.nombreNegocio || '');
+        const user = res.usuario;
+        if (!user) return;
+
+        this.name.set(user.nombre);
+        this.email.set(user.email);
+        this.businessName.set(user.profesional?.nombreNegocio || user.nombre || '');
+
+        if (user.telefono) {
+          const matchedCountry = this.countries.findIndex(c => user.telefono?.startsWith(c.dial));
+          if (matchedCountry !== -1) {
+            this.countryIndex = matchedCountry.toString();
+            const tel = user.telefono.replace(this.selectedCountry.dial, '').trim();
+            this.phone.set(tel);
+          } else {
+            this.phone.set(user.telefono);
+          }
+        }
+
+        if (user.imagenPerfilUrl) {
+          this.picture.set(user.imagenPerfilUrl);
         }
       },
       error: () => {
-        this.errorMsg.set('Error al cargar la información del negocio.');
+        this.errorMsg.set('Error al cargar la informacion del perfil del usuario.');
       }
     });
+  }
 
+  cargarConfiguracionVisual() {
     const saved = localStorage.getItem(this.brandConfigKey);
     if (saved) {
       try {
@@ -118,33 +133,6 @@ export class ConfiguracionNegocioComponent implements OnInit {
         console.error('Error parsing brand config', e);
       }
     }
-  }
-
-  cargarDatosUsuario(id: number) {
-    this.http.get<any>(`${environment.apiUrl}/usuarios/${id}`).subscribe({
-      next: (res) => {
-        const user = res.data;
-        if (!user) return;
-        this.name.set(user.nombre);
-        this.email.set(user.email);
-        if (user.telefono) {
-          const matchedCountry = this.countries.findIndex(c => user.telefono.startsWith(c.dial));
-          if (matchedCountry !== -1) {
-            this.countryIndex = matchedCountry.toString();
-            const tel = user.telefono.replace(this.selectedCountry.dial, '').trim();
-            this.phone.set(tel);
-          } else {
-            this.phone.set(user.telefono);
-          }
-        }
-        if (user.imagenPerfilUrl) {
-          this.picture.set(user.imagenPerfilUrl);
-        }
-      },
-      error: () => {
-        this.errorMsg.set('Error al cargar la información del perfil del usuario.');
-      }
-    });
   }
 
   onLogoSelected(event: Event) {
@@ -253,66 +241,48 @@ export class ConfiguracionNegocioComponent implements OnInit {
       userPayload.password = this.password();
     }
 
-    // 1. Actualizar usuario (datos generales)
-    this.http.put<any>(`${environment.apiUrl}/usuarios/${idProf}`, userPayload).pipe(
-      switchMap((updateUserRes) => {
-        // Subir foto de perfil de usuario si se seleccionó una
-        if (this.selectedFile) {
-          const formData = new FormData();
-          formData.append('imagen', this.selectedFile);
-          return this.http.post<any>(`${environment.apiUrl}/usuarios/${idProf}/imagen`, formData);
-        }
-        return of(updateUserRes);
-      }),
-      switchMap((profilePicRes) => {
-        // Actualizar datos del profesional en localStorage / authService
-        const updated = profilePicRes.data;
-        if (updated) {
-          const newProfile = {
-            idUsuario: updated.idUsuario,
-            name: updated.nombre,
-            email: updated.email,
-            picture: updated.imagenPerfilUrl || '',
-            telefono: updated.telefono,
-            type: this.authService.currentUser()?.type,
-            imagenPerfilUrl: updated.imagenPerfilUrl,
-            imagenPerfilPublicId: updated.imagenPerfilPublicId
-          };
-          this.authService.currentUser.set(newProfile);
-          localStorage.setItem('user_session', JSON.stringify(newProfile));
-        }
-
-        // 2. Guardar nombre de negocio en el backend
-        return this.http.put<any>(`${environment.apiUrl}/profesionales/${idProf}`, {
-          nombreNegocio: this.businessName()
-        });
-      })
-    ).subscribe({
+    this.authService.updateMyProfile({
+      ...userPayload,
+      nombreNegocio: this.businessName(),
+    }).subscribe({
       next: () => {
-        // 3. Persistir diseño de marca localmente
-        const visualConfig = {
-          logoUrl: this.logoUrl(),
-          bannerUrl: this.bannerUrl(),
-          primaryColor: this.primaryColor(),
-          secondaryColor: this.secondaryColor(),
-          accentColor: this.accentColor()
-        };
-        localStorage.setItem(this.brandConfigKey, JSON.stringify(visualConfig));
+        if (this.selectedFile) {
+          this.authService.uploadMyImage(this.selectedFile).subscribe({
+            next: () => this.finalizarGuardado(),
+            error: (err) => {
+              this.loading.set(false);
+              this.errorMsg.set(err?.error?.message || 'Error al subir la imagen de perfil.');
+            },
+          });
+          return;
+        }
 
-        // Aplicar estilos dinámicos inmediatamente
-        this.aplicarEstilosMarca(visualConfig);
-
-        this.loading.set(false);
-        this.successMsg.set('¡Configuración guardada correctamente!');
-        setTimeout(() => {
-          this.goBack();
-        }, 1200);
+        this.finalizarGuardado();
       },
       error: (err) => {
         this.loading.set(false);
-        this.errorMsg.set(err?.error?.message || 'Error al guardar la configuración.');
+        this.errorMsg.set(err?.error?.message || 'Error al guardar la configuracion.');
       }
     });
+  }
+
+  private finalizarGuardado(): void {
+    const visualConfig = {
+      logoUrl: this.logoUrl(),
+      bannerUrl: this.bannerUrl(),
+      primaryColor: this.primaryColor(),
+      secondaryColor: this.secondaryColor(),
+      accentColor: this.accentColor()
+    };
+    localStorage.setItem(this.brandConfigKey, JSON.stringify(visualConfig));
+
+    this.aplicarEstilosMarca(visualConfig);
+
+    this.loading.set(false);
+    this.successMsg.set('Configuracion guardada correctamente.');
+    setTimeout(() => {
+      this.goBack();
+    }, 1200);
   }
 
   aplicarEstilosMarca(config: any) {

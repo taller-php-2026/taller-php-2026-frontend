@@ -19,6 +19,11 @@ interface Metricas {
   turnosConfirmados: number;
   turnosPendientes: number;
   ingresosEstimados: number;
+  ingresosConfirmados?: number;
+  hoy?: any;
+  proximos?: any;
+  mesActual?: any;
+  totales?: any;
 }
 
 @Component({
@@ -58,16 +63,8 @@ export class HomeProfessionalComponent implements OnInit {
 
   // Obtener datos reales de metricas y proximos turnos.
   obtenerDatos(): void {
-    const user = this.authService.currentUser();
-    if (!user || !user.idUsuario) {
-      return;
-    }
-
-    const token = this.authService.getToken();
-    const headers = { Authorization: `Bearer ${token}` };
-
-    // Cargar metricas reales
-    this.http.get<{ data: Metricas }>(`${environment.apiUrl}/profesionales/${user.idUsuario}/metricas`, { headers })
+    // Cargar metricas reales del profesional autenticado
+    this.http.get<{ data: Metricas }>(`${environment.apiUrl}/me/profesional/metricas`)
       .subscribe({
         next: (res) => {
           if (res && res.data) {
@@ -77,15 +74,23 @@ export class HomeProfessionalComponent implements OnInit {
         error: (err) => console.error('Error al cargar métricas del profesional:', err)
       });
 
-    // Cargar turnos reales (reservas del profesional)
-    this.http.get<{ data: any[] }>(`${environment.apiUrl}/reservas?idProfesional=${user.idUsuario}`, { headers })
+    // Cargar turnos reales del profesional autenticado
+    this.http.get<{ data: any[] }>(`${environment.apiUrl}/me/profesional/reservas`)
       .subscribe({
         next: (res) => {
           if (res && res.data) {
-            // Mapear reservas a formato Turno
-            this.upcomingTurns = res.data.map((reserva: any) => {
-              const fecha = new Date(reserva.fechaReserva);
-              const timeStr = fecha.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+            const ahora = new Date();
+            this.upcomingTurns = res.data
+              .filter((reserva: any) => this.getReservaDateTime(reserva) >= ahora)
+              .sort((a: any, b: any) =>
+                this.getReservaDateTime(a).getTime() - this.getReservaDateTime(b).getTime()
+              )
+              .slice(0, 5)
+              .map((reserva: any) => {
+              const hora = reserva.horario?.horaInicio || reserva.fechaReserva;
+              const timeStr = hora?.includes(':')
+                ? hora.substring(0, 5)
+                : new Date(hora).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
               return {
                 id: reserva.idReserva,
                 clientName: reserva.cliente?.usuario?.nombre || 'Cliente sin nombre',
@@ -99,6 +104,17 @@ export class HomeProfessionalComponent implements OnInit {
         },
         error: (err) => console.error('Error al cargar reservas del profesional:', err)
       });
+  }
+
+  private getReservaDateTime(reserva: any): Date {
+    const fecha = reserva.horario?.fecha || reserva.fechaReserva;
+    const hora = reserva.horario?.horaInicio;
+
+    if (fecha && hora) {
+      return new Date(`${fecha}T${hora}`);
+    }
+
+    return new Date(fecha || reserva.fechaReserva);
   }
 
   // Navegar a Mis Servicios
