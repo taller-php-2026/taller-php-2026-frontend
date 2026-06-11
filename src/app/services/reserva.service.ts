@@ -2,7 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environment';
-import { ReservaPayload, ReservaCreadaResponse } from '../models/reserva.model';
+import {
+  CancelarReservaResponse,
+  MisReservasResponse,
+  ReservaPayload,
+  ReservaCreadaResponse,
+} from '../models/reserva.model';
 
 export interface PagoPayload {
   metodoPago: string;
@@ -47,6 +52,17 @@ export class ReservaService {
   crearPreferenciaMercadoPago(idReserva: number): Observable<MercadoPagoPreferenciaResponse> {
     return this.http.post<MercadoPagoPreferenciaResponse>(
       `${environment.apiUrl}/reservas/${idReserva}/mercadopago`,
+      {},
+    );
+  }
+
+  getMisReservas(): Observable<MisReservasResponse> {
+    return this.http.get<MisReservasResponse>(`${environment.apiUrl}/me/reservas`);
+  }
+
+  cancelarReserva(idReserva: number): Observable<CancelarReservaResponse> {
+    return this.http.post<CancelarReservaResponse>(
+      `${environment.apiUrl}/reservas/${idReserva}/cancelar`,
       {},
     );
   }
