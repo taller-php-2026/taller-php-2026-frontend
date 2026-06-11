@@ -19,6 +19,11 @@ export interface BackendUsuario {
   tipoPrincipal?: 'cliente' | 'profesional' | null;
   imagenPerfilUrl?: string;
   imagenPerfilPublicId?: string;
+  profesional?: {
+    idUsuario?: number;
+    nombreNegocio?: string;
+    descripcion?: string;
+  } | null;
 }
 
 export interface AuthResponse {

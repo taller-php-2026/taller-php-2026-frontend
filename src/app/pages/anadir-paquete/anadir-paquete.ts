@@ -3,9 +3,9 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
 import { of, switchMap } from 'rxjs';
 import { environment } from '@env/environment';
+import { ServicesService } from '../../services/services.service';
 
 @Component({
   selector: 'app-anadir-paquete',
@@ -17,7 +17,7 @@ import { environment } from '@env/environment';
 export class AnadirPaqueteComponent implements OnInit {
   private router = inject(Router);
   private http = inject(HttpClient);
-  private authService = inject(AuthService);
+  private servicesService = inject(ServicesService);
 
   name = signal('');
   description = signal('');
@@ -45,13 +45,10 @@ export class AnadirPaqueteComponent implements OnInit {
   }
 
   cargarDatos(): void {
-    const idProf = this.authService.currentUser()?.idUsuario;
-    if (!idProf) return;
-
-    // Cargar solo los servicios activos de este profesional
-    this.http.get<any>(`${environment.apiUrl}/servicios/buscar?idProfesional=${idProf}&activo=1`).subscribe({
+    // Cargar solo los servicios activos del profesional autenticado
+    this.servicesService.getMyProfessionalServices().subscribe({
       next: (res) => {
-        this.servicios.set(res.data || []);
+        this.servicios.set((res.data || []).filter((servicio: any) => servicio.activo));
       }
     });
   }
@@ -113,12 +110,6 @@ export class AnadirPaqueteComponent implements OnInit {
     this.errorMsg.set('');
     this.successMsg.set('');
 
-    const idProf = this.authService.currentUser()?.idUsuario;
-    if (!idProf) {
-      this.errorMsg.set('No se encontró el profesional autenticado.');
-      return;
-    }
-
     // Obtener datos del servicio base para crear el nuevo servicio del paquete
     const baseServ = this.servicios().find(s => s.idServicio === this.selectedServicios()[0]);
 
@@ -130,7 +121,7 @@ export class AnadirPaqueteComponent implements OnInit {
       modalidad: baseServ ? baseServ.modalidad : 'presencial',
       idUbicacion: baseServ ? baseServ.idUbicacion : null,
       idVideoSesion: baseServ ? baseServ.idVideoSesion : null,
-      idProfesional: idProf,
+
       servicios_ids: this.selectedServicios(),
       totalSesiones: this.totalSesiones(),
       activo: true,

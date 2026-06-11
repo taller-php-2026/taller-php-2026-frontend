@@ -9,6 +9,12 @@ const authGuard = () => {
   return authService.isAuthenticated() ? true : router.createUrlTree(['/login']);
 };
 
+const professionalGuard = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+  return authService.userType() === 'profesional' ? true : router.createUrlTree(['/']);
+};
+
 export const routes: Routes = [
   {
     path: 'login',
@@ -56,6 +62,7 @@ export const routes: Routes = [
       },
       {
         path: 'anadir-servicio',
+        canActivate: [professionalGuard],
         loadComponent: () =>
           import('./pages/anadir-servicio/anadir-servicio.component').then(
             (m) => m.AnadirServicioComponent,
@@ -63,11 +70,13 @@ export const routes: Routes = [
       },
       {
         path: 'anadir-paquete',
+        canActivate: [professionalGuard],
         loadComponent: () =>
           import('./pages/anadir-paquete/anadir-paquete').then((m) => m.AnadirPaqueteComponent),
       },
       {
         path: 'editar-servicio',
+        canActivate: [professionalGuard],
         loadComponent: () =>
           import('./pages/editar-servicio/editar-servicio.component').then(
             (m) => m.EditarServicioComponent,
@@ -75,6 +84,7 @@ export const routes: Routes = [
       },
       {
         path: 'configuracion-negocio',
+        canActivate: [professionalGuard],
         loadComponent: () =>
           import('./pages/configuracion-negocio/configuracion-negocio.component').then(
             (m) => m.ConfiguracionNegocioComponent,
@@ -82,6 +92,7 @@ export const routes: Routes = [
       },
       {
         path: 'configurar-servicios',
+        canActivate: [professionalGuard],
         loadComponent: () =>
           import('./pages/configurar-servicios/configurar-servicios.component').then(
             (m) => m.ConfigurarServiciosComponent,
@@ -89,11 +100,13 @@ export const routes: Routes = [
       },
       {
         path: 'crear-ciclo-agenda',
+        canActivate: [professionalGuard],
         loadComponent: () =>
           import('./pages/crear-ciclo-agenda/crear-ciclo-agenda').then((m) => m.CrearCicloAgenda),
       },
       {
         path: 'editar-ciclo-agenda',
+        canActivate: [professionalGuard],
         loadComponent: () =>
           import('./pages/editar-ciclo-agenda/editar-ciclo-agenda').then(
             (m) => m.EditarCicloAgenda,
@@ -101,6 +114,7 @@ export const routes: Routes = [
       },
       {
         path: 'configurar-ciclos',
+        canActivate: [professionalGuard],
         loadComponent: () =>
           import('./pages/configurar-ciclos/configurar-ciclos').then(
             (m) => m.ConfigurarCiclosComponent,
@@ -108,6 +122,7 @@ export const routes: Routes = [
       },
       {
         path: 'gestionar-excepciones',
+        canActivate: [professionalGuard],
         loadComponent: () =>
           import('./pages/gestionar-excepciones/gestionar-excepciones').then(
             (m) => m.GestionarExcepcionesComponent,

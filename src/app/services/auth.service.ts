@@ -63,16 +63,7 @@ export class AuthService {
   /** Guarda sesión a partir de la respuesta del backend (login/register reales). */
   setSession(token: string, backendUser: BackendUsuario): void {
     const tipo = backendUser.tipoPrincipal ?? null;
-    const user: UserProfile = {
-      idUsuario: backendUser.idUsuario,
-      name: backendUser.nombre,
-      email: backendUser.email,
-      picture: backendUser.imagenPerfilUrl ?? '',
-      type: tipo ?? undefined,
-      telefono: backendUser.telefono,
-      imagenPerfilUrl: backendUser.imagenPerfilUrl,
-      imagenPerfilPublicId: backendUser.imagenPerfilPublicId,
-    };
+    const user = this.toUserProfile(backendUser, tipo ?? undefined);
     localStorage.setItem('access_token', token);
     localStorage.setItem('user_session', JSON.stringify(user));
     this.currentUser.set(user);
@@ -88,15 +79,7 @@ export class AuthService {
    * Usado cuando Google OAuth crea un usuario nuevo que aún debe completar perfil.
    */
   setPartialSession(token: string, backendUser: BackendUsuario): void {
-    const user: UserProfile = {
-      idUsuario: backendUser.idUsuario,
-      name: backendUser.nombre,
-      email: backendUser.email,
-      picture: backendUser.imagenPerfilUrl ?? '',
-      telefono: backendUser.telefono,
-      imagenPerfilUrl: backendUser.imagenPerfilUrl,
-      imagenPerfilPublicId: backendUser.imagenPerfilPublicId,
-    };
+    const user = this.toUserProfile(backendUser);
     localStorage.setItem('access_token', token);
     localStorage.setItem('user_session', JSON.stringify(user));
     this.currentUser.set(user);
@@ -129,6 +112,41 @@ export class AuthService {
     return this.http
       .post<AuthResponse>(`${environment.apiUrl}/auth/completar-perfil`, payload, { headers })
       .pipe(tap((res) => this.setSession(res.access_token, res.usuario)));
+  }
+
+  getMe(): Observable<{ usuario: BackendUsuario }> {
+    return this.http.get<{ usuario: BackendUsuario }>(`${environment.apiUrl}/me`);
+  }
+
+  updateMyProfile(
+    payload: Partial<BackendUsuario> & { password?: string },
+  ): Observable<{ message: string; data: BackendUsuario }> {
+    return this.http
+      .put<{ message: string; data: BackendUsuario }>(`${environment.apiUrl}/me/perfil`, payload)
+      .pipe(tap((res) => res.data && this.updateCurrentUserFromBackend(res.data)));
+  }
+
+  uploadMyImage(file: File): Observable<{ message: string; data: BackendUsuario }> {
+    const formData = new FormData();
+    formData.append('imagen', file);
+
+    return this.http
+      .post<{ message: string; data: BackendUsuario }>(`${environment.apiUrl}/me/imagen`, formData)
+      .pipe(tap((res) => res.data && this.updateCurrentUserFromBackend(res.data)));
+  }
+
+  updateCurrentUserFromBackend(backendUser: BackendUsuario): void {
+    const tipo = backendUser.tipoPrincipal ?? this.userType() ?? undefined;
+    const user = this.toUserProfile(backendUser, tipo ?? undefined);
+
+    this.currentUser.set(user);
+    this.isAuthenticated.set(true);
+    localStorage.setItem('user_session', JSON.stringify(user));
+
+    if (user.type) {
+      this.userType.set(user.type);
+      localStorage.setItem('user_type', user.type);
+    }
   }
 
   logout() {
@@ -167,5 +185,21 @@ export class AuthService {
 
   getUserType() {
     return this.userType();
+  }
+
+  private toUserProfile(
+    backendUser: BackendUsuario,
+    type?: 'cliente' | 'profesional' | null,
+  ): UserProfile {
+    return {
+      idUsuario: backendUser.idUsuario,
+      name: backendUser.nombre,
+      email: backendUser.email,
+      picture: backendUser.imagenPerfilUrl ?? '',
+      type: type ?? undefined,
+      telefono: backendUser.telefono,
+      imagenPerfilUrl: backendUser.imagenPerfilUrl,
+      imagenPerfilPublicId: backendUser.imagenPerfilPublicId,
+    };
   }
 }

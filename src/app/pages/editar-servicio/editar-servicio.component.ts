@@ -3,8 +3,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
-import { AgendaService } from '../../services/agenda.service';
 import { Observable, of, switchMap } from 'rxjs';
 import { environment } from '@env/environment';
 import * as L from 'leaflet';
@@ -20,8 +18,6 @@ export class EditarServicioComponent implements OnInit {
   private router = inject(Router);
   private http = inject(HttpClient);
   private route = inject(ActivatedRoute);
-  private authService = inject(AuthService);
-  private agendaService = inject(AgendaService);
 
   idServicio: number | null = null;
   idUbicacion: number | null = null;
@@ -251,12 +247,6 @@ export class EditarServicioComponent implements OnInit {
         this.errorMsg.set('La dirección y la ciudad son requeridas para la modalidad presencial.');
         return;
       }
-    }
-
-    const idProfesional = this.authService.currentUser()?.idUsuario;
-    if (!idProfesional) {
-      this.errorMsg.set('No se pudo identificar al profesional logueado.');
-      return;
     }
 
     this.loading.set(true);

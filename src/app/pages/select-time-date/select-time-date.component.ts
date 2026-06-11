@@ -11,6 +11,7 @@ import { NgClass } from '@angular/common';
 import { Service } from 'app/models/service.model';
 import { ServicesService } from 'app/services/services.service';
 import { NgIcon } from '@ng-icons/core';
+import { catchError, forkJoin, of } from 'rxjs';
 
 @Component({
   selector: 'app-select-time-date',
@@ -31,9 +32,14 @@ export class SelectTimeDateComponent implements OnInit {
   slots: Slot[] = [];
   selectedDate: Date | null = null;
   selectedSlot: Slot | null = null;
+  diasConDisponibilidad = new Set<string>();
 
   loadingReserva = signal(false);
   errorReserva = signal('');
+
+  onVisibleMonthChanged(month: { year: number; month: number }) {
+    this.cargarDiasConDisponibilidad(month.year, month.month);
+  }
 
   onDateSelected(date: Date) {
     this.selectedDate = date;
@@ -47,9 +53,10 @@ export class SelectTimeDateComponent implements OnInit {
       return;
     }
 
-    const fecha = date.toISOString().split('T')[0];
+    const fecha = this.formatDateKey(date);
     this.scheduleService.getSlots(profId, fecha, svcId).subscribe((response) => {
       this.slots = response.data.slots_disponibles;
+      this.actualizarDiaConDisponibilidad(response.data.fecha, this.slots.length > 0);
       this.cdr.detectChanges();
     });
   }
@@ -81,7 +88,7 @@ export class SelectTimeDateComponent implements OnInit {
     this.loadingReserva.set(true);
     this.errorReserva.set('');
 
-    const fecha = this.selectedDate.toISOString().split('T')[0]; // YYYY-MM-DD
+    const fecha = this.formatDateKey(this.selectedDate); // YYYY-MM-DD
 
     const payload = {
       idServicio: svcId,
@@ -122,6 +129,82 @@ export class SelectTimeDateComponent implements OnInit {
         this.cdr.detectChanges();
       });
     });
+  }
+
+  private cargarDiasConDisponibilidad(year: number, month: number): void {
+    const profId = this.bookingState.professionalId;
+    const svcId = this.bookingState.serviceId;
+
+    if (!profId || !svcId) {
+      this.diasConDisponibilidad = new Set<string>();
+      return;
+    }
+
+    const fechas = this.getFechasDelMes(year, month);
+    if (fechas.length === 0) {
+      this.diasConDisponibilidad = new Set<string>();
+      return;
+    }
+
+    forkJoin(
+      fechas.map((fecha) =>
+        this.scheduleService.getSlots(profId, fecha, svcId).pipe(
+          catchError(() => of(null)),
+        ),
+      ),
+    ).subscribe((responses) => {
+      const disponibles = new Set<string>();
+
+      responses.forEach((response) => {
+        const fecha = response?.data?.fecha;
+        const slotsDisponibles = response?.data?.slots_disponibles ?? [];
+
+        if (fecha && slotsDisponibles.length > 0) {
+          disponibles.add(fecha);
+        }
+      });
+
+      this.diasConDisponibilidad = disponibles;
+      this.cdr.detectChanges();
+    });
+  }
+
+  private actualizarDiaConDisponibilidad(fecha: string, tieneDisponibilidad: boolean): void {
+    const dias = new Set(this.diasConDisponibilidad);
+
+    if (tieneDisponibilidad) {
+      dias.add(fecha);
+    } else {
+      dias.delete(fecha);
+    }
+
+    this.diasConDisponibilidad = dias;
+  }
+
+  private getFechasDelMes(year: number, month: number): string[] {
+    const daysInMonth = new Date(year, month, 0).getDate();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const fechas: string[] = [];
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(year, month - 1, day);
+      date.setHours(0, 0, 0, 0);
+
+      if (date >= today) {
+        fechas.push(this.formatDateKey(date));
+      }
+    }
+
+    return fechas;
+  }
+
+  private formatDateKey(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 }
 

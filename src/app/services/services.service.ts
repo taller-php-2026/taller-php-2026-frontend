@@ -21,4 +21,8 @@ export class ServicesService {
   getProfessionalsByService(serviceId: string): Observable<{ data: any[] }> {
     return this.http.get<{ data: any[] }>(`${this.apiUrl}/${serviceId}/profesionales`);
   }
+
+  getMyProfessionalServices(): Observable<{ data: Service[] }> {
+    return this.http.get<{ data: Service[] }>(`${environment.apiUrl}/me/profesional/servicios`);
+  }
 }
