@@ -8,7 +8,7 @@ import {
   BackendUsuario,
   CompletarPerfilPayload,
 } from '../models/user.model';
-import { environment } from '../../../environment';
+import { environment } from '@env/environment';
 
 @Injectable({
   providedIn: 'root',

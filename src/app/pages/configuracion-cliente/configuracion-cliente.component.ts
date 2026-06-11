@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { of, switchMap } from 'rxjs';
+import { environment } from '@env/environment';
 
 interface Country {
   code: string;
@@ -73,7 +74,7 @@ export class ConfiguracionClienteComponent implements OnInit {
   }
 
   cargarUsuario(id: number) {
-    this.http.get<any>(`http://localhost:8080/api/usuarios/${id}`).subscribe({
+    this.http.get<any>(`${environment.apiUrl}/usuarios/${id}`).subscribe({
       next: (res) => {
         const user = res.data;
         if (!user) return;
@@ -181,12 +182,12 @@ export class ConfiguracionClienteComponent implements OnInit {
       payload.password = this.password();
     }
 
-    this.http.put<any>(`http://localhost:8080/api/usuarios/${user.idUsuario}`, payload).pipe(
+    this.http.put<any>(`${environment.apiUrl}/usuarios/${user.idUsuario}`, payload).pipe(
       switchMap((updateRes) => {
         if (this.selectedFile) {
           const formData = new FormData();
           formData.append('imagen', this.selectedFile);
-          return this.http.post<any>(`http://localhost:8080/api/usuarios/${user.idUsuario}/imagen`, formData);
+          return this.http.post<any>(`${environment.apiUrl}/usuarios/${user.idUsuario}/imagen`, formData);
         }
         return of(updateRes);
       })

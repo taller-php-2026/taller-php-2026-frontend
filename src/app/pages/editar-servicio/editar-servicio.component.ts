@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { AgendaService } from '../../services/agenda.service';
 import { Observable, of, switchMap } from 'rxjs';
+import { environment } from '@env/environment';
 import * as L from 'leaflet';
 
 @Component({
@@ -154,7 +155,7 @@ export class EditarServicioComponent implements OnInit {
   }
 
   cargarServicio(id: number) {
-    this.http.get<any>(`http://localhost:8080/api/servicios/${id}`).subscribe({
+    this.http.get<any>(`${environment.apiUrl}/servicios/${id}`).subscribe({
       next: (res) => {
         const serv = res.data;
         if (!serv) return;
@@ -268,7 +269,7 @@ export class EditarServicioComponent implements OnInit {
     let prepObs$: Observable<any> = of(null);
     if (this.modalidad() === 'presencial') {
       if (this.idUbicacion) {
-        prepObs$ = this.http.put<any>(`http://localhost:8080/api/ubicaciones/${this.idUbicacion}`, {
+        prepObs$ = this.http.put<any>(`${environment.apiUrl}/ubicaciones/${this.idUbicacion}`, {
           direccion: this.direccion(),
           ciudad: this.ciudad(),
           pais: 'Uruguay',
@@ -276,7 +277,7 @@ export class EditarServicioComponent implements OnInit {
           longitud: this.longitud()
         });
       } else {
-        prepObs$ = this.http.post<any>('http://localhost:8080/api/ubicaciones', {
+        prepObs$ = this.http.post<any>(`${environment.apiUrl}/ubicaciones`, {
           direccion: this.direccion(),
           ciudad: this.ciudad(),
           pais: 'Uruguay',
@@ -286,13 +287,13 @@ export class EditarServicioComponent implements OnInit {
       }
     } else {
       if (this.idVideoSession) {
-        prepObs$ = this.http.put<any>(`http://localhost:8080/api/video-sesiones/${this.idVideoSession}`, {
+        prepObs$ = this.http.put<any>(`${environment.apiUrl}/video-sesiones/${this.idVideoSession}`, {
           proveedor: this.proveedor(),
           urlAcceso: this.urlAcceso(),
           nombreSala: this.nombreSala()
         });
       } else {
-        prepObs$ = this.http.post<any>('http://localhost:8080/api/video-sesiones', {
+        prepObs$ = this.http.post<any>(`${environment.apiUrl}/video-sesiones`, {
           proveedor: this.proveedor(),
           urlAcceso: this.urlAcceso(),
           nombreSala: this.nombreSala()
@@ -318,14 +319,14 @@ export class EditarServicioComponent implements OnInit {
         }
 
         // 2. Actualizar el Servicio
-        return this.http.put<any>(`http://localhost:8080/api/servicios/${this.idServicio}`, payload);
+        return this.http.put<any>(`${environment.apiUrl}/servicios/${this.idServicio}`, payload);
       }),
       switchMap((servRes) => {
         if (this.selectedFile && this.idServicio) {
           // 3. Subir la imagen si hay una nueva
           const formData = new FormData();
           formData.append('imagen', this.selectedFile);
-          return this.http.post<any>(`http://localhost:8080/api/servicios/${this.idServicio}/imagen`, formData);
+          return this.http.post<any>(`${environment.apiUrl}/servicios/${this.idServicio}/imagen`, formData);
         }
         return of(servRes);
       })
@@ -351,7 +352,7 @@ export class EditarServicioComponent implements OnInit {
       this.errorMsg.set('');
       this.successMsg.set('');
 
-      this.http.delete<any>(`http://localhost:8080/api/servicios/${this.idServicio}`).subscribe({
+      this.http.delete<any>(`${environment.apiUrl}/servicios/${this.idServicio}`).subscribe({
         next: () => {
           this.deleting.set(false);
           this.successMsg.set('Servicio eliminado correctamente.');

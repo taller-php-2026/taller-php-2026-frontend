@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'app-configurar-servicios',
@@ -33,7 +34,7 @@ export class ConfigurarServiciosComponent implements OnInit {
     }
     this.cargando.set(true);
 
-    this.http.get<any>(`http://localhost:8080/api/servicios/buscar?idProfesional=${idProf}`).subscribe({
+    this.http.get<any>(`${environment.apiUrl}/servicios/buscar?idProfesional=${idProf}`).subscribe({
       next: (res) => {
         const list = res.data || [];
         const mapped = list.map((s: any) => ({

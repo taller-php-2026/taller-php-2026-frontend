@@ -5,6 +5,7 @@ import { UpperCasePipe, CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { of, switchMap } from 'rxjs';
+import { environment } from '@env/environment';
 
 interface Country {
   code: string;
@@ -92,7 +93,7 @@ export class ConfiguracionNegocioComponent implements OnInit {
   }
 
   cargarDatosNegocio(id: number) {
-    this.http.get<any>(`http://localhost:8080/api/profesionales/${id}`).subscribe({
+    this.http.get<any>(`${environment.apiUrl}/profesionales/${id}`).subscribe({
       next: (res) => {
         const prof = res.data;
         if (prof) {
@@ -120,7 +121,7 @@ export class ConfiguracionNegocioComponent implements OnInit {
   }
 
   cargarDatosUsuario(id: number) {
-    this.http.get<any>(`http://localhost:8080/api/usuarios/${id}`).subscribe({
+    this.http.get<any>(`${environment.apiUrl}/usuarios/${id}`).subscribe({
       next: (res) => {
         const user = res.data;
         if (!user) return;
@@ -253,13 +254,13 @@ export class ConfiguracionNegocioComponent implements OnInit {
     }
 
     // 1. Actualizar usuario (datos generales)
-    this.http.put<any>(`http://localhost:8080/api/usuarios/${idProf}`, userPayload).pipe(
+    this.http.put<any>(`${environment.apiUrl}/usuarios/${idProf}`, userPayload).pipe(
       switchMap((updateUserRes) => {
         // Subir foto de perfil de usuario si se seleccionó una
         if (this.selectedFile) {
           const formData = new FormData();
           formData.append('imagen', this.selectedFile);
-          return this.http.post<any>(`http://localhost:8080/api/usuarios/${idProf}/imagen`, formData);
+          return this.http.post<any>(`${environment.apiUrl}/usuarios/${idProf}/imagen`, formData);
         }
         return of(updateUserRes);
       }),
@@ -282,7 +283,7 @@ export class ConfiguracionNegocioComponent implements OnInit {
         }
 
         // 2. Guardar nombre de negocio en el backend
-        return this.http.put<any>(`http://localhost:8080/api/profesionales/${idProf}`, {
+        return this.http.put<any>(`${environment.apiUrl}/profesionales/${idProf}`, {
           nombreNegocio: this.businessName()
         });
       })
