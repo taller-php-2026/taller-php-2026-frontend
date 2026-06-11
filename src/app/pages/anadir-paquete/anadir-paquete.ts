@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { of, switchMap } from 'rxjs';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'app-anadir-paquete',
@@ -48,7 +49,7 @@ export class AnadirPaqueteComponent implements OnInit {
     if (!idProf) return;
 
     // Cargar solo los servicios activos de este profesional
-    this.http.get<any>(`http://localhost:8080/api/servicios/buscar?idProfesional=${idProf}&activo=1`).subscribe({
+    this.http.get<any>(`${environment.apiUrl}/servicios/buscar?idProfesional=${idProf}&activo=1`).subscribe({
       next: (res) => {
         this.servicios.set(res.data || []);
       }
@@ -135,13 +136,13 @@ export class AnadirPaqueteComponent implements OnInit {
       activo: true,
     };
 
-    this.http.post<any>('http://localhost:8080/api/paquete-servicios', payload).pipe(
+    this.http.post<any>(`${environment.apiUrl}/paquete-servicios`, payload).pipe(
       switchMap((res) => {
         const idPaquete = res.data.idPaqueteServicio;
         if (this.selectedFile) {
           const formData = new FormData();
           formData.append('imagen', this.selectedFile);
-          return this.http.post<any>(`http://localhost:8080/api/paquete-servicios/${idPaquete}/imagen`, formData);
+          return this.http.post<any>(`${environment.apiUrl}/paquete-servicios/${idPaquete}/imagen`, formData);
         }
         return of(res);
       })

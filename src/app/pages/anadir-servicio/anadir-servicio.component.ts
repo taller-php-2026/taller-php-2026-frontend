@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { AgendaService } from '../../services/agenda.service';
 import { Observable, of, switchMap } from 'rxjs';
+import { environment } from '@env/environment';
 import * as L from 'leaflet';
 
 @Component({
@@ -20,6 +21,7 @@ export class AnadirServicioComponent implements OnInit {
   private http = inject(HttpClient);
   private authService = inject(AuthService);
   private agendaService = inject(AgendaService);
+  private backendBaseUrl = environment.apiUrl.replace(/\/api$/, '');
 
   name = signal('');
   hours = signal<number | null>(null);
@@ -220,7 +222,7 @@ export class AnadirServicioComponent implements OnInit {
     // 1. Crear Ubicación o VideoSesión si corresponde
     let prepObs$: Observable<any>;
     if (this.modalidad() === 'presencial') {
-      prepObs$ = this.http.post<any>('http://localhost:8080/api/ubicaciones', {
+      prepObs$ = this.http.post<any>(`${environment.apiUrl}/ubicaciones`, {
         direccion: this.direccion(),
         ciudad: this.ciudad(),
         pais: 'Uruguay',
@@ -230,9 +232,9 @@ export class AnadirServicioComponent implements OnInit {
     } else {
       const room = this.nombreSala().trim() || ('sala-' + Math.random().toString(36).substring(2, 9));
       const prov = this.proveedor().trim() || 'livekit';
-      const urlAcc = this.urlAcceso().trim() || 'http://localhost:8080';
+      const urlAcc = this.urlAcceso().trim() || this.backendBaseUrl;
 
-      prepObs$ = this.http.post<any>('http://localhost:8080/api/video-sesiones', {
+      prepObs$ = this.http.post<any>(`${environment.apiUrl}/video-sesiones`, {
         proveedor: prov,
         url: urlAcc,
         nombreSala: room,
@@ -260,7 +262,7 @@ export class AnadirServicioComponent implements OnInit {
         }
 
         // 2. Crear el Servicio
-        return this.http.post<any>('http://localhost:8080/api/servicios', payload);
+        return this.http.post<any>(`${environment.apiUrl}/servicios`, payload);
       }),
       switchMap((servRes) => {
         const idServicio = servRes.data.idServicio;
@@ -268,7 +270,7 @@ export class AnadirServicioComponent implements OnInit {
           // 3. Subir la imagen si hay una
           const formData = new FormData();
           formData.append('imagen', this.selectedFile);
-          return this.http.post<any>(`http://localhost:8080/api/servicios/${idServicio}/imagen`, formData);
+          return this.http.post<any>(`${environment.apiUrl}/servicios/${idServicio}/imagen`, formData);
         }
         return of(servRes);
       })

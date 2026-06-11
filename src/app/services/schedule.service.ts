@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environment';
+import { environment } from '@env/environment';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { ScheduleResponse } from 'app/models/schedule.model';
