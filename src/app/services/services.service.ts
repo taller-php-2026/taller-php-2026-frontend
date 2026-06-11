@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { environment } from '@env/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Service } from 'app/models/service.model';
+import { FilteredService, Service } from 'app/models/service.model';
 
 @Injectable({ providedIn: 'root' })
 export class ServicesService {
@@ -20,5 +20,10 @@ export class ServicesService {
 
   getProfessionalsByService(serviceId: string): Observable<{ data: any[] }> {
     return this.http.get<{ data: any[] }>(`${this.apiUrl}/${serviceId}/profesionales`);
+  }
+
+  getFilteredServices(filtros: FilteredService): Observable<{ data: Service[]; meta: any }> {
+    const params = new HttpParams({ fromObject: filtros as any });
+    return this.http.get<{ data: Service[]; meta: any }>(`${this.apiUrl}/buscar`, { params });
   }
 }
