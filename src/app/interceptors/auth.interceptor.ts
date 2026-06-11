@@ -8,17 +8,19 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   const token = localStorage.getItem('access_token');
-  if (!token) {
-    return next(req);
+  const headers: Record<string, string> = {
+    'ngrok-skip-browser-warning': 'true',
+    Accept: 'application/json',
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
   }
 
   // Clonar sin tocar Content-Type (necesario para multipart/form-data)
-  const authReq = req.clone({
-    setHeaders: {
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/json',
-    },
+  const backendReq = req.clone({
+    setHeaders: headers,
   });
 
-  return next(authReq);
+  return next(backendReq);
 };
