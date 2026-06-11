@@ -42,28 +42,29 @@
         <!-- Grid of Exceptions -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
           @for (exc of excepciones(); track exc.idExcepcion) {
-            <div class="bg-surface-container-lowest p-md rounded-2xl soft-shadow border border-outline-variant/30 relative overflow-hidden group">
-              <div class="absolute top-0 left-0 w-1 h-full bg-tertiary"></div>
-              <div class="flex justify-between items-start mb-3">
-                <div class="bg-tertiary/10 text-tertiary-container px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
-                  {{ exc.motivo ? 'Bloqueo' : 'Ausencia' }}
+            @if (exc.fecha && exc.horaInicio && exc.horaFin) {
+              <div class="bg-surface-container-lowest p-md rounded-2xl soft-shadow border border-outline-variant/30 relative overflow-hidden group">
+                <div class="absolute top-0 left-0 w-1 h-full bg-tertiary"></div>
+                <div class="flex justify-between items-start mb-3">
+                  <div class="bg-tertiary/10 text-tertiary-container px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                    {{ exc.motivo ? 'Bloqueo' : 'Ausencia' }}
+                  </div>
                 </div>
-                <span class="text-on-surface-variant font-caption text-caption">Agenda #{{ exc.idAgenda }}</span>
+                <h3 class="font-title-sm text-title-sm mb-1">{{ exc.motivo || 'Sin especificar motivo' }}</h3>
+                <div class="flex items-center text-on-surface-variant font-body-sm text-body-sm mb-4">
+                  <span class="material-symbols-outlined text-[18px] mr-1">calendar_today</span>
+                  {{ formatFechaExcepcion(exc.fecha) }}
+                  <span class="mx-2 opacity-30">|</span>
+                  <span class="material-symbols-outlined text-[18px] mr-1">schedule</span>
+                  {{ exc.horaInicio.substring(0, 5) }} - {{ exc.horaFin.substring(0, 5) }}
+                </div>
+                <div class="flex justify-end pt-2 border-t border-outline-variant/20">
+                  <button (click)="cancelarBloqueo(exc.idExcepcion)" class="text-error font-label-bold text-label-bold flex items-center hover:bg-error-container/20 px-3 py-1 rounded-lg transition-colors cursor-pointer">
+                    <span class="material-symbols-outlined mr-1">cancel</span> Cancelar
+                  </button>
+                </div>
               </div>
-              <h3 class="font-title-sm text-title-sm mb-1">{{ exc.motivo || 'Sin especificar motivo' }}</h3>
-              <div class="flex items-center text-on-surface-variant font-body-sm text-body-sm mb-4">
-                <span class="material-symbols-outlined text-[18px] mr-1">calendar_today</span>
-                {{ exc.fecha | date:'dd LLLL, yyyy':'':'es-ES' }}
-                <span class="mx-2 opacity-30">|</span>
-                <span class="material-symbols-outlined text-[18px] mr-1">schedule</span>
-                {{ exc.horaInicio.substring(0, 5) }} - {{ exc.horaFin.substring(0, 5) }}
-              </div>
-              <div class="flex justify-end pt-2 border-t border-outline-variant/20">
-                <button (click)="cancelarBloqueo(exc.idExcepcion)" class="text-error font-label-bold text-label-bold flex items-center hover:bg-error-container/20 px-3 py-1 rounded-lg transition-colors cursor-pointer">
-                  <span class="material-symbols-outlined mr-1">cancel</span> Cancelar
-                </button>
-              </div>
-            </div>
+            }
           }
         </div>
       }
@@ -92,31 +93,43 @@
         } @else {
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-xl">
             <div class="space-y-lg">
-              <!-- Start Date & Time -->
+              <!-- Date Selector -->
               <div>
-                <label class="font-label-bold text-label-bold mb-2 block">Fecha y Hora de Inicio</label>
+                <label class="font-label-bold text-label-bold mb-2 block">Fecha de Bloqueo</label>
                 <div class="relative">
                   <input 
                     class="w-full bg-background border border-outline-variant rounded-xl p-3 font-body-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" 
-                    type="datetime-local"
-                    [ngModel]="fechaHoraInicio()"
-                    (ngModelChange)="fechaHoraInicio.set($event)"
+                    type="date"
+                    [ngModel]="fechaExcepcion()"
+                    (ngModelChange)="fechaExcepcion.set($event)"
                   />
                 </div>
               </div>
-              <!-- End Date & Time -->
+              <!-- Start Time -->
               <div>
-                <label class="font-label-bold text-label-bold mb-2 block">Fecha y Hora de Fin</label>
+                <label class="font-label-bold text-label-bold mb-2 block">Hora de Inicio</label>
                 <div class="relative">
                   <input 
                     class="w-full bg-background border border-outline-variant rounded-xl p-3 font-body-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" 
-                    type="datetime-local"
-                    [ngModel]="fechaHoraFin()"
-                    (ngModelChange)="fechaHoraFin.set($event)"
+                    type="time"
+                    [ngModel]="horaInicio()"
+                    (ngModelChange)="horaInicio.set($event)"
                   />
                 </div>
               </div>
-              <!-- Agenda Selector (in case the professional has multiple agendas) -->
+              <!-- End Time -->
+              <div>
+                <label class="font-label-bold text-label-bold mb-2 block">Hora de Fin</label>
+                <div class="relative">
+                  <input 
+                    class="w-full bg-background border border-outline-variant rounded-xl p-3 font-body-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" 
+                    type="time"
+                    [ngModel]="horaFin()"
+                    (ngModelChange)="horaFin.set($event)"
+                  />
+                </div>
+              </div>
+              <!-- Agenda Selector -->
               @if (agendasProfesional().length > 1) {
                 <div>
                   <label class="font-label-bold text-label-bold mb-2 block">Agenda Asociada</label>

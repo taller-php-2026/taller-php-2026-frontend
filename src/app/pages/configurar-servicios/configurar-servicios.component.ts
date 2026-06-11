@@ -1,35 +1,73 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal, OnInit, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-configurar-servicios',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './configurar-servicios.component.html',
   styleUrl: './configurar-servicios.component.css'
 })
-export class ConfigurarServiciosComponent {
+export class ConfigurarServiciosComponent implements OnInit {
   private router = inject(Router);
   private http = inject(HttpClient);
+  private authService = inject(AuthService);
 
-  servicios = toSignal(this.http.get<any[]>('/mock-servicios.json'), { initialValue: [] });
+  servicios = signal<any[]>([]);
+  cargando = signal<boolean>(true);
 
-  goBack() {
+  tieneServiciosBase = computed(() => this.servicios().some(s => !s.esPaquete));
+
+  ngOnInit(): void {
+    this.cargarServicios();
+  }
+
+  cargarServicios(): void {
+    const idProf = this.authService.currentUser()?.idUsuario;
+    if (!idProf) {
+      this.cargando.set(false);
+      return;
+    }
+    this.cargando.set(true);
+
+    this.http.get<any>(`http://localhost:8080/api/servicios/buscar?idProfesional=${idProf}`).subscribe({
+      next: (res) => {
+        const list = res.data || [];
+        const mapped = list.map((s: any) => ({
+          idServicio: s.idServicio,
+          nombre: s.nombre,
+          precio: s.precio,
+          duracionMinutos: s.duracionMinutos,
+          fotoUrl: s.imagenUrl || '',
+          esPaquete: !!s.paquete_servicio,
+          totalSesiones: s.paquete_servicio ? s.paquete_servicio.totalSesiones : 0,
+        }));
+        this.servicios.set(mapped);
+        this.cargando.set(false);
+      },
+      error: () => {
+        console.error('Error al cargar servicios');
+        this.cargando.set(false);
+      }
+    });
+  }
+
+  goBack(): void {
     this.router.navigate(['/']);
   }
 
-  goToAdd() {
+  goToAdd(): void {
     this.router.navigate(['/anadir-servicio']);
   }
 
-  // Redirigir a crear paquete.
-  goToAddPaquete() {
+  goToAddPaquete(): void {
     this.router.navigate(['/anadir-paquete']);
   }
 
-  goToEdit(id: number) {
+  goToEdit(id: number): void {
     this.router.navigate(['/editar-servicio'], { queryParams: { id } });
   }
 

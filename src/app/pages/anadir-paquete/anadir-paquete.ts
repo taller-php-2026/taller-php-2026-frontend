@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
+import { of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-anadir-paquete',
@@ -14,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 export class AnadirPaqueteComponent implements OnInit {
   private router = inject(Router);
   private http = inject(HttpClient);
+  private authService = inject(AuthService);
 
   name = signal('');
   description = signal('');
@@ -22,80 +25,78 @@ export class AnadirPaqueteComponent implements OnInit {
   fechaInicio = signal('');
   fechaFin = signal('');
 
-  // Listar ciclos.
-  ciclos = signal<any[]>([]);
-
   // Listar servicios.
   servicios = signal<any[]>([]);
 
-  // Listar ciclos seleccionados.
-  selectedCiclos = signal<number[]>([]);
-
-  // Servicios seleccionados.
+  // Servicios seleccionados (permitimos múltiples en UI pero tomamos el primero).
   selectedServicios = signal<number[]>([]);
 
   // Imagen cargada.
   imagePreview = signal<string | null>(null);
+  selectedFile: File | null = null;
 
   loading = signal(false);
   successMsg = signal('');
   errorMsg = signal('');
 
-  // Inicializar componente.
   ngOnInit(): void {
     this.cargarDatos();
   }
 
-  // Obtener ciclos y servicios.
   cargarDatos(): void {
-    this.http.get<any[]>('/mock-ciclo-agenda.json').subscribe((datos) => {
-      this.ciclos.set(datos || []);
-    });
-    this.http.get<any[]>('/mock-servicios.json').subscribe((datos) => {
-      this.servicios.set(datos || []);
+    const idProf = this.authService.currentUser()?.idUsuario;
+    if (!idProf) return;
+
+    // Cargar solo los servicios activos de este profesional
+    this.http.get<any>(`http://localhost:8080/api/servicios/buscar?idProfesional=${idProf}&activo=1`).subscribe({
+      next: (res) => {
+        this.servicios.set(res.data || []);
+      }
     });
   }
 
-  // Cambiar selección de ciclo.
-  toggleCiclo(id: number): void {
-    this.selectedCiclos.update((lista) =>
-      lista.includes(id) ? lista.filter((c) => c !== id) : [...lista, id]
-    );
-  }
-
-  // Cargar imagen.
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
-      const file = input.files[0];
+      this.selectedFile = input.files[0];
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview.set(reader.result as string);
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(this.selectedFile);
     }
   }
 
-  // Cambiar selección de servicio.
   toggleServicio(id: number): void {
-    this.selectedServicios.update((lista) =>
-      lista.includes(id) ? lista.filter((s) => s !== id) : [...lista, id]
-    );
+    const current = this.selectedServicios();
+    if (current.includes(id)) {
+      this.selectedServicios.set(current.filter(x => x !== id));
+    } else {
+      this.selectedServicios.set([...current, id]);
+    }
+    
+    // Si hay al menos un servicio seleccionado, sugerir nombre del primero
+    const firstId = this.selectedServicios()[0];
+    if (firstId) {
+      const serv = this.servicios().find(s => s.idServicio === firstId);
+      if (serv) {
+        this.name.set(`Paquete: ${serv.nombre}`);
+        this.description.set(serv.descripcion || '');
+      }
+    }
   }
 
-  // Volver a configurar servicios.
   goBack(): void {
     this.router.navigate(['/configurar-servicios']);
   }
 
-  // Guardar paquete.
+  goToAddServicio(): void {
+    this.router.navigate(['/anadir-servicio']);
+  }
+
   onSubmit(): void {
-    if (!this.name().trim()) {
-      this.errorMsg.set('El nombre del paquete es requerido.');
-      return;
-    }
     if (this.selectedServicios().length === 0) {
-      this.errorMsg.set('Debes seleccionar al menos un servicio.');
+      this.errorMsg.set('Debes seleccionar un servicio base.');
       return;
     }
     if (this.price() === null || this.price()! <= 0) {
@@ -106,25 +107,56 @@ export class AnadirPaqueteComponent implements OnInit {
       this.errorMsg.set('El total de sesiones debe ser mayor a 0.');
       return;
     }
-    if (!this.fechaInicio() || !this.fechaFin()) {
-      this.errorMsg.set('Debe seleccionar rango de fechas.');
-      return;
-    }
-    if (this.selectedCiclos().length === 0) {
-      this.errorMsg.set('Debes seleccionar al menos un ciclo de agenda.');
-      return;
-    }
 
     this.loading.set(true);
     this.errorMsg.set('');
     this.successMsg.set('');
 
-    setTimeout(() => {
-      this.loading.set(false);
-      this.successMsg.set('¡Paquete añadido con éxito!');
-      setTimeout(() => {
-        this.goBack();
-      }, 1500);
-    }, 1000);
+    const idProf = this.authService.currentUser()?.idUsuario;
+    if (!idProf) {
+      this.errorMsg.set('No se encontró el profesional autenticado.');
+      return;
+    }
+
+    // Obtener datos del servicio base para crear el nuevo servicio del paquete
+    const baseServ = this.servicios().find(s => s.idServicio === this.selectedServicios()[0]);
+
+    const payload = {
+      nombre: this.name(),
+      descripcion: this.description(),
+      precio: this.price(),
+      duracionMinutos: baseServ ? baseServ.duracionMinutos : 60,
+      modalidad: baseServ ? baseServ.modalidad : 'presencial',
+      idUbicacion: baseServ ? baseServ.idUbicacion : null,
+      idVideoSesion: baseServ ? baseServ.idVideoSesion : null,
+      idProfesional: idProf,
+      servicios_ids: this.selectedServicios(),
+      totalSesiones: this.totalSesiones(),
+      activo: true,
+    };
+
+    this.http.post<any>('http://localhost:8080/api/paquete-servicios', payload).pipe(
+      switchMap((res) => {
+        const idPaquete = res.data.idPaqueteServicio;
+        if (this.selectedFile) {
+          const formData = new FormData();
+          formData.append('imagen', this.selectedFile);
+          return this.http.post<any>(`http://localhost:8080/api/paquete-servicios/${idPaquete}/imagen`, formData);
+        }
+        return of(res);
+      })
+    ).subscribe({
+      next: () => {
+        this.loading.set(false);
+        this.successMsg.set('¡Paquete añadido con éxito!');
+        setTimeout(() => {
+          this.goBack();
+        }, 1500);
+      },
+      error: (err) => {
+        this.loading.set(false);
+        this.errorMsg.set(err?.error?.message || 'Error al guardar el paquete.');
+      }
+    });
   }
 }

@@ -34,7 +34,6 @@
               <div class="flex flex-col gap-1 mt-1">
                 <span class="text-xs text-slate-500 font-medium">Días: {{ ciclo.diasSemana.join(', ') }}</span>
                 <span class="text-xs text-slate-500">Horas: {{ formatBloques(ciclo.bloquesHorario) }}</span>
-                <span class="text-xs text-slate-500">Servicios asociados: {{ obtenerNombresServicios(ciclo.serviciosIds) }}</span>
                 <span *ngIf="ciclo.tieneDescanso" class="bg-white text-emerald-800 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-slate-100 w-max">
                   Descanso: {{ ciclo.tiempoDescansoMinutos }} min
                 </span>
@@ -46,7 +45,11 @@
           </button>
         </div>
       } @empty {
-        <p class="text-center text-slate-400 text-sm font-medium">Cargando ciclos de agenda...</p>
+        @if (cargando()) {
+          <p class="text-center text-slate-400 text-sm font-medium">Cargando ciclos de agenda...</p>
+        } @else {
+          <p class="text-center text-slate-400 text-sm font-medium">Aún no hay ciclos configurados.</p>
+        }
       }
     </div>
   </div>

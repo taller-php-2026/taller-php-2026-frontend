@@ -8,27 +8,142 @@
   <div class="w-10"></div>
 </header>
 
-<main class="px-container-padding py-lg max-w-lg mx-auto pb-32">
+<main class="px-container-padding py-lg max-w-lg mx-auto pb-32 space-y-lg">
   <!-- Success/Error Feedback -->
   @if (successMsg()) {
-    <div class="p-sm bg-green-50 text-green-700 rounded-lg text-body-sm text-center border border-green-200 mb-md">
+    <div class="p-sm bg-green-50 text-green-700 rounded-lg text-body-sm text-center border border-green-200">
       {{ successMsg() }}
     </div>
   }
   @if (errorMsg()) {
-    <div class="p-sm bg-error-container text-on-error-container rounded-lg text-body-sm text-center border border-error/20 mb-md">
+    <div class="p-sm bg-error-container text-on-error-container rounded-lg text-body-sm text-center border border-error/20">
       {{ errorMsg() }}
     </div>
   }
 
+  <!-- Profile Image Header -->
+  <section class="flex flex-col items-center justify-center p-lg bg-surface-container-lowest rounded-2xl border border-[#f1f5f9] shadow-xl">
+    <div class="relative group">
+      <img
+        [src]="picture() || 'https://lh3.googleusercontent.com/aida-public/AB6AXuAq2-N-8rFt85xxPz4LHjMgNjGDd_WKl0WiEzRtAzAUgl3cUQkYS0gDh4EKExGJjOy_2ihVYFHbnEfCWPIdYwaVjedDpkx-a4mlsdDpKtSHayGqP3j5HH2AzS8R-8Ih4wpncIjLRxFAOAJ0dw81TVf59HTFteuyyXkfAGZU2k3Ducan339pL88iA4EA0pOFpph0PG0sngEXs8LM8fSsEg6QCQkl7L4KCrs6X7wJYuG6SenHe8K0ETmc0eac_oiSnx1VNV24gfljX32P'"
+        alt="Profile Picture"
+        class="w-24 h-24 rounded-full object-cover border-4 border-surface-container"
+      >
+      <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" class="hidden" />
+      <button (click)="fileInput.click()" class="absolute bottom-0 right-0 bg-primary p-xs rounded-full text-white shadow-lg active:scale-90 transition-transform flex items-center justify-center cursor-pointer">
+        <span class="material-symbols-outlined text-[18px]">edit</span>
+      </button>
+    </div>
+    <div class="mt-md text-center">
+      <h2 class="font-title-sm text-title-sm text-on-surface">{{ name() }}</h2>
+    </div>
+  </section>
+
   <!-- Form Card -->
   <div class="bg-surface-container-lowest rounded-2xl soft-shadow p-md space-y-lg border border-[#f1f5f9] shadow-xl">
     
+    <!-- User Account Details -->
+    <section class="space-y-md">
+      <div class="flex flex-col mb-sm">
+        <h2 class="font-label-bold text-label-bold text-on-surface-variant mb-xs">Datos Personales del Profesional</h2>
+        <p class="font-caption text-caption text-outline">Actualiza tu información personal de contacto y acceso.</p>
+      </div>
+
+      <!-- User Name -->
+      <div class="flex flex-col gap-xs">
+        <label class="font-caption text-caption text-on-surface-variant px-xs">Nombre Completo</label>
+        <input
+          class="w-full bg-surface-bright border border-outline-variant rounded-lg p-md focus:ring-2 focus:ring-primary/15 focus:border-primary outline-none transition-all"
+          type="text"
+          name="name"
+          [ngModel]="name()"
+          (ngModelChange)="name.set($event)"
+        />
+      </div>
+
+      <!-- Email -->
+      <div class="flex flex-col gap-xs">
+        <label class="font-caption text-caption text-on-surface-variant px-xs">Correo Electrónico</label>
+        <input
+          class="w-full bg-surface-bright border border-outline-variant rounded-lg p-md focus:ring-2 focus:ring-primary/15 focus:border-primary outline-none transition-all"
+          type="email"
+          name="email"
+          [ngModel]="email()"
+          (ngModelChange)="email.set($event)"
+        />
+      </div>
+
+      <!-- Phone Field -->
+      <div class="flex flex-col gap-xs">
+        <label class="font-caption text-caption text-on-surface-variant px-xs">Número de Teléfono</label>
+        <div class="flex h-12 rounded-lg border border-outline-variant overflow-hidden bg-background focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/15 transition-all">
+          <div class="relative flex-shrink-0">
+            <select
+              class="h-full pl-3 pr-8 bg-transparent border-r border-outline-variant font-body-md text-on-surface focus:outline-none cursor-pointer text-sm"
+              [(ngModel)]="countryIndex"
+              (ngModelChange)="onCountryChange($event)"
+              name="countryCode"
+              style="-webkit-appearance: none; -moz-appearance: none; appearance: none;"
+            >
+              @for (c of countries; track c.code; let i = $index) {
+                <option [value]="i.toString()">{{ c.flag }} {{ c.dial }}</option>
+              }
+            </select>
+          </div>
+          <div class="flex items-center flex-1 px-3 gap-2">
+            <span class="material-symbols-outlined text-on-surface-variant flex-shrink-0" style="font-size:20px">phone</span>
+            <input
+              class="flex-1 bg-transparent border-none p-0 font-body-md text-on-surface placeholder:text-outline-variant focus:outline-none focus:ring-0 h-full"
+              id="phone"
+              [placeholder]="selectedCountry.placeholder"
+              type="tel"
+              [ngModel]="phone()"
+              (ngModelChange)="phone.set($event)"
+              name="phone"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Password (Ocultar para usuarios registrados con Google) -->
+      <div class="flex flex-col gap-xs" *ngIf="!esUsuarioGoogle()">
+        <label class="font-caption text-caption text-on-surface-variant px-xs">Nueva Contraseña (Opcional)</label>
+        <div class="flex items-center justify-between bg-surface-bright border border-outline-variant rounded-lg p-md focus-within:ring-2 focus-within:ring-primary/15 focus-within:border-primary outline-none transition-all">
+          <input
+            class="bg-transparent border-none p-0 w-full font-body-md text-body-md focus:ring-0 text-on-surface outline-none"
+            [type]="showConfirm() ? 'text' : 'password'"
+            name="password"
+            [ngModel]="password()"
+            (ngModelChange)="password.set($event)"
+            placeholder="Mínimo 8 caracteres, 1 mayúscula, 1 número"
+          >
+          <button type="button" (click)="toggleShowConfirm()" class="text-primary font-label-bold text-label-bold active:scale-95 transition-transform flex items-center cursor-pointer">
+            <span class="material-symbols-outlined">{{ showConfirm() ? 'visibility_off' : 'visibility' }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="flex flex-col gap-xs" *ngIf="!esUsuarioGoogle() && password().length > 0">
+        <label class="font-caption text-caption text-on-surface-variant px-xs">Confirmar Contraseña</label>
+        <input
+          class="w-full bg-surface-bright border border-outline-variant rounded-lg p-md focus:ring-2 focus:ring-primary/15 focus:border-primary outline-none transition-all"
+          [type]="showConfirm() ? 'text' : 'password'"
+          name="confirmPassword"
+          [ngModel]="confirmPassword()"
+          (ngModelChange)="confirmPassword.set($event)"
+          placeholder="Repite la nueva contraseña"
+        >
+      </div>
+    </section>
+
+    <hr class="border-outline-variant/20">
+
     <!-- Business Identity Section -->
     <section class="space-y-md">
       <div class="flex flex-col mb-sm">
         <h2 class="font-label-bold text-label-bold text-on-surface-variant mb-xs">Identidad del Negocio</h2>
-        <p class="font-caption text-caption text-outline">Define el nombre y logo principal.</p>
+        <p class="font-caption text-caption text-outline">Define el nombre comercial y logo principal.</p>
       </div>
 
       <!-- Commercial Name -->
@@ -193,7 +308,7 @@
         (click)="saveChanges()"
         [disabled]="loading()"
         style="background: linear-gradient(180deg, #0e9488 0%, #005049 100%) !important; color: white !important;"
-        class="w-full py-md rounded-xl text-on-primary font-label-bold text-label-bold soft-shadow transition-all active:scale-95 h-12 flex items-center justify-center disabled:opacity-50"
+        class="w-full py-md rounded-xl text-on-primary font-label-bold text-label-bold soft-shadow transition-all active:scale-95 h-12 flex items-center justify-center disabled:opacity-50 cursor-pointer"
       >
         @if (loading()) {
           <span class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full mr-2"></span>

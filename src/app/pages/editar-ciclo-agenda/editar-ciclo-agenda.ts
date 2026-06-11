@@ -2,7 +2,9 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { AgendaService } from '../../services/agenda.service';
+import { AuthService } from '../../services/auth.service';
+import { forkJoin, Observable, switchMap } from 'rxjs';
 
 interface HorarioBloque {
   inicio: string;
@@ -18,8 +20,15 @@ interface HorarioBloque {
 })
 export class EditarCicloAgenda implements OnInit {
   private enrutador = inject(Router);
-  private clienteHttp = inject(HttpClient);
+  private agendaService = inject(AgendaService);
+  private authService = inject(AuthService);
   private rutaActiva = inject(ActivatedRoute);
+
+  // ID del ciclo que estamos editando.
+  idCiclo = 0;
+
+  // Nombre del ciclo.
+  nombreCiclo = signal<string>('');
 
   // Dias de la semana
   diasSemana = [
@@ -47,22 +56,41 @@ export class EditarCicloAgenda implements OnInit {
     this.cargarDatosAgenda();
   }
 
-  // Obtener datos agenda.
+  // Obtener datos agenda desde el backend.
   cargarDatosAgenda(): void {
     const id = Number(this.rutaActiva.snapshot.queryParams['id'] || 1);
-    this.clienteHttp.get<any[]>('/mock-ciclo-agenda.json').subscribe({
-      next: (lista) => {
-        const datos = lista?.find((c) => c.id === id) || lista?.[0];
+    this.idCiclo = id;
+
+    this.agendaService.obtenerCicloPorId(id).subscribe({
+      next: (res) => {
+        const datos = res.data;
         if (datos) {
-          // Marcar dias activos
-          this.diasSemana.forEach((dia) => {
-            const esActivo = datos.diasSemana.includes(dia.nombre);
-            dia.activo.set(esActivo);
+          this.nombreCiclo.set(datos.nombre);
+          const rangos = datos.rango_horarios || [];
+
+          // Mapear los días activos
+          const diasSemanaNombres = rangos.map((r: any) => {
+            const dia = r.diaSemana;
+            if (dia.startsWith('Mi')) return 'Mié';
+            if (dia.startsWith('Sá')) return 'Sáb';
+            return dia.substring(0, 3);
           });
-          // Establecer bloques y descanso
-          this.bloquesHorario.set(datos.bloquesHorario || []);
-          this.tieneDescanso.set(!!datos.tieneDescanso);
-          this.tiempoDescansoMinutos.set(datos.tiempoDescansoMinutos || 0);
+
+          this.diasSemana.forEach((dia) => {
+            dia.activo.set(diasSemanaNombres.includes(dia.nombre));
+          });
+
+          // Mapear bloques horarios
+          const bloques = rangos.map((r: any) => ({
+            inicio: r.horaInicio.substring(0, 5),
+            fin: r.horaFin.substring(0, 5)
+          }));
+
+          // Filtrar únicos
+          const bloquesUnicos = bloques.filter(
+            (v: any, i: number, a: any[]) => a.findIndex((t: any) => t.inicio === v.inicio && t.fin === v.fin) === i
+          );
+          this.bloquesHorario.set(bloquesUnicos);
         }
       },
       error: () => {
@@ -120,12 +148,19 @@ export class EditarCicloAgenda implements OnInit {
 
   // Volver a la pagina anterior
   volverPaginaAnterior(): void {
-    this.enrutador.navigate(['/']);
+    this.enrutador.navigate(['/configurar-ciclos']);
   }
 
-  // Guardar configuracion de agenda
+  private capitalizarDia(dia: string): string {
+    if (dia === 'miércoles') return 'Miércoles';
+    if (dia === 'sábado') return 'Sábado';
+    return dia.charAt(0).toUpperCase() + dia.slice(1);
+  }
+
+  // Guardar configuración editada (elimina ciclo viejo y crea uno nuevo con datos actualizados).
   guardarConfiguracionAgenda(): void {
-    if (this.diasSemana.filter((d) => d.activo()).length === 0) {
+    const diasActivos = this.diasSemana.filter((d) => d.activo());
+    if (diasActivos.length === 0) {
       this.mensajeError.set('Debe seleccionar al menos un día de la semana.');
       return;
     }
@@ -133,13 +168,109 @@ export class EditarCicloAgenda implements OnInit {
       this.mensajeError.set('Debe configurar al menos un bloque de horario.');
       return;
     }
+    if (!this.nombreCiclo().trim()) {
+      this.mensajeError.set('Debe ingresar un nombre para el ciclo.');
+      return;
+    }
 
     this.mensajeError.set('');
-    this.mensajeExito.set('Configuración de agenda editada exitosamente.');
+    this.mensajeExito.set('Guardando cambios...');
 
-    setTimeout(() => {
-      this.mensajeExito.set('');
-      this.volverPaginaAnterior();
-    }, 1500);
+    const idProfesional = this.authService.currentUser()?.idUsuario;
+    if (!idProfesional) {
+      this.mensajeError.set('No se pudo identificar al profesional logueado.');
+      return;
+    }
+
+    // 1. Eliminar el ciclo antiguo.
+    this.agendaService.eliminarCiclo(this.idCiclo).pipe(
+      // 2. Crear el ciclo actualizado.
+      switchMap(() => this.agendaService.crearCiclo(this.nombreCiclo())),
+      switchMap((cicloRes) => {
+        const idCiclo = cicloRes.data.idCiclo;
+
+        // Crear rangos horarios.
+        const rangoRequests: Observable<any>[] = [];
+        diasActivos.forEach((dia) => {
+          const diaCapitalizado = this.capitalizarDia(dia.completo);
+          this.bloquesHorario().forEach((bloque) => {
+            rangoRequests.push(
+              this.agendaService.crearRangoHorario({
+                diaSemana: diaCapitalizado,
+                horaInicio: bloque.inicio,
+                horaFin: bloque.fin,
+                idCiclo: idCiclo
+              })
+            );
+          });
+        });
+
+        // 3. Crear la agenda.
+        return forkJoin(rangoRequests).pipe(
+          switchMap(() => this.agendaService.crearAgenda(idCiclo)),
+          switchMap((agendaRes) => {
+            const idAgenda = agendaRes.data.idAgenda;
+
+            // 4. Crear reglas de disponibilidad.
+            const reglaRequests: Observable<any>[] = [];
+            diasActivos.forEach((dia) => {
+              const diaCapitalizado = this.capitalizarDia(dia.completo);
+              this.bloquesHorario().forEach((bloque) => {
+                reglaRequests.push(
+                  this.agendaService.crearReglaDisponibilidad({
+                    dia_semana: diaCapitalizado,
+                    horaInicio: bloque.inicio,
+                    horaFin: bloque.fin,
+                    pausaMinutos: 0,
+                    bufferMinutos: this.tieneDescanso() ? this.tiempoDescansoMinutos() : 0,
+                    activa: true,
+                    idAgenda: idAgenda,
+                    idProfesional: idProfesional
+                  })
+                );
+              });
+            });
+
+            return forkJoin(reglaRequests);
+          })
+        );
+      })
+    ).subscribe({
+      next: () => {
+        this.mensajeExito.set('Configuración editada y guardada exitosamente.');
+        setTimeout(() => {
+          this.mensajeExito.set('');
+          this.volverPaginaAnterior();
+        }, 1500);
+      },
+      error: (err) => {
+        let errorMsg = 'Error al guardar los cambios en el ciclo.';
+        if (err?.error?.errors) {
+          const list: string[] = [];
+          Object.keys(err.error.errors).forEach((key) => {
+            err.error.errors[key].forEach((detail: string) => {
+              if (detail.includes('validation.after')) {
+                list.push('La hora de fin debe ser posterior a la hora de inicio.');
+              } else if (detail.includes('date_format')) {
+                list.push('El formato de hora debe ser válido (HH:mm).');
+              } else {
+                list.push(detail);
+              }
+            });
+          });
+          if (list.length > 0) {
+            errorMsg = list.join(' ');
+          }
+        } else if (err?.error?.message) {
+          if (err.error.message.includes('validation.after')) {
+            errorMsg = 'La hora de fin debe ser posterior a la hora de inicio.';
+          } else {
+            errorMsg = err.error.message;
+          }
+        }
+        this.mensajeError.set(errorMsg);
+        this.mensajeExito.set('');
+      }
+    });
   }
 }

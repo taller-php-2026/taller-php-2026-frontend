@@ -21,8 +21,26 @@
     </div>
   }
 
-  <!-- Form Card -->
-  <div class="bg-surface-container-lowest rounded-2xl soft-shadow p-md space-y-lg border border-[#f1f5f9] shadow-xl">
+  @if (servicios().length === 0) {
+    <!-- Tarjeta de advertencia cuando no hay servicios base -->
+    <div class="bg-amber-50 rounded-2xl p-xl border border-amber-200 text-center shadow-md space-y-md">
+      <span class="material-symbols-outlined text-amber-600 text-5xl">warning</span>
+      <div>
+        <h2 class="font-bold text-slate-800 text-lg">No tienes servicios creados o activos</h2>
+        <p class="text-sm text-slate-600 mt-2">
+          Para crear un paquete, primero debes tener al menos un servicio base creado y activo al cual asociarle las sesiones.
+        </p>
+      </div>
+      <button 
+        (click)="goToAddServicio()" 
+        class="w-full bg-[#00685f] hover:bg-[#005a52] text-white py-3 px-6 rounded-lg font-bold shadow-md transition-all duration-200 active:scale-95 cursor-pointer"
+      >
+        Crear Primer Servicio
+      </button>
+    </div>
+  } @else {
+    <!-- Form Card -->
+    <div class="bg-surface-container-lowest rounded-2xl soft-shadow p-md space-y-lg border border-[#f1f5f9] shadow-xl">
     
     <!-- Package Image Uploader -->
     <div class="space-y-sm">
@@ -51,12 +69,13 @@
       <div class="space-y-xs">
         <label class="font-label-bold text-label-bold text-on-surface-variant" for="pkg-name">Nombre del Paquete</label>
         <input
-          class="w-full bg-surface border border-[#e2e8f0] rounded-lg px-md py-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-body-md"
+          class="w-full bg-surface border border-[#e2e8f0] rounded-lg px-md py-sm outline-none text-body-md"
           id="pkg-name"
-          placeholder="Ej. Pack 5 Cortes + Tratamiento"
+          placeholder="Escribe el nombre del paquete..."
           type="text"
           name="name"
-          [(ngModel)]="name"
+          [ngModel]="name()"
+          (ngModelChange)="name.set($event)"
         />
       </div>
 
@@ -64,12 +83,13 @@
       <div class="space-y-xs">
         <label class="font-label-bold text-label-bold text-on-surface-variant" for="pkg-desc">Descripción</label>
         <textarea
-          class="w-full bg-surface border border-[#e2e8f0] rounded-lg px-md py-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-body-md resize-none"
+          class="w-full bg-surface border border-[#e2e8f0] rounded-lg px-md py-sm outline-none text-body-md resize-none"
           id="pkg-desc"
-          placeholder="Describe los detalles del paquete..."
+          placeholder="Escribe la descripción del paquete..."
           rows="3"
           name="description"
-          [(ngModel)]="description"
+          [ngModel]="description()"
+          (ngModelChange)="description.set($event)"
         ></textarea>
       </div>
 
@@ -106,33 +126,9 @@
         </div>
       </div>
 
-      <!-- Date Range Grid -->
-      <div class="grid grid-cols-2 gap-md">
-        <div class="space-y-xs">
-          <label class="font-label-bold text-label-bold text-on-surface-variant" for="pkg-start">Fecha Inicio</label>
-          <input
-            class="w-full h-11 bg-surface border border-[#e2e8f0] rounded-lg px-md focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-body-md"
-            id="pkg-start"
-            type="date"
-            name="fechaInicio"
-            [(ngModel)]="fechaInicio"
-          />
-        </div>
-        <div class="space-y-xs">
-          <label class="font-label-bold text-label-bold text-on-surface-variant" for="pkg-end">Fecha Fin</label>
-          <input
-            class="w-full h-11 bg-surface border border-[#e2e8f0] rounded-lg px-md focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none text-body-md"
-            id="pkg-end"
-            type="date"
-            name="fechaFin"
-            [(ngModel)]="fechaFin"
-          />
-        </div>
-      </div>
-
       <!-- Select Services (List checklist) -->
       <div class="space-y-xs">
-        <label class="font-label-bold text-label-bold text-on-surface-variant">Servicios Incluidos</label>
+        <label class="font-label-bold text-label-bold text-on-surface-variant">Servicio a empaquetar</label>
         <div class="flex flex-col gap-sm border border-[#e2e8f0] rounded-lg p-sm bg-surface max-h-40 overflow-y-auto">
           @for (s of servicios(); track s.idServicio) {
             <label class="flex items-center gap-sm cursor-pointer select-none text-body-md text-on-surface">
@@ -149,29 +145,6 @@
             </label>
           } @empty {
             <p class="text-caption text-outline">Cargando servicios disponibles...</p>
-          }
-        </div>
-      </div>
-
-      <!-- Cycles Selection (Checklist) -->
-      <div class="space-y-xs">
-        <label class="font-label-bold text-label-bold text-on-surface-variant">Ciclos de Agenda asociados</label>
-        <div class="flex flex-col gap-sm border border-[#e2e8f0] rounded-lg p-sm bg-surface">
-          @for (c of ciclos(); track c.id) {
-            <label class="flex items-center gap-sm cursor-pointer select-none text-body-md text-on-surface">
-              <input
-                type="checkbox"
-                [checked]="selectedCiclos().includes(c.id)"
-                (change)="toggleCiclo(c.id)"
-                class="w-4 h-4 rounded text-primary border-outline-variant focus:ring-primary/20"
-              />
-              <div>
-                <span class="font-bold">{{ c.nombre }}</span>
-                <span class="text-xs text-outline ml-sm">({{ c.diasSemana.join(', ') }})</span>
-              </div>
-            </label>
-          } @empty {
-            <p class="text-caption text-outline">No hay ciclos de agenda disponibles.</p>
           }
         </div>
       </div>
@@ -203,4 +176,5 @@
 
     </form>
   </div>
+  }
 </main>

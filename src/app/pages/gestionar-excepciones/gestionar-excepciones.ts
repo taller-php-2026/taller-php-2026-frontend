@@ -27,9 +27,10 @@ export class GestionarExcepcionesComponent implements OnInit {
   // Agenda seleccionada por defecto para la nueva excepción.
   idAgendaSeleccionada = signal<number | null>(null);
 
-  // Formulario reactivo con signals (Fecha y hora de inicio / fin).
-  fechaHoraInicio = signal<string>('');
-  fechaHoraFin = signal<string>('');
+  // Formulario reactivo con signals (Fecha, Hora de inicio / fin).
+  fechaExcepcion = signal<string>('');
+  horaInicio = signal<string>('');
+  horaFin = signal<string>('');
   motivo = signal<string>('');
 
   // Mensajes de feedback.
@@ -116,8 +117,8 @@ export class GestionarExcepcionesComponent implements OnInit {
 
   // Confirmar y crear bloqueo.
   confirmarBloqueo(): void {
-    if (!this.fechaHoraInicio() || !this.fechaHoraFin()) {
-      this.mostrarToast('Por favor, selecciona fecha y hora de inicio y fin');
+    if (!this.fechaExcepcion() || !this.horaInicio() || !this.horaFin()) {
+      this.mostrarToast('Por favor, completa la fecha y las horas de inicio y fin');
       return;
     }
     if (!this.idAgendaSeleccionada()) {
@@ -125,79 +126,54 @@ export class GestionarExcepcionesComponent implements OnInit {
       return;
     }
 
-    const start = new Date(this.fechaHoraInicio());
-    const end = new Date(this.fechaHoraFin());
+    const tStart = this.timeToMinutes(this.horaInicio());
+    const tEnd = this.timeToMinutes(this.horaFin());
 
-    if (end <= start) {
-      this.mostrarToast('La fecha/hora de fin debe ser posterior a la de inicio');
+    if (tEnd <= tStart) {
+      this.mostrarToast('La hora de fin debe ser posterior a la de inicio');
       return;
     }
 
-    // Generar las excepciones por cada día en el rango
-    const requests: Observable<any>[] = [];
-    let current = new Date(start);
-
-    // Iterar por cada día
-    while (current <= end) {
-      const dateString = current.toISOString().split('T')[0];
-      let hInicio = '00:00';
-      let hFin = '23:59';
-
-      // Si es el primer día, la hora de inicio es la seleccionada
-      if (current.toDateString() === start.toDateString()) {
-        hInicio = this.formatTime(start);
-      }
-      // Si es el último día, la hora de fin es la seleccionada
-      if (current.toDateString() === end.toDateString()) {
-        hFin = this.formatTime(end);
-      }
-
-      // Si es el mismo día, verificar rango
-      if (start.toDateString() === end.toDateString()) {
-        hInicio = this.formatTime(start);
-        hFin = this.formatTime(end);
-      }
-
-      // Solo agregar request si la hora de fin es posterior a la de inicio en ese día
-      const timeStartVal = this.timeToMinutes(hInicio);
-      const timeEndVal = this.timeToMinutes(hFin);
-
-      if (timeEndVal > timeStartVal) {
-        const payload: ExcepcionPayload = {
-          fecha: dateString,
-          horaInicio: hInicio,
-          horaFin: hFin,
-          motivo: this.motivo() || undefined,
-          idAgenda: this.idAgendaSeleccionada()!,
-        };
-        requests.push(this.excepcionService.crearExcepcion(payload));
-      }
-
-      // Avanzar al siguiente día
-      current.setDate(current.getDate() + 1);
-    }
-
-    if (requests.length === 0) {
-      this.mostrarToast('Rango de tiempo no válido para crear un bloqueo');
-      return;
-    }
+    const payload: ExcepcionPayload = {
+      fecha: this.fechaExcepcion(),
+      horaInicio: this.horaInicio(),
+      horaFin: this.horaFin(),
+      motivo: this.motivo() || undefined,
+      idAgenda: this.idAgendaSeleccionada()!,
+    };
 
     this.loading.set(true);
-    import('rxjs').then(({ forkJoin }) => {
-      forkJoin(requests).subscribe({
-        next: () => {
-          this.mostrarToast('Bloqueo(s) confirmado(s) exitosamente');
-          this.fechaHoraInicio.set('');
-          this.fechaHoraFin.set('');
-          this.motivo.set('');
-          this.cargarExcepciones();
-        },
-        error: (err) => {
-          const msg = err?.error?.message || 'Error al intentar guardar el bloqueo';
-          this.mostrarToast(msg);
-          this.loading.set(false);
+    this.excepcionService.crearExcepcion(payload).subscribe({
+      next: () => {
+        this.mostrarToast('Bloqueo confirmado exitosamente');
+        this.fechaExcepcion.set('');
+        this.horaInicio.set('');
+        this.horaFin.set('');
+        this.motivo.set('');
+        this.cargarExcepciones();
+      },
+      error: (err) => {
+        let msg = 'Error al intentar guardar el bloqueo';
+        if (err?.error?.errors) {
+          const list: string[] = [];
+          Object.keys(err.error.errors).forEach((key) => {
+            err.error.errors[key].forEach((detail: string) => {
+              if (detail.includes('validation.after')) {
+                list.push('La hora de fin debe ser posterior a la hora de inicio.');
+              } else {
+                list.push(detail);
+              }
+            });
+          });
+          if (list.length > 0) msg = list.join(' ');
+        } else if (err?.error?.message) {
+          msg = err.error.message.includes('validation.after')
+            ? 'La hora de fin debe ser posterior a la hora de inicio.'
+            : err.error.message;
         }
-      });
+        this.mostrarToast(msg);
+        this.loading.set(false);
+      }
     });
   }
 
@@ -216,10 +192,18 @@ export class GestionarExcepcionesComponent implements OnInit {
     });
   }
 
-  private formatTime(date: Date): string {
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    return `${hours}:${minutes}`;
+  formatFechaExcepcion(fechaStr: string): string {
+    if (!fechaStr) return '';
+    const parts = fechaStr.split('-');
+    if (parts.length !== 3) return fechaStr;
+    const [year, month, day] = parts;
+    const meses = [
+      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+    const mesIndex = parseInt(month, 10) - 1;
+    const nombreMes = meses[mesIndex] || month;
+    return `${day} de ${nombreMes}, ${year}`;
   }
 
   private timeToMinutes(timeStr: string): number {

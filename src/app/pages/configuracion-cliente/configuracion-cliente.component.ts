@@ -1,9 +1,9 @@
-import { Component, inject, signal, computed, effect } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { HttpClient } from '@angular/common/http';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { of, switchMap } from 'rxjs';
 
 interface Country {
   code: string;
@@ -22,13 +22,10 @@ interface Country {
   templateUrl: './configuracion-cliente.component.html',
   styleUrl: './configuracion-cliente.component.css'
 })
-export class ConfiguracionClienteComponent {
+export class ConfiguracionClienteComponent implements OnInit {
   authService = inject(AuthService);
   private router = inject(Router);
   private http = inject(HttpClient);
-
-  // Carga reactiva de los datos del cliente desde el mock JSON
-  private clienteData = toSignal(this.http.get<any>('/mock-usuario.json'));
 
   countries: Country[] = [
     { code: 'UY', name: 'Uruguay',   flag: '🇺🇾', dial: '+598', phonePattern: /^09[1-9]\d{6}$/,   placeholder: '091 123 456',  example: '091123456'  },
@@ -64,31 +61,41 @@ export class ConfiguracionClienteComponent {
   successMsg = signal('');
   errorMsg = signal('');
   showConfirm = signal(false);
+  selectedFile: File | null = null;
 
-  constructor() {
-    // Sincronizar con mock de datos o currentUser
-    effect(() => {
-      const data = this.clienteData();
-      if (data) {
-        this.name.set(data.nombre);
-        this.email.set(data.email);
-        if (data.telefono) {
-          // Limpiar prefijo si viene en el número de teléfono
-          const tel = data.telefono.replace('+598 ', '').replace(/\s/g, '');
-          this.phone.set(tel);
+  ngOnInit(): void {
+    const user = this.authService.currentUser();
+    if (user?.idUsuario) {
+      this.cargarUsuario(user.idUsuario);
+    } else {
+      this.errorMsg.set('No se ha podido identificar al usuario actual.');
+    }
+  }
+
+  cargarUsuario(id: number) {
+    this.http.get<any>(`http://localhost:8080/api/usuarios/${id}`).subscribe({
+      next: (res) => {
+        const user = res.data;
+        if (!user) return;
+        this.name.set(user.nombre);
+        this.email.set(user.email);
+        if (user.telefono) {
+          // Detectar código de país
+          const matchedCountry = this.countries.findIndex(c => user.telefono.startsWith(c.dial));
+          if (matchedCountry !== -1) {
+            this.countryIndex = matchedCountry.toString();
+            const tel = user.telefono.replace(this.selectedCountry.dial, '').trim();
+            this.phone.set(tel);
+          } else {
+            this.phone.set(user.telefono);
+          }
         }
-        if (data.picture) this.picture.set(data.picture);
-        if (data.contrasena) {
-          this.password.set(data.contrasena);
-          this.confirmPassword.set(data.contrasena);
+        if (user.imagenPerfilUrl) {
+          this.picture.set(user.imagenPerfilUrl);
         }
-      } else {
-        const user = this.authService.currentUser();
-        if (user) {
-          this.name.set(user.name);
-          this.email.set(user.email);
-          if (user.picture) this.picture.set(user.picture);
-        }
+      },
+      error: () => {
+        this.errorMsg.set('Error al cargar la información del perfil.');
       }
     });
   }
@@ -104,25 +111,22 @@ export class ConfiguracionClienteComponent {
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
-      const file = input.files[0];
+      this.selectedFile = input.files[0];
       const reader = new FileReader();
       reader.onload = () => {
-        const base64String = reader.result as string;
-        this.picture.set(base64String);
-        const currentUser = this.authService.currentUser();
-        if (currentUser) {
-          this.authService.currentUser.set({
-            ...currentUser,
-            picture: base64String
-          });
-          localStorage.setItem('user_session', JSON.stringify(this.authService.currentUser()));
-        }
+        this.picture.set(reader.result as string);
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(this.selectedFile);
     }
   }
 
   saveChanges() {
+    const user = this.authService.currentUser();
+    if (!user?.idUsuario) {
+      this.errorMsg.set('No se pudo identificar al usuario logueado.');
+      return;
+    }
+
     // 1. Validación de Nombre
     if (this.name().trim().length < 4) {
       this.errorMsg.set('El nombre debe tener al menos 4 caracteres.');
@@ -145,42 +149,75 @@ export class ConfiguracionClienteComponent {
       }
     }
 
-    // 4. Validación de Contraseña (Largo >= 8, 1 Mayúscula, 1 Número)
-    const pass = this.password();
-    const hasUpper = /[A-Z]/.test(pass);
-    const hasNumber = /[0-9]/.test(pass);
-    const minLength = pass.length >= 8;
+    // 4. Validación de Contraseña
+    if (this.password()) {
+      const pass = this.password();
+      const hasUpper = /[A-Z]/.test(pass);
+      const hasNumber = /[0-9]/.test(pass);
+      const minLength = pass.length >= 8;
 
-    if (!minLength || !hasUpper || !hasNumber) {
-      this.errorMsg.set('La contraseña debe tener al menos 8 caracteres, una mayúscula y un número.');
-      return;
-    }
+      if (!minLength || !hasUpper || !hasNumber) {
+        this.errorMsg.set('La contraseña debe tener al menos 8 caracteres, una mayúscula y un número.');
+        return;
+      }
 
-    // 5. Coincidencia de contraseña
-    if (this.password() !== this.confirmPassword()) {
-      this.errorMsg.set('Las contraseñas no coinciden.');
-      return;
+      if (this.password() !== this.confirmPassword()) {
+        this.errorMsg.set('Las contraseñas no coinciden.');
+        return;
+      }
     }
 
     this.loading.set(true);
     this.successMsg.set('');
     this.errorMsg.set('');
 
-    setTimeout(() => {
-      // Mock saving logic
-      const currentUser = this.authService.currentUser();
-      if (currentUser) {
-        this.authService.currentUser.set({
-          ...currentUser,
-          name: this.name(),
-          email: this.email(),
-          picture: this.picture()
-        });
-        localStorage.setItem('user_session', JSON.stringify(this.authService.currentUser()));
+    const payload: any = {
+      nombre: this.name(),
+      email: this.email(),
+      telefono: this.phone() ? `${this.selectedCountry.dial} ${this.phone()}` : ''
+    };
+
+    if (this.password()) {
+      payload.password = this.password();
+    }
+
+    this.http.put<any>(`http://localhost:8080/api/usuarios/${user.idUsuario}`, payload).pipe(
+      switchMap((updateRes) => {
+        if (this.selectedFile) {
+          const formData = new FormData();
+          formData.append('imagen', this.selectedFile);
+          return this.http.post<any>(`http://localhost:8080/api/usuarios/${user.idUsuario}/imagen`, formData);
+        }
+        return of(updateRes);
+      })
+    ).subscribe({
+      next: (res) => {
+        const updated = res.data;
+        const newProfile = {
+          idUsuario: updated.idUsuario,
+          name: updated.nombre,
+          email: updated.email,
+          picture: updated.imagenPerfilUrl || '',
+          telefono: updated.telefono,
+          type: user.type,
+          imagenPerfilUrl: updated.imagenPerfilUrl,
+          imagenPerfilPublicId: updated.imagenPerfilPublicId
+        };
+
+        this.authService.currentUser.set(newProfile);
+        localStorage.setItem('user_session', JSON.stringify(newProfile));
+
+        this.loading.set(false);
+        this.successMsg.set('¡Cambios guardados con éxito!');
+        setTimeout(() => {
+          this.successMsg.set('');
+        }, 2000);
+      },
+      error: (err) => {
+        this.loading.set(false);
+        this.errorMsg.set(err?.error?.message || 'Error al guardar los cambios.');
       }
-      this.loading.set(false);
-      this.successMsg.set('¡Cambios guardados con éxito!');
-    }, 1000);
+    });
   }
 
   logout() {

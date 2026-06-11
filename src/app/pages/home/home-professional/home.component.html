@@ -13,43 +13,43 @@
     </span>
   </section>
 
-  <!-- Quick Action Cards (Stitch-inspired) -->
+  <!-- Quick Action Cards (Sincronizado con menú Hamburguesa) -->
   <h3 class="font-title-sm text-title-sm text-on-surface-variant mb-md">Acciones Rápidas</h3>
   <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg mb-xl">
-    <!-- Crear Turno -->
-    <button class="flex flex-col items-start text-left bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 transition-all active:scale-95 hover:shadow-md group w-full">
+    <!-- Mis Servicios -->
+    <button (click)="goToConfigurarServicios()" class="flex flex-col items-start text-left bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 transition-all active:scale-95 hover:shadow-md group w-full cursor-pointer">
+      <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-md group-hover:bg-primary group-hover:text-on-primary transition-colors">
+        <span class="material-symbols-outlined">content_cut</span>
+      </div>
+      <span class="font-label-bold text-label-bold text-on-surface mb-xs">Mis Servicios</span>
+      <p class="font-body-sm text-body-sm text-on-surface-variant">Administra tu catálogo de tratamientos y precios.</p>
+    </button>
+
+    <!-- Ciclos de Agenda -->
+    <button (click)="goToConfigurarCiclos()" class="flex flex-col items-start text-left bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 transition-all active:scale-95 hover:shadow-md group w-full cursor-pointer">
       <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-md group-hover:bg-primary group-hover:text-on-primary transition-colors">
         <span class="material-symbols-outlined">calendar_month</span>
       </div>
-      <span class="font-label-bold text-label-bold text-on-surface mb-xs">Crear Turno</span>
-      <p class="font-body-sm text-body-sm text-on-surface-variant">Define nuevos bloques de atención para tus servicios.</p>
+      <span class="font-label-bold text-label-bold text-on-surface mb-xs">Ciclos de Agenda</span>
+      <p class="font-body-sm text-body-sm text-on-surface-variant">Define y planifica tus ciclos y turnos de atención.</p>
     </button>
 
-    <!-- Gestionar Profesionales -->
-    <button class="flex flex-col items-start text-left bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 transition-all active:scale-95 hover:shadow-md group w-full">
+    <!-- Gestionar Excepciones -->
+    <button (click)="goToGestionarExcepciones()" class="flex flex-col items-start text-left bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 transition-all active:scale-95 hover:shadow-md group w-full cursor-pointer">
       <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-md group-hover:bg-primary group-hover:text-on-primary transition-colors">
-        <span class="material-symbols-outlined">groups</span>
+        <span class="material-symbols-outlined">block</span>
       </div>
-      <span class="font-label-bold text-label-bold text-on-surface mb-xs">Gestionar Profesionales</span>
-      <p class="font-body-sm text-body-sm text-on-surface-variant">Administra el staff, sus roles y sus especialidades.</p>
+      <span class="font-label-bold text-label-bold text-on-surface mb-xs">Gestionar Excepciones</span>
+      <p class="font-body-sm text-body-sm text-on-surface-variant">Ajusta feriados, días libres y bloqueos de agenda.</p>
     </button>
 
-    <!-- Configurar Horarios -->
-    <button class="flex flex-col items-start text-left bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 transition-all active:scale-95 hover:shadow-md group w-full">
-      <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-md group-hover:bg-primary group-hover:text-on-primary transition-colors">
-        <span class="material-symbols-outlined">schedule</span>
-      </div>
-      <span class="font-label-bold text-label-bold text-on-surface mb-xs">Configurar Horarios</span>
-      <p class="font-body-sm text-body-sm text-on-surface-variant">Ajusta los horarios de apertura y cierres especiales.</p>
-    </button>
-
-    <!-- Configurar Servicios -->
-    <button (click)="goToConfigurarServicios()" class="flex flex-col items-start text-left bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 transition-all active:scale-95 hover:shadow-md group w-full cursor-pointer">
+    <!-- Configuración de Negocio -->
+    <button (click)="goToConfiguracionNegocio()" class="flex flex-col items-start text-left bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 transition-all active:scale-95 hover:shadow-md group w-full cursor-pointer">
       <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-md group-hover:bg-primary group-hover:text-on-primary transition-colors">
         <span class="material-symbols-outlined">settings</span>
       </div>
-      <span class="font-label-bold text-label-bold text-on-surface mb-xs">Configurar Servicios</span>
-      <p class="font-body-sm text-body-sm text-on-surface-variant">Administra tu catálogo de tratamientos y precios.</p>
+      <span class="font-label-bold text-label-bold text-on-surface mb-xs">Configuración</span>
+      <p class="font-body-sm text-body-sm text-on-surface-variant">Modifica los datos principales y mapa de tu negocio.</p>
     </button>
   </section>
 
@@ -83,6 +83,11 @@
             </div>
           </div>
         }
+        @if (upcomingTurns.length === 0) {
+          <div class="p-lg text-center text-on-surface-variant font-body-md">
+            No tienes turnos agendados para hoy.
+          </div>
+        }
       </div>
     </div>
 
@@ -94,22 +99,22 @@
         <div class="space-y-md">
           <div class="flex items-center justify-between p-sm rounded-lg bg-surface">
             <span class="text-on-surface-variant font-body-sm">Turnos Totales</span>
-            <span class="font-label-bold text-primary text-lg">12</span>
+            <span class="font-label-bold text-primary text-lg">{{ metricas.turnosTotales }}</span>
           </div>
           <div class="flex items-center justify-between p-sm rounded-lg bg-surface">
             <span class="text-on-surface-variant font-body-sm">Confirmados</span>
-            <span class="font-label-bold text-[#2e7d32] text-lg">8</span>
+            <span class="font-label-bold text-[#2e7d32] text-lg">{{ metricas.turnosConfirmados }}</span>
           </div>
           <div class="flex items-center justify-between p-sm rounded-lg bg-surface">
             <span class="text-on-surface-variant font-body-sm">Pendientes</span>
-            <span class="font-label-bold text-[#ed6c02] text-lg">4</span>
+            <span class="font-label-bold text-[#ed6c02] text-lg">{{ metricas.turnosPendientes }}</span>
           </div>
         </div>
       </div>
 
       <div class="mt-xl pt-lg border-t border-outline-variant/10 text-center">
         <p class="text-caption font-caption text-on-surface-variant mb-xs">Ingresos Estimados</p>
-        <p class="text-display-lg font-display-lg text-primary">$14,500</p>
+        <p class="text-display-lg font-display-lg text-primary">${{ metricas.ingresosEstimados | number:'1.0-0' }}</p>
       </div>
     </div>
   </section>
