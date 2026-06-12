@@ -23,6 +23,7 @@ export interface BackendUsuario {
     idUsuario?: number;
     nombreNegocio?: string;
     descripcion?: string;
+    color?: string;
   } | null;
 }
 

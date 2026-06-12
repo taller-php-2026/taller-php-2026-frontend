@@ -66,11 +66,8 @@ export class ConfiguracionNegocioComponent implements OnInit {
   // Datos comerciales y visuales del negocio
   businessName = signal('Cargando...');
   logoUrl = signal('https://lh3.googleusercontent.com/aida-public/AB6AXuOfH70sCZ1NTvivT_s_4VuQEjDDu4tT0g6B_CKfUvPcletGI0BZvS65BeaHyfZb4Jpk4-0iuc1jE9LEfBZb0Ed4JXxWf9wbZoxDRmAb0oERXh089-gmX9cz8MoMcCVpxJm8UbyMQDp5C-lPB3TY_a8slPc5HUIz2yFg1eWALaegZrNWXvoWp7I9CLMbaWne_YQJaowtMmAugTybYeHyTF0dvkag-F8T5ZlF0Aty7tAYwxXWCd8eYDxcYWwk5puEZPUTNPQGVEcf8_o');
-  bannerUrl = signal('https://lh3.googleusercontent.com/aida-public/AB6AXueNIFlTIxRcZ3YZvoFjtGgAcTDCg88O0I9Lg4envYZflnrJG9mJeXuHpLtfR_G13ZULX1gfDG91_KAp_icN7sPoEho0NPqjswuRaffxz5sK4fc4E_dzadqQ35zV_oosrVvDl2yk7kTUofZqsWvhKBOSAcxGuUwTyfDUkWhsfTGKLQQfgbO0Orr4YGyzHhbILSaG442EQUUJQKm1qHvd77DmKvC3GDFIzTjVyh50LWl8vSA3Pwc7yYQoCK4bp6akDmcynsnzw0ogdV');
   
   primaryColor = signal('#00685F');
-  secondaryColor = signal('#5A5F62');
-  accentColor = signal('#BAAD3E');
 
   loading = signal(false);
   successMsg = signal('');
@@ -97,6 +94,11 @@ export class ConfiguracionNegocioComponent implements OnInit {
         this.name.set(user.nombre);
         this.email.set(user.email);
         this.businessName.set(user.profesional?.nombreNegocio || user.nombre || '');
+
+        if (user.profesional?.color) {
+          this.primaryColor.set(user.profesional.color);
+          this.aplicarEstilosMarca({ primaryColor: user.profesional.color });
+        }
 
         if (user.telefono) {
           const matchedCountry = this.countries.findIndex(c => user.telefono?.startsWith(c.dial));
@@ -125,10 +127,10 @@ export class ConfiguracionNegocioComponent implements OnInit {
       try {
         const config = JSON.parse(saved);
         if (config.logoUrl) this.logoUrl.set(config.logoUrl);
-        if (config.bannerUrl) this.bannerUrl.set(config.bannerUrl);
-        if (config.primaryColor) this.primaryColor.set(config.primaryColor);
-        if (config.secondaryColor) this.secondaryColor.set(config.secondaryColor);
-        if (config.accentColor) this.accentColor.set(config.accentColor);
+        if (config.primaryColor) {
+          this.primaryColor.set(config.primaryColor);
+          this.aplicarEstilosMarca({ primaryColor: config.primaryColor });
+        }
       } catch (e) {
         console.error('Error parsing brand config', e);
       }
@@ -142,18 +144,6 @@ export class ConfiguracionNegocioComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = () => {
         this.logoUrl.set(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-
-  onBannerSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.bannerUrl.set(reader.result as string);
       };
       reader.readAsDataURL(file);
     }

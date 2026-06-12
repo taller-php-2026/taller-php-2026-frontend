@@ -36,30 +36,7 @@ export class PanelAdministradorComponent implements OnInit {
       },
       error: (err) => {
         console.error(err);
-        // Cargar datos mockup para desarrollo si falla
-        this.metricas.set({
-          usuarios: { total: 12842, clientes: 11200, profesionales: 1580, administradores: 62 },
-          pagos: { montoTotalAprobado: 45200, cantidadAprobados: 310 },
-          reservas: { total: 1535, pendientes: 245, confirmadas: 1120, canceladas: 170 },
-          paquetes: { sesionesVendidas: 4890, sesionesUsadas: 3520, sesionesRestantes: 1370 },
-          servicios: { total: 10, presenciales: 6, virtuales: 3, hibridos: 1 }
-        });
-        this.resumenPaquetes.set({
-          montoTotalAprobado: 45200,
-          activos: 140,
-          agotados: 35,
-          pendientes: 12,
-          totalComprados: 195,
-          cancelados: 8
-        });
-        this.reservasServicio.set([
-          { nombre: 'Consulta Psicológica', modalidad: 'virtual', totalReservas: 1240, completadas: 1100 },
-          { nombre: 'Fisioterapia Deportiva', modalidad: 'presencial', totalReservas: 982, completadas: 900 }
-        ]);
-        this.reservasProfesional.set([
-          { nombreNegocio: 'Dr. Carlos Ruiz', totalReservas: 342, completadas: 300, canceladas: 12 },
-          { nombreNegocio: 'Dra. Elena Gómez', totalReservas: 289, completadas: 250, canceladas: 10 }
-        ]);
+        this.error.set('No se pudieron cargar los datos del panel de administrador.');
         this.loading.set(false);
       }
     });
