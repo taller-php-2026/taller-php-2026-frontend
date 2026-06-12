@@ -61,6 +61,13 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+ 	  "options": {
+   		 "host": "0.0.0.0",
+    		 "port": 4200,
+    		 "allowedHosts": [
+                  "agendaphp.duckdns.org"
+   				 ]
+  	    },
           "configurations": {
             "production": {
               "buildTarget": "taller-php-2026-frontend:build:production"
