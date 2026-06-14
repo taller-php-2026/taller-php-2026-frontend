@@ -105,7 +105,7 @@ export class Reservas implements OnInit {
       return 'canceladas';
     }
 
-    const fecha = new Date(reserva.fechaReserva);
+    const fecha = this.getReservaDateTime(reserva);
     return fecha.getTime() < Date.now() ? 'anteriores' : 'proximas';
   }
 
@@ -126,8 +126,8 @@ export class Reservas implements OnInit {
   }
 
   getFecha(reserva: Reserva): string {
-    const fecha = reserva.horario?.fecha ?? reserva.fechaReserva;
-    return new Date(fecha).toLocaleDateString('es-UY', {
+    const fecha = this.parseLocalDate(this.getReservaDateString(reserva));
+    return fecha.toLocaleDateString('es-UY', {
       weekday: 'short',
       day: '2-digit',
       month: 'short',
@@ -152,7 +152,7 @@ export class Reservas implements OnInit {
   }
 
   esVirtual(reserva: Reserva): boolean {
-    return reserva.servicio?.modalidad === 'virtual';
+    return reserva.servicio?.modalidad === 'virtual' || reserva.servicio?.modalidad === 'hibrida';
   }
 
   getMonto(reserva: Reserva): string {
@@ -322,5 +322,41 @@ export class Reservas implements OnInit {
 
   buscarServicios(): void {
     this.router.navigate(['/']);
+  }
+
+  private getReservaDateString(reserva: Reserva): string {
+    return reserva.horario?.fecha ?? reserva.fechaReserva;
+  }
+
+  private getReservaTimeString(reserva: Reserva): string | undefined {
+    return reserva.horario?.horaInicio ?? this.extractTimePart(reserva.fechaReserva);
+  }
+
+  private getReservaDateTime(reserva: Reserva): Date {
+    return this.parseLocalDateTime(this.getReservaDateString(reserva), this.getReservaTimeString(reserva));
+  }
+
+  private parseLocalDate(dateString: string): Date {
+    const dateOnly = this.extractDatePart(dateString);
+    const [year, month, day] = dateOnly.split('-').map(Number);
+
+    return new Date(year, month - 1, day);
+  }
+
+  private parseLocalDateTime(dateString: string, timeString?: string): Date {
+    const dateOnly = this.extractDatePart(dateString);
+    const [year, month, day] = dateOnly.split('-').map(Number);
+    const timeOnly = (timeString ?? this.extractTimePart(dateString) ?? '00:00:00').split(/[Z+-]/)[0];
+    const [hour = 0, minute = 0, second = 0] = timeOnly.split(':').map(Number);
+
+    return new Date(year, month - 1, day, hour || 0, minute || 0, second || 0);
+  }
+
+  private extractDatePart(dateString: string): string {
+    return dateString.split(' ')[0].split('T')[0];
+  }
+
+  private extractTimePart(dateString: string): string | undefined {
+    return dateString.includes('T') ? dateString.split('T')[1] : dateString.split(' ')[1];
   }
 }

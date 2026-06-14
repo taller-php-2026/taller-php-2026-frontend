@@ -3,12 +3,10 @@
     <!-- Video Preview Column -->
     <div class="lg:col-span-8 flex flex-col gap-md">
       <div class="relative aspect-video bg-inverse-surface rounded-xl overflow-hidden soft-shadow border border-outline-variant/30">
-        <img 
-          *ngIf="!videoDesactivado()"
-          alt="Camera Preview" 
-          class="w-full h-full object-cover grayscale-[0.2]" 
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbbOoyKG0I2amA-oFkVkQBJTUXYCEk8wf4-yM69cUJ9kW7bCVoJjDg3adPoS8EHoKnCssWL9zB03GX3E-A0MzUbEAgWMLXCX80rF-Ul2-da16AlFbRXEB2Cb1zbi7zpyRTnI3m-knjL_yl82_XMQ0BXL1e0dzE1S68q0C2P-ACzNw6Jl61njklronTbDDd9NobRfvcSRnm0B6B34EkAm9ATuStpP0WkZHLPtHbS8aKZLnfKM-CcpemHQwWg8MZMdft9mTkYeT0OWBy"
-        >
+        <div *ngIf="!videoDesactivado()" class="w-full h-full flex flex-col items-center justify-center bg-slate-950 text-white/70">
+          <span class="material-symbols-outlined text-5xl mb-2">videocam</span>
+          <p class="text-sm">Vista previa de cámara</p>
+        </div>
         <div *ngIf="videoDesactivado()" class="w-full h-full flex flex-col items-center justify-center text-white/50 bg-black">
           <span class="material-symbols-outlined text-4xl mb-2">videocam_off</span>
           <p class="text-sm">La cámara está desactivada</p>
@@ -48,18 +46,27 @@
     <!-- Join Column -->
     <div class="lg:col-span-4 flex flex-col gap-lg">
       <div class="bg-surface-container-lowest p-lg rounded-xl soft-shadow border border-outline-variant/20 flex flex-col gap-lg">
+        <div *ngIf="cargando()" class="rounded-lg bg-surface-container-low p-md text-secondary text-sm">
+          Preparando videollamada...
+        </div>
+
+        <div *ngIf="error()" class="rounded-lg border border-red-100 bg-red-50 p-md text-red-700 text-sm">
+          {{ error() }}
+        </div>
+
         <!-- Professional Details -->
         <div class="flex items-center gap-md">
           <div class="w-14 h-14 rounded-xl overflow-hidden border-2 border-primary-container/20 flex-shrink-0">
             <img 
               alt="Professional profile" 
               class="w-full h-full object-cover" 
-              [src]="profesionalFoto() || 'https://lh3.googleusercontent.com/aida-public/AB6AXuDxb6pHCGWjXLQbnKAbenNkbI2DWWylyG0y2I2_CAHQ086cDP2YwpEzaztXuakYIZSn3gU2q9A5czYJeHIochXqlJW7TJYvFAGXX10fglWSfu27boe5U6BBSLLrCc_lLrVKHnACH3IjV9QM_Yign9afg47AEvkt23PxCCcJSGtDT_150-1mnyFmP5puoVYqmE_7RKTOcflkc6F0uj41ikG06mdYtTKpkZPuzGivFrA2if5YZOW4DcDqwU6KO2BwWKkyHsnm1fQv417M'"
+              [src]="profesionalFoto() || '/assets/placeholders/user-placeholder.svg'"
             >
           </div>
           <div class="flex flex-col min-w-0">
             <h2 class="font-title-sm text-title-sm text-on-surface truncate">{{ profesionalNombre() }}</h2>
             <span class="font-body-sm text-body-sm text-secondary truncate">{{ servicioNombre() }}</span>
+            <span *ngIf="modalidad()" class="font-caption text-caption text-on-surface-variant capitalize">{{ modalidad() }}</span>
           </div>
         </div>
         <!-- Device Settings -->
@@ -93,8 +100,12 @@
           </div>
         </div>
         <!-- Join Button -->
-        <button (click)="unirseLlamada()" class="w-full bg-primary text-white font-title-sm py-md rounded-lg soft-shadow hover:brightness-110 transition-all active:scale-[0.98] mt-md">
-          Unirse a la Llamada
+        <button
+          (click)="unirseLlamada()"
+          [disabled]="cargando() || !!error()"
+          class="w-full bg-primary text-white font-title-sm py-md rounded-lg soft-shadow hover:brightness-110 transition-all active:scale-[0.98] mt-md disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          {{ cargando() ? 'Preparando...' : 'Unirse a la Llamada' }}
         </button>
         <!-- Status Text -->
         <p class="text-caption text-secondary text-center">

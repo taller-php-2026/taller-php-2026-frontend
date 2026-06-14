@@ -1,8 +1,9 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { LiveKitService } from 'app/services/livekit.service';
+import { LiveKitTokenData } from 'app/models/livekit.model';
 
 @Component({
   selector: 'app-pre-videollamada',
@@ -12,56 +13,114 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './pre-videollamada.css',
 })
 export class PreVideollamada implements OnInit {
+  private route = inject(ActivatedRoute);
   private enrutador = inject(Router);
-  private clienteHttp = inject(HttpClient);
+  private liveKitService = inject(LiveKitService);
 
-  // Datos del profesional
-  profesionalNombre = signal<string>('Dr. Elena Santos');
+  profesionalNombre = signal<string>('Cargando...');
   profesionalFoto = signal<string>('');
-  servicioNombre = signal<string>('Consulta General');
+  servicioNombre = signal<string>('Videollamada');
+  modalidad = signal<string>('');
+  cargando = signal<boolean>(true);
+  error = signal<string>('');
 
-  // Controles de audio y video
   microfonoSilenciado = signal<boolean>(false);
   videoDesactivado = signal<boolean>(false);
 
-  // Dispositivos seleccionados
-  camaras = signal<string[]>(['FaceTime HD Camera (Built-in)', 'Logitech StreamCam']);
-  microfonos = signal<string[]>(['Internal Microphone (Built-in)', 'Yeti Stereo Microphone']);
-  altavoces = signal<string[]>(['MacBook Pro Speakers', 'Headphones (External)']);
+  camaras = signal<string[]>(['Camara predeterminada']);
+  microfonos = signal<string[]>(['Microfono predeterminado']);
+  altavoces = signal<string[]>(['Altavoces predeterminados']);
 
-  camaraSeleccionada = 'FaceTime HD Camera (Built-in)';
-  microfonoSeleccionado = 'Internal Microphone (Built-in)';
-  altavozSeleccionado = 'MacBook Pro Speakers';
+  camaraSeleccionada = 'Camara predeterminada';
+  microfonoSeleccionado = 'Microfono predeterminado';
+  altavozSeleccionado = 'Altavoces predeterminados';
+
+  private idReserva: number | null = null;
+  private tokenData: LiveKitTokenData | null = null;
 
   ngOnInit(): void {
-    this.cargarDatosProfesional();
+    this.idReserva = this.getReservaId();
+
+    if (!this.idReserva) {
+      this.cargando.set(false);
+      this.error.set('No se pudo identificar la reserva.');
+      return;
+    }
+
+    this.cargarDatosVideollamada(this.idReserva);
   }
 
-  // Cargar datos del profesional desde mock
-  cargarDatosProfesional(): void {
-    this.clienteHttp.get<any>('/mock-videollamada.json').subscribe({
-      next: (datos) => {
-        if (datos) {
-          this.profesionalNombre.set(datos.profesionalNombre || 'Dr. Elena Santos');
-          this.profesionalFoto.set(datos.profesionalFoto || '');
-          this.servicioNombre.set(datos.servicioNombre || 'Consulta General');
-        }
-      }
+  cargarDatosVideollamada(idReserva: number): void {
+    this.cargando.set(true);
+    this.error.set('');
+
+    this.liveKitService.generarTokenReserva(idReserva).subscribe({
+      next: (response) => {
+        this.tokenData = response.data;
+        this.profesionalNombre.set(
+          response.data.reserva?.profesional?.nombreNegocio ||
+          response.data.reserva?.profesional?.usuario?.nombre ||
+          'Profesional',
+        );
+        this.profesionalFoto.set(
+          response.data.reserva?.profesional?.imagenPerfilUrl ||
+          response.data.reserva?.profesional?.usuario?.imagenPerfilUrl ||
+          '',
+        );
+        this.servicioNombre.set(response.data.reserva?.servicio?.nombre || 'Videollamada');
+        this.modalidad.set(response.data.reserva?.servicio?.modalidad || '');
+        this.cargando.set(false);
+      },
+      error: (err) => {
+        this.cargando.set(false);
+        this.error.set(this.getMensajeError(err));
+      },
     });
   }
 
-  // Alternar microfono
   alternarMicrofono(): void {
     this.microfonoSilenciado.update((estado) => !estado);
   }
 
-  // Alternar camara
   alternarVideo(): void {
     this.videoDesactivado.update((estado) => !estado);
   }
 
-  // Ir a la vista de videollamada
   unirseLlamada(): void {
-    this.enrutador.navigate(['/videollamada']);
+    if (!this.idReserva || !this.tokenData) {
+      this.error.set('No se pudo preparar la videollamada.');
+      return;
+    }
+
+    this.enrutador.navigate(['/videollamada', this.idReserva], {
+      state: {
+        livekit: this.tokenData,
+      },
+    });
+  }
+
+  private getReservaId(): number | null {
+    const fromParam = this.route.snapshot.paramMap.get('id');
+    const fromQuery = this.route.snapshot.queryParamMap.get('reserva');
+    const value = Number(fromParam ?? fromQuery);
+
+    return Number.isFinite(value) && value > 0 ? value : null;
+  }
+
+  private getMensajeError(err: { status?: number; error?: { message?: string } }): string {
+    if (err.error?.message) return err.error.message;
+
+    switch (err.status) {
+      case 401:
+        return 'Tu sesion expiro. Volve a iniciar sesion.';
+      case 403:
+        return 'No tenes permisos para entrar a esta videollamada.';
+      case 404:
+        return 'No se encontro la reserva.';
+      case 422:
+        return 'Esta reserva no permite videollamada.';
+      default:
+        return 'No se pudo preparar la videollamada.';
+    }
   }
 }
