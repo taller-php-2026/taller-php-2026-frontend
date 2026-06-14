@@ -11,6 +11,8 @@ interface Turno {
   service: string;
   time: string;
   status: string;
+  estado: string;
+  modalidad: string;
   clientPicture: string;
 }
 
@@ -97,6 +99,8 @@ export class HomeProfessionalComponent implements OnInit {
                 service: reserva.servicio?.nombre || 'Servicio',
                 time: timeStr,
                 status: reserva.estado === 'confirmada' ? 'Confirmado' : reserva.estado === 'pendiente' ? 'Pendiente' : reserva.estado,
+                estado: reserva.estado,
+                modalidad: reserva.servicio?.modalidad || 'presencial',
                 clientPicture: reserva.cliente?.usuario?.imagenPerfilUrl || ''
               };
             });
@@ -135,5 +139,13 @@ export class HomeProfessionalComponent implements OnInit {
   // Navegar a Configuracion de Negocio
   goToConfiguracionNegocio(): void {
     this.router.navigate(['/configuracion-negocio']);
+  }
+
+  puedeUnirse(turno: Turno): boolean {
+    return ['virtual', 'hibrida'].includes(turno.modalidad) && ['confirmada', 'enCurso'].includes(turno.estado);
+  }
+
+  unirseVideollamada(idReserva: number): void {
+    this.router.navigate(['/pre-videollamada'], { queryParams: { reserva: idReserva } });
   }
 }

@@ -1,8 +1,10 @@
-import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, ElementRef, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { Room, RoomEvent, Track, RemoteTrack, RemoteParticipant } from 'livekit-client';
+import { LiveKitService } from 'app/services/livekit.service';
+import { LiveKitTokenData } from 'app/models/livekit.model';
 
 @Component({
   selector: 'app-videollamada',
@@ -12,179 +14,172 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './videollamada.css',
 })
 export class Videollamada implements OnInit, OnDestroy {
+  private route = inject(ActivatedRoute);
   private enrutador = inject(Router);
-  private clienteHttp = inject(HttpClient);
+  private liveKitService = inject(LiveKitService);
 
-  // Parámetros de conexión para integración futura con LiveKit Meet
+  @ViewChild('remoteVideo') remoteVideo?: ElementRef<HTMLVideoElement>;
+  @ViewChild('localVideo') localVideo?: ElementRef<HTMLVideoElement>;
+  @ViewChild('remoteAudio') remoteAudio?: ElementRef<HTMLAudioElement>;
+
   livekitUrl = signal<string>('');
   livekitToken = signal<string>('');
   roomName = signal<string>('');
   livekitConectado = signal<boolean>(false);
+  cargando = signal<boolean>(true);
+  error = signal<string>('');
 
-  // Datos cargados desde Mock
-  profesionalNombre = signal<string>('Cargando...');
-  profesionalFoto = signal<string>('');
-  servicioId = signal<string>('');
-  servicioNombre = signal<string>('');
+  profesionalNombre = signal<string>('Profesional');
+  servicioNombre = signal<string>('Videollamada');
+  participantes = signal<string[]>([]);
 
-  // Listas de datos reactivos
-  participantes = signal<any[]>([]);
-  mensajes = signal<any[]>([]);
-  archivos = signal<any[]>([]);
-
-  // Entrada de nuevo mensaje
-  nuevoMensajeTexto = signal<string>('');
-
-  // Estados de video, microfono y barra lateral
   microfonoSilenciado = signal<boolean>(false);
   videoDesactivado = signal<boolean>(false);
-  sidebarAbierto = signal<boolean>(false);
 
-  // Control de pestaña seleccionada en el sidebar
-  tabSeleccionada = signal<'participantes' | 'chat' | 'archivos' | 'ajustes'>('participantes');
-
-  // Estados del temporizador
-  tiempoRestanteSegundos = signal<number>(0);
-  progresoPorcentaje = signal<number>(100);
-  textoTemporizador = signal<string>('--:--');
-  totalTiempo = 1200;
-
-  // Hablante activo
-  hablanteActivo = signal<boolean>(true);
-
-  private intervaloTemporizador: any;
-  private intervaloHablante: any;
+  private idReserva: number | null = null;
+  private room?: Room;
+  private tracksRemotos: RemoteTrack[] = [];
 
   ngOnInit(): void {
-    this.cargarDatosVideollamada();
-    this.iniciarSimulacionHablante();
+    this.idReserva = this.getReservaId();
+
+    if (!this.idReserva) {
+      this.cargando.set(false);
+      this.error.set('No se pudo identificar la reserva.');
+      return;
+    }
+
+    const stateData = history.state?.livekit as LiveKitTokenData | undefined;
+    if (stateData?.token && stateData.url) {
+      void this.iniciarConexion(stateData);
+      return;
+    }
+
+    this.liveKitService.generarTokenReserva(this.idReserva).subscribe({
+      next: (response) => void this.iniciarConexion(response.data),
+      error: (err) => {
+        this.cargando.set(false);
+        this.error.set(this.getMensajeError(err));
+      },
+    });
   }
 
   ngOnDestroy(): void {
-    if (this.intervaloTemporizador) {
-      clearInterval(this.intervaloTemporizador);
-    }
-    if (this.intervaloHablante) {
-      clearInterval(this.intervaloHablante);
+    this.tracksRemotos.forEach((track) => track.detach());
+    this.room?.disconnect();
+  }
+
+  async alternarMicrofono(): Promise<void> {
+    const nuevoEstado = !this.microfonoSilenciado();
+    this.microfonoSilenciado.set(nuevoEstado);
+    await this.room?.localParticipant.setMicrophoneEnabled(!nuevoEstado);
+  }
+
+  async alternarVideo(): Promise<void> {
+    const nuevoEstado = !this.videoDesactivado();
+    this.videoDesactivado.set(nuevoEstado);
+    await this.room?.localParticipant.setCameraEnabled(!nuevoEstado);
+  }
+
+  finalizarSesion(): void {
+    this.room?.disconnect();
+    this.enrutador.navigate(['/reservas']);
+  }
+
+  private async iniciarConexion(data: LiveKitTokenData): Promise<void> {
+    this.livekitUrl.set(data.url || data.livekitUrl || '');
+    this.livekitToken.set(data.token);
+    this.roomName.set(data.room || data.roomName || '');
+    this.profesionalNombre.set(
+      data.reserva?.profesional?.nombreNegocio ||
+      data.reserva?.profesional?.usuario?.nombre ||
+      'Profesional',
+    );
+    this.servicioNombre.set(data.reserva?.servicio?.nombre || 'Videollamada');
+
+    try {
+      this.room = new Room();
+      this.registrarEventos(this.room);
+      await this.room.connect(this.livekitUrl(), this.livekitToken());
+      await this.room.localParticipant.setMicrophoneEnabled(true);
+      await this.room.localParticipant.setCameraEnabled(true);
+      this.livekitConectado.set(true);
+      this.cargando.set(false);
+    } catch {
+      this.cargando.set(false);
+      this.error.set('No se pudo conectar a LiveKit.');
     }
   }
 
-  // Cargar datos de la videollamada desde mock
-  cargarDatosVideollamada(): void {
-    this.clienteHttp.get<any>('/mock-videollamada.json').subscribe({
-      next: (datos) => {
-        if (datos) {
-          this.profesionalNombre.set(datos.profesionalNombre);
-          this.profesionalFoto.set(datos.profesionalFoto);
-          this.servicioId.set(datos.servicioId);
-          this.servicioNombre.set(datos.servicioNombre);
-          this.tiempoRestanteSegundos.set(datos.tiempoRestanteInicial || 600);
-          this.totalTiempo = datos.duracionSegundos || 1200;
+  private registrarEventos(room: Room): void {
+    room.on(RoomEvent.Connected, () => {
+      this.livekitConectado.set(true);
+    });
 
-          // Parámetros de LiveKit
-          this.livekitUrl.set(datos.livekitUrl || '');
-          this.livekitToken.set(datos.livekitToken || '');
-          this.roomName.set(datos.roomName || '');
+    room.on(RoomEvent.Disconnected, () => {
+      this.livekitConectado.set(false);
+    });
 
-          // Cargar listas
-          this.participantes.set(datos.participantes || []);
-          this.mensajes.set(datos.mensajes || []);
-          this.archivos.set(datos.archivos || []);
+    room.on(RoomEvent.TrackSubscribed, (track, _publication, participant) => {
+      this.agregarParticipante(participant);
+      this.adjuntarTrack(track);
+    });
 
-          // Simular conexión establecida con LiveKit
-          this.simularConexionLivekit();
+    room.on(RoomEvent.TrackUnsubscribed, (track) => {
+      track.detach();
+      this.tracksRemotos = this.tracksRemotos.filter((item) => item !== track);
+    });
 
-          this.iniciarTemporizador();
-        }
-      },
-      error: () => {
-        this.profesionalNombre.set('Especialista');
-        this.tiempoRestanteSegundos.set(600);
-        this.iniciarTemporizador();
+    room.on(RoomEvent.LocalTrackPublished, (publication) => {
+      const track = publication.track;
+      if (track?.kind === Track.Kind.Video && this.localVideo?.nativeElement) {
+        track.attach(this.localVideo.nativeElement);
       }
     });
   }
 
-  // Simular conexión exitosa de LiveKit
-  simularConexionLivekit(): void {
-    if (this.livekitUrl() && this.livekitToken()) {
-      // Registrar log para futura referencia
-      console.log(`[LiveKit] Conectando a la sala ${this.roomName()} en el servidor ${this.livekitUrl()} usando token.`);
-      this.livekitConectado.set(true);
+  private adjuntarTrack(track: RemoteTrack): void {
+    this.tracksRemotos.push(track);
+
+    if (track.kind === Track.Kind.Video && this.remoteVideo?.nativeElement) {
+      track.attach(this.remoteVideo.nativeElement);
+      return;
+    }
+
+    if (track.kind === Track.Kind.Audio && this.remoteAudio?.nativeElement) {
+      track.attach(this.remoteAudio.nativeElement);
     }
   }
 
-  // Alternar estado del microfono
-  alternarMicrofono(): void {
-    this.microfonoSilenciado.update((estado) => !estado);
+  private agregarParticipante(participant: RemoteParticipant): void {
+    const nombre = participant.name || participant.identity;
+    this.participantes.update((actuales) =>
+      actuales.includes(nombre) ? actuales : [...actuales, nombre],
+    );
   }
 
-  // Alternar estado de la camara
-  alternarVideo(): void {
-    this.videoDesactivado.update((estado) => !estado);
+  private getReservaId(): number | null {
+    const fromParam = this.route.snapshot.paramMap.get('id');
+    const fromQuery = this.route.snapshot.queryParamMap.get('reserva');
+    const value = Number(fromParam ?? fromQuery);
+
+    return Number.isFinite(value) && value > 0 ? value : null;
   }
 
-  // Alternar visibilidad de la barra lateral en moviles
-  alternarSidebar(): void {
-    this.sidebarAbierto.update((estado) => !estado);
-  }
+  private getMensajeError(err: { status?: number; error?: { message?: string } }): string {
+    if (err.error?.message) return err.error.message;
 
-  // Cambiar pestaña seleccionada en el sidebar
-  seleccionarTab(tab: 'participantes' | 'chat' | 'archivos' | 'ajustes'): void {
-    this.tabSeleccionada.set(tab);
-    // En móviles, asegurar abrir el sidebar al seleccionar una tab
-    this.sidebarAbierto.set(true);
-  }
-
-  // Enviar mensaje en el chat
-  enviarMensaje(): void {
-    const texto = this.nuevoMensajeTexto().trim();
-    if (texto) {
-      const ahora = new Date();
-      const horaFormato = `${ahora.getHours().toString().padStart(2, '0')}:${ahora.getMinutes().toString().padStart(2, '0')}`;
-      
-      this.mensajes.update((lista) => [
-        ...lista,
-        {
-          remitente: 'Tú',
-          texto: texto,
-          tiempo: horaFormato
-        }
-      ]);
-      
-      this.nuevoMensajeTexto.set('');
+    switch (err.status) {
+      case 401:
+        return 'Tu sesion expiro. Volve a iniciar sesion.';
+      case 403:
+        return 'No tenes permisos para entrar a esta videollamada.';
+      case 404:
+        return 'No se encontro la reserva.';
+      case 422:
+        return 'Esta reserva no permite videollamada.';
+      default:
+        return 'No se pudo conectar a la videollamada.';
     }
-  }
-
-  // Finalizar sesion y redirigir
-  finalizarSesion(): void {
-    this.enrutador.navigate(['/']);
-  }
-
-  // Iniciar cuenta regresiva
-  iniciarTemporizador(): void {
-    this.intervaloTemporizador = setInterval(() => {
-      const tiempo = this.tiempoRestanteSegundos();
-      if (tiempo > 0) {
-        const nuevoTiempo = tiempo - 1;
-        this.tiempoRestanteSegundos.set(nuevoTiempo);
-
-        const minutos = Math.floor(nuevoTiempo / 60);
-        const segundos = nuevoTiempo % 60;
-        this.textoTemporizador.set(`${minutos}:${segundos.toString().padStart(2, '0')}`);
-
-        const porcentaje = (nuevoTiempo / this.totalTiempo) * 100;
-        this.progresoPorcentaje.set(porcentaje);
-      }
-    }, 1000);
-  }
-
-  // Simular cambio de hablante activo
-  iniciarSimulacionHablante(): void {
-    this.intervaloHablante = setInterval(() => {
-      this.hablanteActivo.update((estado) => !estado);
-    }, 5000);
   }
 }
-
-

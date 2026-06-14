@@ -134,7 +134,17 @@ export const routes: Routes = [
           import('./pages/videollamada/videollamada').then((m) => m.Videollamada),
       },
       {
+        path: 'videollamada/:id',
+        loadComponent: () =>
+          import('./pages/videollamada/videollamada').then((m) => m.Videollamada),
+      },
+      {
         path: 'pre-videollamada',
+        loadComponent: () =>
+          import('./pages/pre-videollamada/pre-videollamada').then((m) => m.PreVideollamada),
+      },
+      {
+        path: 'pre-videollamada/:id',
         loadComponent: () =>
           import('./pages/pre-videollamada/pre-videollamada').then((m) => m.PreVideollamada),
       },

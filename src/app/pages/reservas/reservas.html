@@ -130,7 +130,7 @@
         </button>
 
         <button
-          *ngIf="!puedePagar(res) && esVirtual(res) && res.estado === 'confirmada'"
+          *ngIf="!puedePagar(res) && esVirtual(res) && (res.estado === 'confirmada' || res.estado === 'enCurso')"
           (click)="unirseVideollamada(res.idReserva)"
           class="flex-1 md:flex-none px-md py-sm rounded-lg bg-emerald-600 text-white font-label-bold soft-shadow hover:bg-emerald-700 active:scale-95 transition-all text-sm flex items-center justify-center gap-xs"
         >
