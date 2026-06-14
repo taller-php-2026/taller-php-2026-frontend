@@ -6,6 +6,17 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0f766e">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then((reg) => console.log('PWA Service Worker registered:', reg.scope))
+          .catch((err) => console.warn('PWA Service Worker registration failed:', err));
+      });
+    }
+  </script>
   
   <!-- Tailwind CSS CDN con plugins -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -29,22 +40,22 @@
             "on-primary": "#ffffff",
             "inverse-primary": "#6bd8cb",
             "surface": "#f8f9ff",
-            "primary-container": "#008378",
+            "primary-container": "color-mix(in srgb, var(--primary-color, #00685f) 15%, #ffffff)",
             "on-secondary-fixed": "#171c1f",
             "secondary-container": "#dce0e4",
             "outline-variant": "#bcc9c6",
             "on-secondary-container": "#5e6367",
             "secondary": "#5a5f62",
             "background": "#f8f9ff",
-            "primary": "#00685f",
+            "primary": "var(--primary-color, #00685f)",
             "surface-container-lowest": "#ffffff",
-            "surface-tint": "#006a61",
+            "surface-tint": "var(--primary-color, #006a61)",
             "tertiary-fixed-dim": "#d7c957",
-            "tertiary-container": "#baad3e",
+            "tertiary-container": "var(--primary-color, #baad3e)",
             "surface-container-low": "#eff4ff",
             "on-primary-fixed": "#00201d",
             "surface-variant": "#d3e4fe",
-            "on-primary-container": "#f4fffc",
+            "on-primary-container": "color-mix(in srgb, var(--primary-color, #00685f) 85%, #000000)",
             "on-tertiary-fixed-variant": "#4f4800",
             "tertiary": "#695f00",
             "inverse-on-surface": "#eaf1ff",

@@ -30,4 +30,18 @@ export class ServicesService {
     const params = new HttpParams({ fromObject: filtros as any });
     return this.http.get<{ data: Service[]; meta: any }>(`${this.apiUrl}/buscar`, { params });
   }
+
+  updateService(serviceId: number, payload: Partial<Service>): Observable<{ data: Service }> {
+    return this.http.put<{ data: Service }>(`${this.apiUrl}/${serviceId}`, payload);
+  }
+
+  deleteService(serviceId: number): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.apiUrl}/${serviceId}`);
+  }
+
+  uploadServiceImage(serviceId: number, file: File): Observable<{ data: Service }> {
+    const formData = new FormData();
+    formData.append('imagen', file);
+    return this.http.post<{ data: Service }>(`${this.apiUrl}/${serviceId}/imagen`, formData);
+  }
 }

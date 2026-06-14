@@ -66,8 +66,13 @@
             (change)="filtrarPorFecha($event)"
             class="rounded-lg border border-outline-variant bg-surface px-sm py-xs text-sm text-on-surface outline-none focus:border-primary"
           >
-          <button class="text-primary font-label-bold text-sm hover:underline" (click)="limpiarFiltroFecha()">
-            {{ fechaFiltro ? 'Limpiar' : 'Ver todos' }}
+          @if (fechaFiltro) {
+            <button class="text-primary font-label-bold text-sm hover:underline" (click)="limpiarFiltroFecha()">
+              Limpiar
+            </button>
+          }
+          <button (click)="abrirCalendarioCompleto()" class="text-primary font-label-bold text-sm hover:underline flex items-center gap-xs">
+            <span class="material-symbols-outlined text-sm">calendar_today</span> Ver completo
           </button>
         </div>
       </div>
@@ -136,4 +141,5 @@
       </div>
     </div>
   </section>
+  <app-agenda-calendar-modal></app-agenda-calendar-modal>
 </main>

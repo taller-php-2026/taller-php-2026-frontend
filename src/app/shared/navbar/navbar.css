@@ -1,5 +1,21 @@
 /* Estilos específicos para la barra de navegación SoftUI */
 .active-link {
-  background-color: rgba(0, 104, 95, 0.1);
-  color: #00685f !important;
+  background-color: color-mix(in srgb, var(--primary-color, #00685f) 10%, transparent);
+  color: var(--primary-color, #00685f) !important;
 }
+
+/* Custom slim scrollbar for notifications dropdown list */
+.max-h-80::-webkit-scrollbar {
+  width: 4px;
+}
+.max-h-80::-webkit-scrollbar-track {
+  background: transparent;
+}
+.max-h-80::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+}
+.max-h-80::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+

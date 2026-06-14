@@ -92,7 +92,7 @@
 
       <!-- Submit Button -->
       <button
-        style="background: linear-gradient(180deg, #0e9488 0%, #005049 100%) !important; color: white !important;"
+        style="background: var(--primary-color, #00685f) !important; color: white !important;"
         class="w-full h-12 text-white font-label-bold text-label-bold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95 flex items-center justify-center disabled:opacity-50"
         type="submit"
         [disabled]="loading()"
@@ -111,7 +111,7 @@
   <footer class="mt-xl text-center">
     <p class="font-body-sm text-body-sm text-on-surface-variant">
       ¿No tienes una cuenta?
-      <a class="font-label-bold text-label-bold text-[#0e9488] ml-xs hover:underline" routerLink="/registro" href="/registro">Registrarse</a>
+      <a class="font-label-bold text-label-bold text-primary ml-xs hover:underline" routerLink="/registro" href="/registro">Registrarse</a>
     </p>
   </footer>
 </div>

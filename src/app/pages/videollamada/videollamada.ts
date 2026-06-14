@@ -100,14 +100,35 @@ export class Videollamada implements OnInit, OnDestroy {
     this.servicioNombre.set(data.reserva?.servicio?.nombre || 'Videollamada');
 
     try {
+      const settings = history.state?.settings as { microfonoSilenciado?: boolean; videoDesactivado?: boolean } | undefined;
+      const micEnabled = !(settings?.microfonoSilenciado ?? false);
+      const camEnabled = !(settings?.videoDesactivado ?? false);
+
+      this.microfonoSilenciado.set(!micEnabled);
+      this.videoDesactivado.set(!camEnabled);
+
       this.room = new Room();
       this.registrarEventos(this.room);
       await this.room.connect(this.livekitUrl(), this.livekitToken());
-      await this.room.localParticipant.setMicrophoneEnabled(true);
-      await this.room.localParticipant.setCameraEnabled(true);
+      await this.room.localParticipant.setMicrophoneEnabled(micEnabled);
+      await this.room.localParticipant.setCameraEnabled(camEnabled);
+
+      if (camEnabled && this.localVideo?.nativeElement) {
+        const localPart = this.room.localParticipant as any;
+        if (localPart && localPart.videoTrackPublications) {
+          const publications = Array.from(localPart.videoTrackPublications.values()) as any[];
+          for (const pub of publications) {
+            if (pub && pub.track && pub.track.kind === 'video') {
+              pub.track.attach(this.localVideo.nativeElement);
+            }
+          }
+        }
+      }
+
       this.livekitConectado.set(true);
       this.cargando.set(false);
-    } catch {
+    } catch (e) {
+      console.error('Error al conectar con LiveKit:', e);
       this.cargando.set(false);
       this.error.set('No se pudo conectar a LiveKit.');
     }

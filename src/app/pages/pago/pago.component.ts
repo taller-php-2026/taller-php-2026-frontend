@@ -209,6 +209,10 @@ export class PagoSeguroComponent implements OnInit {
     this.fallbackCard = { number: '', name: '', expiry: '', cvv: '' };
   }
 
+  volverAlInicio(): void {
+    this.router.navigate(['/']);
+  }
+
   goBack() {
     if (this.paymentStatus() !== 'selector') {
       this.resetToSelector();

@@ -92,7 +92,7 @@ h1 {
 }
 
 .primary-action {
-  background: #00685f;
+  background: var(--primary-color, #00685f);
   color: #ffffff;
 }
 

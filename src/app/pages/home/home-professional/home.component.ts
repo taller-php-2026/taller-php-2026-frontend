@@ -1,9 +1,10 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'app/services/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@env/environment';
 import { CommonModule } from '@angular/common';
+import { AgendaCalendarModalComponent } from '../../../components/agenda-calendar-modal/agenda-calendar-modal';
 
 interface Turno {
   id: number;
@@ -34,12 +35,15 @@ interface Metricas {
   templateUrl: './home.component.html',
   styleUrl: './home.css',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, AgendaCalendarModalComponent],
 })
 export class HomeProfessionalComponent implements OnInit {
   private router = inject(Router);
   authService = inject(AuthService);
   private http = inject(HttpClient);
+  private cdr = inject(ChangeDetectorRef);
+
+  @ViewChild(AgendaCalendarModalComponent) calendarModal!: AgendaCalendarModalComponent;
 
   // Fecha del día en formato amigable
   todayDate = new Date().toLocaleDateString('es-ES', {
@@ -80,6 +84,7 @@ export class HomeProfessionalComponent implements OnInit {
               turnosPendientes: res.data.turnosPendientes ?? res.data.hoy?.turnosPendientes ?? 0,
               ingresosEstimados: res.data.ingresosEstimados ?? res.data.hoy?.ingresosEstimados ?? 0,
             };
+            this.cdr.detectChanges();
           }
         },
         error: (err) => console.error('Error al cargar métricas del profesional:', err)
@@ -92,6 +97,7 @@ export class HomeProfessionalComponent implements OnInit {
           if (res && res.data) {
             this.reservasProfesional = res.data;
             this.actualizarTurnos();
+            this.cdr.detectChanges();
           }
         },
         error: (err) => console.error('Error al cargar reservas del profesional:', err)
@@ -196,6 +202,11 @@ export class HomeProfessionalComponent implements OnInit {
   // Navegar a Configuracion de Negocio
   goToConfiguracionNegocio(): void {
     this.router.navigate(['/configuracion-negocio']);
+  }
+
+  // Abrir modal de calendario completo de turnos
+  abrirCalendarioCompleto(): void {
+    this.calendarModal.open();
   }
 
   puedeUnirse(turno: Turno): boolean {

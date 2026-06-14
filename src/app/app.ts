@@ -21,15 +21,10 @@ export class App implements OnInit {
       const type = this.authService.userType();
       
       if (user && type === 'profesional') {
-        const saved = localStorage.getItem(`brand_config_${user.idUsuario}`);
-        if (saved) {
-          try {
-            const config = JSON.parse(saved);
-            this.aplicarEstilos(config);
-            return;
-          } catch (e) {
-            console.error('Error al parsear estilos de marca:', e);
-          }
+        const backendColor = user.profesional?.color;
+        if (backendColor) {
+          this.aplicarEstilos({ primaryColor: backendColor });
+          return;
         }
       }
       
@@ -43,20 +38,12 @@ export class App implements OnInit {
   }
 
   private aplicarEstilos(config: any): void {
-    if (config.primaryColor) {
+    if (config.primaryColor && /^#[0-9A-Fa-f]{6}$/.test(config.primaryColor)) {
       document.documentElement.style.setProperty('--primary-color', config.primaryColor);
-    }
-    if (config.secondaryColor) {
-      document.documentElement.style.setProperty('--secondary-color', config.secondaryColor);
-    }
-    if (config.accentColor) {
-      document.documentElement.style.setProperty('--accent-color', config.accentColor);
     }
   }
 
   private removerEstilos(): void {
     document.documentElement.style.removeProperty('--primary-color');
-    document.documentElement.style.removeProperty('--secondary-color');
-    document.documentElement.style.removeProperty('--accent-color');
   }
 }

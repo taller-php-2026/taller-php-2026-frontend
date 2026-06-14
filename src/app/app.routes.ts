@@ -15,6 +15,15 @@ const professionalGuard = () => {
   return authService.userType() === 'profesional' ? true : router.createUrlTree(['/']);
 };
 
+const adminGuard = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+  // Un usuario administrador tendrá el rol 'administrador' cargado en roles
+  const user = authService.currentUser();
+  const isAdmin = user?.roles?.includes('administrador') || false;
+  return isAdmin ? true : router.createUrlTree(['/']);
+};
+
 export const routes: Routes = [
   {
     path: 'login',
@@ -187,6 +196,7 @@ export const routes: Routes = [
       },
       {
         path: 'panel-administrador',
+        canActivate: [adminGuard],
         loadComponent: () =>
           import('./pages/panel-administrador/panel-administrador.component').then(
             (m) => m.PanelAdministradorComponent,
