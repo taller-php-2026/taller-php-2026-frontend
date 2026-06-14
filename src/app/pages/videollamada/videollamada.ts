@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Room, RoomEvent, Track, RemoteTrack, RemoteParticipant } from 'livekit-client';
 import { LiveKitService } from 'app/services/livekit.service';
 import { LiveKitTokenData } from 'app/models/livekit.model';
+import { AuthService } from 'app/services/auth.service';
 
 @Component({
   selector: 'app-videollamada',
@@ -17,6 +18,7 @@ export class Videollamada implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private enrutador = inject(Router);
   private liveKitService = inject(LiveKitService);
+  private authService = inject(AuthService);
 
   @ViewChild('remoteVideo') remoteVideo?: ElementRef<HTMLVideoElement>;
   @ViewChild('localVideo') localVideo?: ElementRef<HTMLVideoElement>;
@@ -83,7 +85,7 @@ export class Videollamada implements OnInit, OnDestroy {
 
   finalizarSesion(): void {
     this.room?.disconnect();
-    this.enrutador.navigate(['/reservas']);
+    this.enrutador.navigateByUrl(this.getExitRoute());
   }
 
   private async iniciarConexion(data: LiveKitTokenData): Promise<void> {
@@ -164,6 +166,20 @@ export class Videollamada implements OnInit, OnDestroy {
     const value = Number(fromParam ?? fromQuery);
 
     return Number.isFinite(value) && value > 0 ? value : null;
+  }
+
+  private getExitRoute(): string {
+    const userType = this.authService.userType() || this.authService.currentUser()?.type;
+
+    if (userType === 'cliente') {
+      return '/reservas';
+    }
+
+    if (userType === 'profesional') {
+      return '/';
+    }
+
+    return this.authService.isAuthenticated() ? '/' : '/login';
   }
 
   private getMensajeError(err: { status?: number; error?: { message?: string } }): string {
