@@ -9,6 +9,7 @@ interface Turno {
   id: number;
   clientName: string;
   service: string;
+  fechaTexto: string;
   time: string;
   status: string;
   estado: string;
@@ -50,6 +51,8 @@ export class HomeProfessionalComponent implements OnInit {
 
   // Lista de turnos obtenidos de la base de datos
   upcomingTurns: Turno[] = [];
+  reservasProfesional: any[] = [];
+  fechaFiltro = '';
 
   // Metricas reales del profesional
   metricas: Metricas = {
@@ -70,7 +73,13 @@ export class HomeProfessionalComponent implements OnInit {
       .subscribe({
         next: (res) => {
           if (res && res.data) {
-            this.metricas = res.data;
+            this.metricas = {
+              ...res.data,
+              turnosTotales: res.data.turnosTotales ?? res.data.hoy?.turnosTotales ?? 0,
+              turnosConfirmados: res.data.turnosConfirmados ?? res.data.hoy?.turnosConfirmados ?? 0,
+              turnosPendientes: res.data.turnosPendientes ?? res.data.hoy?.turnosPendientes ?? 0,
+              ingresosEstimados: res.data.ingresosEstimados ?? res.data.hoy?.ingresosEstimados ?? 0,
+            };
           }
         },
         error: (err) => console.error('Error al cargar métricas del profesional:', err)
@@ -81,44 +90,92 @@ export class HomeProfessionalComponent implements OnInit {
       .subscribe({
         next: (res) => {
           if (res && res.data) {
-            const ahora = new Date();
-            this.upcomingTurns = res.data
-              .filter((reserva: any) => this.getReservaDateTime(reserva) >= ahora)
-              .sort((a: any, b: any) =>
-                this.getReservaDateTime(a).getTime() - this.getReservaDateTime(b).getTime()
-              )
-              .slice(0, 5)
-              .map((reserva: any) => {
-              const hora = reserva.horario?.horaInicio || reserva.fechaReserva;
-              const timeStr = hora?.includes(':')
-                ? hora.substring(0, 5)
-                : new Date(hora).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-              return {
-                id: reserva.idReserva,
-                clientName: reserva.cliente?.usuario?.nombre || 'Cliente sin nombre',
-                service: reserva.servicio?.nombre || 'Servicio',
-                time: timeStr,
-                status: reserva.estado === 'confirmada' ? 'Confirmado' : reserva.estado === 'pendiente' ? 'Pendiente' : reserva.estado,
-                estado: reserva.estado,
-                modalidad: reserva.servicio?.modalidad || 'presencial',
-                clientPicture: reserva.cliente?.usuario?.imagenPerfilUrl || ''
-              };
-            });
+            this.reservasProfesional = res.data;
+            this.actualizarTurnos();
           }
         },
         error: (err) => console.error('Error al cargar reservas del profesional:', err)
       });
   }
 
+  filtrarPorFecha(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.fechaFiltro = input.value;
+    this.actualizarTurnos();
+  }
+
+  limpiarFiltroFecha(): void {
+    this.fechaFiltro = '';
+    this.actualizarTurnos();
+  }
+
+  private actualizarTurnos(): void {
+    const ahora = new Date();
+    const reservas = this.reservasProfesional
+      .filter((reserva: any) => !this.esEstadoCerrado(reserva.estado))
+      .filter((reserva: any) => {
+        if (this.fechaFiltro) {
+          return this.getReservaDateKey(reserva) === this.fechaFiltro;
+        }
+
+        return this.getReservaDateTime(reserva) >= ahora;
+      })
+      .sort((a: any, b: any) =>
+        this.getReservaDateTime(a).getTime() - this.getReservaDateTime(b).getTime()
+      );
+
+    this.upcomingTurns = (this.fechaFiltro ? reservas : reservas.slice(0, 5))
+      .map((reserva: any) => this.mapReservaToTurno(reserva));
+  }
+
+  private mapReservaToTurno(reserva: any): Turno {
+    return {
+      id: reserva.idReserva,
+      clientName: reserva.cliente?.usuario?.nombre || 'Cliente sin nombre',
+      service: reserva.servicio?.nombre || 'Servicio',
+      fechaTexto: this.formatFecha(this.getReservaDateKey(reserva)),
+      time: this.getReservaTime(reserva),
+      status: reserva.estado === 'confirmada' ? 'Confirmado' : reserva.estado === 'pendiente' ? 'Pendiente' : reserva.estado,
+      estado: reserva.estado,
+      modalidad: reserva.servicio?.modalidad || 'presencial',
+      clientPicture: reserva.cliente?.usuario?.imagenPerfilUrl || ''
+    };
+  }
+
+  private esEstadoCerrado(estado?: string): boolean {
+    return ['cancelada', 'completada', 'finalizada', 'no_asistida'].includes(estado || '');
+  }
+
   private getReservaDateTime(reserva: any): Date {
-    const fecha = reserva.horario?.fecha || reserva.fechaReserva;
-    const hora = reserva.horario?.horaInicio;
+    const fecha = this.getReservaDateKey(reserva);
+    const hora = this.getReservaTimeRaw(reserva);
+    const [year, month, day] = fecha.split('-').map(Number);
+    const [hour, minute, second] = hora.split(':').map(Number);
 
-    if (fecha && hora) {
-      return new Date(`${fecha}T${hora}`);
-    }
+    return new Date(year, month - 1, day, hour || 0, minute || 0, second || 0);
+  }
 
-    return new Date(fecha || reserva.fechaReserva);
+  private getReservaDateKey(reserva: any): string {
+    const fecha = reserva.horario?.fecha || reserva.fechaReserva || '';
+    return String(fecha).split(' ')[0].split('T')[0];
+  }
+
+  private getReservaTime(reserva: any): string {
+    return this.getReservaTimeRaw(reserva).substring(0, 5);
+  }
+
+  private getReservaTimeRaw(reserva: any): string {
+    const hora = reserva.horario?.horaInicio || String(reserva.fechaReserva || '').split(' ')[1] || '00:00:00';
+    return String(hora || '00:00:00');
+  }
+
+  private formatFecha(fecha: string): string {
+    const [year, month, day] = fecha.split('-').map(Number);
+    return new Date(year, month - 1, day).toLocaleDateString('es-ES', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+    });
   }
 
   // Navegar a Mis Servicios

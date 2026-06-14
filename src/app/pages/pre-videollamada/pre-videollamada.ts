@@ -20,6 +20,7 @@ export class PreVideollamada implements OnInit {
   profesionalNombre = signal<string>('Cargando...');
   profesionalFoto = signal<string>('');
   servicioNombre = signal<string>('Videollamada');
+  modalidad = signal<string>('');
   cargando = signal<boolean>(true);
   error = signal<string>('');
 
@@ -61,8 +62,13 @@ export class PreVideollamada implements OnInit {
           response.data.reserva?.profesional?.usuario?.nombre ||
           'Profesional',
         );
-        this.profesionalFoto.set(response.data.reserva?.profesional?.usuario?.imagenPerfilUrl || '');
+        this.profesionalFoto.set(
+          response.data.reserva?.profesional?.imagenPerfilUrl ||
+          response.data.reserva?.profesional?.usuario?.imagenPerfilUrl ||
+          '',
+        );
         this.servicioNombre.set(response.data.reserva?.servicio?.nombre || 'Videollamada');
+        this.modalidad.set(response.data.reserva?.servicio?.modalidad || '');
         this.cargando.set(false);
       },
       error: (err) => {
