@@ -3,10 +3,14 @@
     <!-- Video Preview Column -->
     <div class="lg:col-span-8 flex flex-col gap-md">
       <div class="relative aspect-video bg-inverse-surface rounded-xl overflow-hidden soft-shadow border border-outline-variant/30">
-        <div *ngIf="!videoDesactivado()" class="w-full h-full flex flex-col items-center justify-center bg-slate-950 text-white/70">
-          <span class="material-symbols-outlined text-5xl mb-2">videocam</span>
-          <p class="text-sm">Vista previa de cámara</p>
-        </div>
+        <video 
+          #previewVideo
+          [hidden]="videoDesactivado()"
+          autoplay 
+          playsinline 
+          muted 
+          class="w-full h-full object-cover bg-slate-950"
+        ></video>
         <div *ngIf="videoDesactivado()" class="w-full h-full flex flex-col items-center justify-center text-white/50 bg-black">
           <span class="material-symbols-outlined text-4xl mb-2">videocam_off</span>
           <p class="text-sm">La cámara está desactivada</p>

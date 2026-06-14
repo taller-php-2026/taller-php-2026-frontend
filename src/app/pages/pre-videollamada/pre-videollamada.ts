@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -12,10 +12,12 @@ import { LiveKitTokenData } from 'app/models/livekit.model';
   templateUrl: './pre-videollamada.html',
   styleUrl: './pre-videollamada.css',
 })
-export class PreVideollamada implements OnInit {
+export class PreVideollamada implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private enrutador = inject(Router);
   private liveKitService = inject(LiveKitService);
+
+  @ViewChild('previewVideo') previewVideoElement!: ElementRef<HTMLVideoElement>;
 
   profesionalNombre = signal<string>('Cargando...');
   profesionalFoto = signal<string>('');
@@ -27,16 +29,17 @@ export class PreVideollamada implements OnInit {
   microfonoSilenciado = signal<boolean>(false);
   videoDesactivado = signal<boolean>(false);
 
-  camaras = signal<string[]>(['Camara predeterminada']);
-  microfonos = signal<string[]>(['Microfono predeterminado']);
-  altavoces = signal<string[]>(['Altavoces predeterminados']);
+  camaras = signal<string[]>([]);
+  microfonos = signal<string[]>([]);
+  altavoces = signal<string[]>([]);
 
-  camaraSeleccionada = 'Camara predeterminada';
-  microfonoSeleccionado = 'Microfono predeterminado';
-  altavozSeleccionado = 'Altavoces predeterminados';
+  camaraSeleccionada = '';
+  microfonoSeleccionado = '';
+  altavozSeleccionado = '';
 
   private idReserva: number | null = null;
   private tokenData: LiveKitTokenData | null = null;
+  private localStream: MediaStream | null = null;
 
   ngOnInit(): void {
     this.idReserva = this.getReservaId();
@@ -48,6 +51,68 @@ export class PreVideollamada implements OnInit {
     }
 
     this.cargarDatosVideollamada(this.idReserva);
+    this.iniciarVistaPrevia();
+  }
+
+  ngOnDestroy(): void {
+    this.detenerStream();
+  }
+
+  async iniciarVistaPrevia() {
+    try {
+      // Request permissions and initialize media stream
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true
+      });
+      this.localStream = stream;
+
+      // Assign to video tag
+      this.asignarStreamAVideo();
+
+      // Enumerate actual media devices
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const listCamaras: string[] = [];
+      const listMicrofonos: string[] = [];
+      const listAltavoces: string[] = [];
+
+      devices.forEach((device) => {
+        if (device.kind === 'videoinput') {
+          listCamaras.push(device.label || `Cámara ${listCamaras.length + 1}`);
+        } else if (device.kind === 'audioinput') {
+          listMicrofonos.push(device.label || `Micrófono ${listMicrofonos.length + 1}`);
+        } else if (device.kind === 'audiooutput') {
+          listAltavoces.push(device.label || `Altavoz ${listAltavoces.length + 1}`);
+        }
+      });
+
+      this.camaras.set(listCamaras.length > 0 ? listCamaras : ['Cámara predeterminada']);
+      this.microfonos.set(listMicrofonos.length > 0 ? listMicrofonos : ['Micrófono predeterminado']);
+      this.altavoces.set(listAltavoces.length > 0 ? listAltavoces : ['Altavoces predeterminados']);
+
+      this.camaraSeleccionada = this.camaras()[0];
+      this.microfonoSeleccionado = this.microfonos()[0];
+      this.altavozSeleccionado = this.altavoces()[0];
+
+    } catch (e) {
+      console.warn('Permisos de cámara/micrófono denegados o no disponibles:', e);
+      this.error.set('No se pudo acceder a la cámara o micrófono. Asegúrate de otorgar los permisos de cámara y micrófono.');
+    }
+  }
+
+  asignarStreamAVideo() {
+    setTimeout(() => {
+      if (this.previewVideoElement && this.previewVideoElement.nativeElement && this.localStream) {
+        this.previewVideoElement.nativeElement.srcObject = this.localStream;
+      }
+    }, 100);
+  }
+
+  detenerStream(): void {
+    if (this.localStream) {
+      this.localStream.getTracks().forEach((track) => track.stop());
+      this.localStream = null;
+    }
   }
 
   cargarDatosVideollamada(idReserva: number): void {
@@ -79,11 +144,30 @@ export class PreVideollamada implements OnInit {
   }
 
   alternarMicrofono(): void {
-    this.microfonoSilenciado.update((estado) => !estado);
+    this.microfonoSilenciado.update((estado) => {
+      const nuevoEstado = !estado;
+      if (this.localStream) {
+        this.localStream.getAudioTracks().forEach((track) => {
+          track.enabled = !nuevoEstado;
+        });
+      }
+      return nuevoEstado;
+    });
   }
 
   alternarVideo(): void {
-    this.videoDesactivado.update((estado) => !estado);
+    this.videoDesactivado.update((estado) => {
+      const nuevoEstado = !estado;
+      if (this.localStream) {
+        this.localStream.getVideoTracks().forEach((track) => {
+          track.enabled = !nuevoEstado;
+        });
+      }
+      if (!nuevoEstado) {
+        this.asignarStreamAVideo();
+      }
+      return nuevoEstado;
+    });
   }
 
   unirseLlamada(): void {
@@ -92,9 +176,15 @@ export class PreVideollamada implements OnInit {
       return;
     }
 
+    this.detenerStream();
+
     this.enrutador.navigate(['/videollamada', this.idReserva], {
       state: {
         livekit: this.tokenData,
+        settings: {
+          microfonoSilenciado: this.microfonoSilenciado(),
+          videoDesactivado: this.videoDesactivado(),
+        }
       },
     });
   }

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'app/services/auth.service';
 import { HttpClient } from '@angular/common/http';
@@ -41,6 +41,7 @@ export class HomeProfessionalComponent implements OnInit {
   private router = inject(Router);
   authService = inject(AuthService);
   private http = inject(HttpClient);
+  private cdr = inject(ChangeDetectorRef);
 
   @ViewChild(AgendaCalendarModalComponent) calendarModal!: AgendaCalendarModalComponent;
 
@@ -83,6 +84,7 @@ export class HomeProfessionalComponent implements OnInit {
               turnosPendientes: res.data.turnosPendientes ?? res.data.hoy?.turnosPendientes ?? 0,
               ingresosEstimados: res.data.ingresosEstimados ?? res.data.hoy?.ingresosEstimados ?? 0,
             };
+            this.cdr.detectChanges();
           }
         },
         error: (err) => console.error('Error al cargar métricas del profesional:', err)
@@ -95,6 +97,7 @@ export class HomeProfessionalComponent implements OnInit {
           if (res && res.data) {
             this.reservasProfesional = res.data;
             this.actualizarTurnos();
+            this.cdr.detectChanges();
           }
         },
         error: (err) => console.error('Error al cargar reservas del profesional:', err)
