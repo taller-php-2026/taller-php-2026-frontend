@@ -1,0 +1,117 @@
+<dialog #dialogEl closedby="any" (click)="onBackdropClick($event)" class="agenda-dialog p-0 rounded-2xl border border-outline-variant/30 bg-surface text-on-surface max-w-2xl w-full shadow-2xl overflow-hidden backdrop:backdrop-blur-sm backdrop:bg-black/45">
+  <div class="flex flex-col h-full max-h-[90vh]">
+    
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between px-lg py-md border-b border-outline-variant/20 bg-surface-container-low">
+      <div class="flex items-center gap-sm">
+        <span class="material-symbols-outlined text-primary text-headline-sm">calendar_month</span>
+        <h3 class="font-display-md text-headline-sm text-primary">Calendario de Turnos</h3>
+      </div>
+      <button (click)="close()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container-high text-on-surface-variant transition-colors cursor-pointer" aria-label="Cerrar">
+        <span class="material-symbols-outlined text-sm">close</span>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="p-lg overflow-y-auto flex-1 flex flex-col md:flex-row gap-lg">
+      
+      <!-- Left: Calendar view -->
+      <div class="flex-1 flex flex-col border border-outline-variant/20 p-md rounded-xl bg-surface-container-lowest shadow-sm">
+        <!-- Month Header -->
+        <div class="flex items-center justify-between mb-md">
+          <button (click)="prevMonth()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors cursor-pointer" aria-label="Mes Anterior">
+            <span class="material-symbols-outlined text-sm">chevron_left</span>
+          </button>
+          <h4 class="font-label-bold text-sm text-on-surface uppercase tracking-wide">{{ getCurrentMonthName() }}</h4>
+          <button (click)="nextMonth()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors cursor-pointer" aria-label="Siguiente Mes">
+            <span class="material-symbols-outlined text-sm">chevron_right</span>
+          </button>
+        </div>
+
+        <!-- Days of Week -->
+        <div class="grid grid-cols-7 gap-xs text-center font-label-bold text-[11px] text-on-surface-variant uppercase tracking-wider mb-sm">
+          <span>Do</span><span>Lu</span><span>Ma</span><span>Mi</span><span>Ju</span><span>Vi</span><span>Sa</span>
+        </div>
+
+        <!-- Days Grid -->
+        <div class="grid grid-cols-7 gap-xs text-center">
+          @for (day of days; track $index) {
+            @if (day === null) {
+              <div class="w-9 h-9"></div>
+            } @else {
+              <button (click)="selectDay(day)" [ngClass]="getDayClasses(day)" class="w-9 h-9 flex flex-col items-center justify-center text-xs relative cursor-pointer">
+                <span>{{ day }}</span>
+                <!-- Mini indicator dot if has bookings -->
+                @if (hasBookings(day)) {
+                  <span class="absolute bottom-1 w-1 h-1 rounded-full bg-primary/80"></span>
+                }
+              </button>
+            }
+          }
+        </div>
+      </div>
+
+      <!-- Right: Bookings list -->
+      <div class="flex-1 flex flex-col border border-outline-variant/20 p-md rounded-xl bg-surface-container-lowest shadow-sm min-h-[300px]">
+        <h4 class="font-label-bold text-sm text-on-surface border-b border-outline-variant/20 pb-xs mb-sm flex items-center gap-xs">
+          <span class="material-symbols-outlined text-primary text-sm">list_alt</span>
+          Turnos del Día
+          @if (selectedDay) {
+            <span class="text-primary-dim">({{ selectedDay }} {{ monthNames[currentDate.getMonth()] }})</span>
+          }
+        </h4>
+
+        <!-- Loading / Empty states -->
+        <div *ngIf="cargando()" class="flex-1 flex flex-col items-center justify-center py-lg gap-md text-on-surface-variant">
+          <div class="w-8 h-8 border-3 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+          <span class="text-xs">Cargando turnos...</span>
+        </div>
+
+        <div *ngIf="!cargando() && filteredReservations().length === 0" class="flex-1 flex flex-col items-center justify-center py-lg gap-sm text-on-surface-variant text-center">
+          <span class="material-symbols-outlined text-display-xs text-on-surface-variant/40">event_busy</span>
+          <p class="text-xs">No hay turnos registrados para este día.</p>
+        </div>
+
+        <!-- Bookings list -->
+        <div *ngIf="!cargando() && filteredReservations().length > 0" class="flex-1 flex flex-col gap-sm overflow-y-auto max-h-[300px] pr-xs">
+          @for (r of filteredReservations(); track r.idReserva) {
+            <div (click)="verDetalleTurno(r.idReserva)" class="booking-item p-sm rounded-lg border border-outline-variant/15 hover:border-primary/30 hover:bg-primary/5 transition-all cursor-pointer flex justify-between items-center gap-sm">
+              <div class="flex flex-col min-w-0">
+                <span class="font-label-bold text-sm text-on-surface truncate">{{ r.servicio?.nombre || 'Servicio' }}</span>
+                <span class="text-xs text-on-surface-variant truncate">Cliente: {{ r.cliente?.usuario?.nombre || 'Cliente' }}</span>
+                <!-- Indicador de Pago -->
+                <span class="text-[10px] flex items-center gap-1px mt-0.5" [ngClass]="{
+                  'text-success': r.pago?.estado === 'aprobado',
+                  'text-warning-dark': !r.pago || r.pago?.estado === 'pendiente',
+                  'text-error': r.pago?.estado === 'cancelado' || r.pago?.estado === 'rechazado'
+                }">
+                  <span class="material-symbols-outlined text-[12px]">payments</span>
+                  {{ r.pago?.estado === 'aprobado' ? 'Pagado (' + (r.pago?.monto | currency) + ')' : 'Pendiente de Pago' }}
+                </span>
+              </div>
+              <div class="text-right shrink-0 flex flex-col items-end gap-[2px]">
+                <span class="font-label-bold text-xs text-primary">{{ r.horario?.horaInicio }} - {{ r.horario?.horaFin }}</span>
+                <span [ngClass]="{
+                  'text-warning-dark bg-warning-container/30 px-xs py-1px rounded text-[9px] uppercase font-bold': r.estado === 'pendiente',
+                  'text-success bg-success-container/30 px-xs py-1px rounded text-[9px] uppercase font-bold': r.estado === 'confirmada' || r.estado === 'completada',
+                  'text-error bg-error-container/30 px-xs py-1px rounded text-[9px] uppercase font-bold': r.estado === 'cancelada'
+                }">{{ r.estado }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="px-lg py-md border-t border-outline-variant/20 bg-surface-container-low flex justify-end">
+      <button (click)="close()" class="px-lg py-sm bg-primary text-on-primary font-label-bold rounded-lg shadow-md hover:shadow-lg hover:bg-primary/90 transition-all cursor-pointer">
+        Aceptar
+      </button>
+    </div>
+
+  </div>
+  <!-- Subdetail Modal -->
+  <app-booking-detail-modal></app-booking-detail-modal>
+</dialog>

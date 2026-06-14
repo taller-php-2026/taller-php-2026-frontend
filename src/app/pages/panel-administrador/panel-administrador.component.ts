@@ -1,12 +1,11 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { AdminService } from '../../services/admin.service';
 
 @Component({
   selector: 'app-panel-administrador',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './panel-administrador.component.html',
 })
 export class PanelAdministradorComponent implements OnInit {

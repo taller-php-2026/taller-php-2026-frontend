@@ -22,13 +22,31 @@ export class AuthService {
   private _pendingUser = signal<UserProfile | null>(null);
 
   constructor() {
-    const session = this.loadSession();
-    if (session) {
-      this.currentUser.set(session.user);
-      if (session.type) {
-        this.userType.set(session.type);
-      }
+    const token = this.getToken();
+    if (token) {
       this.isAuthenticated.set(true);
+
+      const cachedUser = localStorage.getItem('user_session');
+      if (cachedUser) {
+        try {
+          this.currentUser.set(JSON.parse(cachedUser));
+        } catch (e) {
+          console.error('Error parsing cached user session:', e);
+        }
+      }
+      const cachedType = localStorage.getItem('user_type');
+      if (cachedType) {
+        this.userType.set(cachedType as 'cliente' | 'profesional');
+      }
+
+      this.getMe().subscribe({
+        next: (res) => this.updateCurrentUserFromBackend(res.usuario),
+        error: (err) => {
+          if (err.status === 401 || err.status === 403) {
+            this.logout();
+          }
+        },
+      });
     }
   }
 
@@ -42,12 +60,10 @@ export class AuthService {
     if (user.type) {
       this.setUserType(user.type);
     }
-    this.saveSession(user, user.type ?? this.userType()!);
   }
 
   setUserType(type: 'cliente' | 'profesional') {
     this.userType.set(type);
-    localStorage.setItem('user_type', type);
   }
 
   completePendingLogin() {
@@ -56,7 +72,6 @@ export class AuthService {
       this.currentUser.set(pending);
       this.isAuthenticated.set(true);
       this._pendingUser.set(null);
-      this.saveSession(pending, this.userType()!);
     }
   }
 
@@ -65,13 +80,20 @@ export class AuthService {
     const tipo = backendUser.tipoPrincipal ?? null;
     const user = this.toUserProfile(backendUser, tipo ?? undefined);
     localStorage.setItem('access_token', token);
-    localStorage.setItem('user_session', JSON.stringify(user));
     this.currentUser.set(user);
     this.isAuthenticated.set(true);
     if (tipo) {
       this.userType.set(tipo);
       localStorage.setItem('user_type', tipo);
+    } else {
+      localStorage.removeItem('user_type');
     }
+    localStorage.setItem('user_session', JSON.stringify(user));
+    
+    // Obtener perfil completo inmediatamente
+    this.getMe().subscribe({
+      next: (res) => this.updateCurrentUserFromBackend(res.usuario),
+    });
   }
 
   /**
@@ -81,10 +103,16 @@ export class AuthService {
   setPartialSession(token: string, backendUser: BackendUsuario): void {
     const user = this.toUserProfile(backendUser);
     localStorage.setItem('access_token', token);
-    localStorage.setItem('user_session', JSON.stringify(user));
     this.currentUser.set(user);
     this.isAuthenticated.set(true);
     // userType queda en null intencionalmente
+    localStorage.removeItem('user_type');
+    localStorage.setItem('user_session', JSON.stringify(user));
+    
+    // Obtener perfil completo inmediatamente
+    this.getMe().subscribe({
+      next: (res) => this.updateCurrentUserFromBackend(res.usuario),
+    });
   }
 
   getToken(): string | null {
@@ -141,12 +169,14 @@ export class AuthService {
 
     this.currentUser.set(user);
     this.isAuthenticated.set(true);
-    localStorage.setItem('user_session', JSON.stringify(user));
 
     if (user.type) {
       this.userType.set(user.type);
       localStorage.setItem('user_type', user.type);
+    } else {
+      localStorage.removeItem('user_type');
     }
+    localStorage.setItem('user_session', JSON.stringify(user));
   }
 
   logout() {
@@ -157,26 +187,10 @@ export class AuthService {
     this.clearSession();
   }
 
-  private saveSession(user: UserProfile, type: 'cliente' | 'profesional') {
-    localStorage.setItem('user_session', JSON.stringify(user));
-    localStorage.setItem('user_type', type);
-  }
-
   private clearSession() {
+    localStorage.removeItem('access_token');
     localStorage.removeItem('user_session');
     localStorage.removeItem('user_type');
-    localStorage.removeItem('access_token');
-  }
-
-  private loadSession(): { user: UserProfile; type: 'cliente' | 'profesional' | null } | null {
-    const savedUser = localStorage.getItem('user_session');
-    if (!savedUser) return null;
-    const savedType = localStorage.getItem('user_type') as 'cliente' | 'profesional' | null;
-    try {
-      return { user: JSON.parse(savedUser), type: savedType };
-    } catch {
-      return null;
-    }
   }
 
   get hasPendingUser() {
@@ -200,6 +214,8 @@ export class AuthService {
       telefono: backendUser.telefono,
       imagenPerfilUrl: backendUser.imagenPerfilUrl,
       imagenPerfilPublicId: backendUser.imagenPerfilPublicId,
+      roles: backendUser.roles,
+      profesional: backendUser.profesional,
     };
   }
 }

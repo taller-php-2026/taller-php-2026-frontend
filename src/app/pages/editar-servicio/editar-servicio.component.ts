@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Observable, of, switchMap } from 'rxjs';
 import { environment } from '@env/environment';
+import { ServicesService } from '../../services/services.service';
 import * as L from 'leaflet';
 
 @Component({
@@ -16,6 +17,7 @@ import * as L from 'leaflet';
 })
 export class EditarServicioComponent implements OnInit {
   private router = inject(Router);
+  private servicesService = inject(ServicesService);
   private http = inject(HttpClient);
   private route = inject(ActivatedRoute);
 
@@ -151,7 +153,7 @@ export class EditarServicioComponent implements OnInit {
   }
 
   cargarServicio(id: number) {
-    this.http.get<any>(`${environment.apiUrl}/servicios/${id}`).subscribe({
+    this.servicesService.getServiceById(id.toString()).subscribe({
       next: (res) => {
         const serv = res.data;
         if (!serv) return;
@@ -309,14 +311,12 @@ export class EditarServicioComponent implements OnInit {
         }
 
         // 2. Actualizar el Servicio
-        return this.http.put<any>(`${environment.apiUrl}/servicios/${this.idServicio}`, payload);
+        return this.servicesService.updateService(this.idServicio!, payload);
       }),
       switchMap((servRes) => {
         if (this.selectedFile && this.idServicio) {
           // 3. Subir la imagen si hay una nueva
-          const formData = new FormData();
-          formData.append('imagen', this.selectedFile);
-          return this.http.post<any>(`${environment.apiUrl}/servicios/${this.idServicio}/imagen`, formData);
+          return this.servicesService.uploadServiceImage(this.idServicio, this.selectedFile);
         }
         return of(servRes);
       })
@@ -342,7 +342,7 @@ export class EditarServicioComponent implements OnInit {
       this.errorMsg.set('');
       this.successMsg.set('');
 
-      this.http.delete<any>(`${environment.apiUrl}/servicios/${this.idServicio}`).subscribe({
+      this.servicesService.deleteService(this.idServicio!).subscribe({
         next: () => {
           this.deleting.set(false);
           this.successMsg.set('Servicio eliminado correctamente.');

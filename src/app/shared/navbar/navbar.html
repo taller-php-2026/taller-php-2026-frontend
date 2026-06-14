@@ -19,6 +19,76 @@
             <span class="text-xs text-on-surface-variant">{{ authService.currentUser()?.email }}</span>
           </div>
 
+          <!-- Campanita de notificaciones -->
+          <div class="relative">
+            <button (click)="alternarNotifDropdown()" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-all cursor-pointer relative" aria-label="Notificaciones">
+              <span class="material-symbols-outlined text-headline-sm">notifications</span>
+              @if (notifService.unreadCount() > 0) {
+                <span class="absolute top-1 right-1 min-w-5 h-5 flex items-center justify-center bg-error text-on-error font-label-bold text-[10px] px-1 rounded-full border-2 border-surface animate-pulse">
+                  {{ notifService.unreadCount() }}
+                </span>
+              }
+            </button>
+
+            <!-- Dropdown de Notificaciones -->
+            <div *ngIf="notifDropdownAbierto()" class="absolute right-0 top-12 w-80 sm:w-96 bg-white border border-outline-variant/30 rounded-xl shadow-2xl z-50 flex flex-col p-md gap-xs">
+              <div class="flex items-center justify-between border-b border-outline-variant/20 pb-sm mb-xs px-sm">
+                <span class="font-label-bold text-sm text-on-surface">Notificaciones</span>
+                <div class="flex items-center gap-sm">
+                  @if (notifService.notifications().length > 0) {
+                    <button (click)="eliminarTodasLasNotificaciones($event)" class="text-xs text-error hover:text-error/80 font-medium cursor-pointer hover:underline">
+                      Eliminar todas
+                    </button>
+                  }
+                  <span class="text-xs text-on-surface-variant font-medium">{{ notifService.notifications().length }} en total</span>
+                </div>
+              </div>
+
+              <!-- Lista de Notificaciones -->
+              <div class="flex flex-col gap-xs max-h-80 overflow-y-auto pr-xs">
+                @if (notifService.notifications().length === 0) {
+                  <div class="flex flex-col items-center justify-center py-lg text-on-surface-variant/60 gap-xs">
+                    <span class="material-symbols-outlined text-display-xs">notifications_off</span>
+                    <span class="text-xs">No tienes notificaciones</span>
+                  </div>
+                } @else {
+                  @for (notif of notifService.notifications(); track notif.idNotificacion) {
+                    <div (click)="verDetalleNotificacion(notif)" class="flex gap-sm p-sm rounded-lg hover:bg-primary-container/10 transition-colors cursor-pointer border border-transparent hover:border-outline-variant/20 relative group" [ngClass]="{'bg-surface-container-low font-semibold': !notif.leida}">
+                      
+                      <!-- Icono según tipo de notificación -->
+                      <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" [ngClass]="{
+                        'bg-success-container/20 text-success': notif.tipo === 'confirmacion',
+                        'bg-warning-container/20 text-warning-dark': notif.tipo === 'recordatorio',
+                        'bg-error-container/20 text-error': notif.tipo === 'cancelacion',
+                        'bg-primary-container/20 text-primary': notif.tipo === 'actualizacion' || notif.tipo === 'mensaje'
+                      }">
+                        <span class="material-symbols-outlined text-sm">
+                          @if (notif.tipo === 'confirmacion') { check_circle }
+                          @else if (notif.tipo === 'recordatorio') { alarm }
+                          @else if (notif.tipo === 'cancelacion') { cancel }
+                          @else { info }
+                        </span>
+                      </div>
+
+                      <!-- Contenido de notificación -->
+                      <div class="flex flex-col flex-1 min-w-0 pr-md">
+                        <span class="text-xs font-label-bold text-on-surface truncate">{{ notif.titulo }}</span>
+                        <p class="text-[11px] text-on-surface-variant line-clamp-2 mt-0.5 whitespace-pre-line">{{ notif.mensaje }}</p>
+                        <span class="text-[10px] text-on-surface-variant/60 mt-1 font-mono">{{ notif.fechaCreacion | date:'shortTime' }} - {{ notif.fechaCreacion | date:'shortDate' }}</span>
+                      </div>
+
+                      <!-- Botón de eliminar (X) -->
+                      <button (click)="eliminarNotificacion(notif.idNotificacion, $event)" class="absolute right-2 top-2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-error-container/30 text-on-surface-variant hover:text-error opacity-0 group-hover:opacity-100 transition-all cursor-pointer" aria-label="Eliminar notificación">
+                        <span class="material-symbols-outlined text-xs">close</span>
+                      </button>
+
+                    </div>
+                  }
+                }
+              </div>
+            </div>
+          </div>
+
           <!-- Avatar del perfil que actúa como trigger de la hamburguesa/dropdown -->
           <div (click)="alternarDropdown()" class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden border border-outline-variant hover:border-primary transition-all cursor-pointer">
             @if (authService.currentUser()?.picture) {
@@ -55,6 +125,11 @@
             <a [routerLink]="obtenerRutaConfiguracion()" (click)="cerrarDropdown()" class="flex items-center gap-sm p-sm rounded-lg hover:bg-primary-container/10 text-on-surface-variant text-sm font-label-bold">
               <span class="material-symbols-outlined text-sm">settings</span> Configuración
             </a>
+
+            <!-- Panel de administración para administradores -->
+            <a *ngIf="authService.currentUser()?.roles?.includes('administrador')" routerLink="/panel-administrador" (click)="cerrarDropdown()" class="flex items-center gap-sm p-sm rounded-lg hover:bg-primary-container/10 text-on-surface-variant text-sm font-label-bold">
+              <span class="material-symbols-outlined text-sm">admin_panel_settings</span> Panel Administrador
+            </a>
             
             <button (click)="logout()" class="flex items-center gap-sm p-sm rounded-lg hover:bg-error-container/30 text-error text-sm font-label-bold text-left w-full mt-xs border-t border-outline-variant/20 pt-sm">
               <span class="material-symbols-outlined text-sm">logout</span> Cerrar sesión
@@ -70,4 +145,6 @@
 
     </div>
   </div>
+  <!-- Detail Modal -->
+  <app-booking-detail-modal></app-booking-detail-modal>
 </header>

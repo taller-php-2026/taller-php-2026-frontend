@@ -20,7 +20,9 @@
     "@ng-icons/core": "^33.2.2",
     "@ng-icons/heroicons": "^33.2.2",
     "@tailwindcss/postcss": "^4.3.0",
+    "laravel-echo": "^2.3.7",
     "leaflet": "^1.9.4",
+    "pusher-js": "^8.5.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },

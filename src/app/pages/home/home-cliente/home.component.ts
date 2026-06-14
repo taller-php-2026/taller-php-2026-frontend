@@ -30,7 +30,6 @@ export class HomeClientComponent {
   ngOnInit() {
     this.servicesService.getFilteredServices({}).subscribe({
       next: (response) => {
-        console.log(response.data);
         this.services = response.data;
         this.cdr.detectChanges();
       },

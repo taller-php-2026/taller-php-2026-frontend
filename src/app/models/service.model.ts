@@ -10,6 +10,19 @@ export interface Service {
   idVideoSesion?: number | null;
   imagenUrl?: string;
   imagenPublicId?: string;
+  ubicacion?: {
+    idUbicacion: number;
+    direccion?: string;
+    ciudad?: string;
+    latitud?: string;
+    longitud?: string;
+  } | null;
+  video_sesion?: {
+    idVideoSesion: number;
+    proveedor?: string;
+    urlAcceso?: string;
+    nombreSala?: string;
+  } | null;
   created_at?: string;
   updated_at?: string;
 }

@@ -14,7 +14,7 @@
         [class.text-primary]="tipo() === 'cliente'"
         [class.border-outline-variant]="tipo() !== 'cliente'"
         [class.text-on-surface-variant]="tipo() !== 'cliente'"
-        [style.background]="tipo() === 'cliente' ? 'rgba(0,104,95,0.08)' : ''"
+        [style.background]="tipo() === 'cliente' ? 'color-mix(in srgb, var(--primary-color, #00685f) 8%, transparent)' : ''"
         (click)="selectTipo('cliente')"
       >
         <span class="material-symbols-outlined text-[18px]">person</span>
@@ -27,7 +27,7 @@
         [class.text-primary]="tipo() === 'profesional'"
         [class.border-outline-variant]="tipo() !== 'profesional'"
         [class.text-on-surface-variant]="tipo() !== 'profesional'"
-        [style.background]="tipo() === 'profesional' ? 'rgba(0,104,95,0.08)' : ''"
+        [style.background]="tipo() === 'profesional' ? 'color-mix(in srgb, var(--primary-color, #00685f) 8%, transparent)' : ''"
         (click)="selectTipo('profesional')"
       >
         <span class="material-symbols-outlined text-[18px]">business_center</span>
@@ -246,7 +246,7 @@
       <!-- Submit -->
       <div class="pt-sm">
         <button
-          style="background: linear-gradient(180deg, #0e9488 0%, #005049 100%) !important; color: white !important;"
+          style="background: var(--primary-color, #00685f) !important; color: white !important;"
           class="w-full py-md px-lg font-label-bold text-label-bold rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98] h-12 flex items-center justify-center disabled:opacity-50"
           type="submit"
           [disabled]="loading()"
@@ -264,7 +264,7 @@
     <div class="mt-lg text-center">
       <p class="font-body-sm text-body-sm text-on-surface-variant">
         ¿Ya tienes una cuenta?
-        <a href="/login" class="text-[#0e9488] font-label-bold hover:underline transition-all cursor-pointer ml-1" routerLink="/login">Iniciar Sesión</a>
+        <a href="/login" class="text-primary font-label-bold hover:underline transition-all cursor-pointer ml-1" routerLink="/login">Iniciar Sesión</a>
       </p>
     </div>
 

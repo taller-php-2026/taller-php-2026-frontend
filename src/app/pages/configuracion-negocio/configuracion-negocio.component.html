@@ -159,20 +159,6 @@
         />
       </div>
 
-      <!-- Logo Uploader -->
-      <div class="flex items-center gap-md p-sm border border-dashed border-outline-variant rounded-xl bg-surface-container-low">
-        <input type="file" #logoInput (change)="onLogoSelected($event)" accept="image/*" class="hidden" />
-        <div class="w-16 h-16 rounded-xl bg-primary-container flex items-center justify-center overflow-hidden border border-outline-variant/30">
-          <img [src]="logoUrl()" alt="Logo Preview" class="w-full h-full object-cover">
-        </div>
-        <div class="flex flex-col gap-xs flex-1">
-          <button type="button" (click)="logoInput.click()" class="text-primary font-label-bold text-label-bold flex items-center gap-xs cursor-pointer hover:underline">
-            <span class="material-symbols-outlined text-[18px]">upload</span> Cambiar Logo
-          </button>
-          <p class="font-caption text-caption text-outline">SVG, PNG o JPG (Máx. 2MB)</p>
-        </div>
-      </div>
-
       <!-- Banner removido -->
     </section>
 
@@ -188,7 +174,7 @@
       <!-- Primary Color -->
       <div (click)="primaryInput.click()" class="flex items-center justify-between p-sm rounded-xl bg-surface-container-low border border-surface-container cursor-pointer hover:bg-surface-container/60 transition-colors">
         <div class="flex items-center gap-md">
-          <input type="color" #primaryInput name="primaryColor" [ngModel]="primaryColor()" (ngModelChange)="primaryColor.set($event)" class="w-10 h-10 rounded-lg shadow-sm border-2 border-white cursor-pointer overflow-hidden p-0 bg-transparent" />
+          <input type="color" #primaryInput name="primaryColor" [value]="primaryColor()" (input)="primaryColor.set($any($event.target).value); aplicarEstilosMarca({ primaryColor: $any($event.target).value })" class="w-10 h-10 rounded-lg shadow-sm border-2 border-white cursor-pointer overflow-hidden p-0 bg-transparent" />
           <div>
             <p class="font-label-bold text-label-bold">Color Primario</p>
             <p class="font-caption text-caption font-mono text-outline">{{ primaryColor() | uppercase }}</p>
@@ -217,7 +203,7 @@
           <div [style.background-color]="primaryColor()" class="relative w-full h-24 rounded-xl overflow-hidden mb-md shadow-sm flex items-end p-sm">
             <div class="flex items-center gap-sm">
               <div class="w-10 h-10 rounded-full border-2 border-white overflow-hidden bg-white flex items-center justify-center">
-                <img [src]="logoUrl()" alt="Logo Preview" class="w-full h-full object-cover">
+                <img [src]="picture()" alt="Profile Preview" class="w-full h-full object-cover">
               </div>
               <span class="font-label-bold text-white text-sm drop-shadow-md">{{ businessName() }}</span>
             </div>
@@ -261,7 +247,7 @@
       <button
         (click)="saveChanges()"
         [disabled]="loading()"
-        style="background: linear-gradient(180deg, #0e9488 0%, #005049 100%) !important; color: white !important;"
+        style="background: var(--primary-color, #00685f) !important; color: white !important;"
         class="w-full py-md rounded-xl text-on-primary font-label-bold text-label-bold soft-shadow transition-all active:scale-95 h-12 flex items-center justify-center disabled:opacity-50 cursor-pointer"
       >
         @if (loading()) {

@@ -68,6 +68,11 @@ export interface ReservaPago {
   referenciaExterna?: string | null;
 }
 
+export interface ReservaCliente {
+  idUsuario: number;
+  usuario?: ReservaUsuario | null;
+}
+
 export interface Reserva {
   idReserva: number;
   fechaReserva: string;
@@ -75,6 +80,7 @@ export interface Reserva {
   comentarios?: string | null;
   servicio?: ReservaServicio | null;
   profesional?: ReservaProfesional | null;
+  cliente?: ReservaCliente | null;
   horario?: ReservaHorario | null;
   pago?: ReservaPago | null;
 }

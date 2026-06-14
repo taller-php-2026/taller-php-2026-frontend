@@ -2,8 +2,8 @@
 <div class="w-screen bg-primary mx-auto">
 
 
-    <div class="w-3/4 flex flex-col mx-auto py-16 text-white">
-        <h3 class="text-4xl font-bold mb-4">{{service.nombre}}</h3>
+    <div class="w-full max-w-6xl flex flex-col mx-auto px-4 py-8 md:py-16 text-white">
+        <h3 class="text-3xl md:text-4xl font-bold mb-4">{{service.nombre}}</h3>
         <p class="text-lg"> {{service.descripcion}} </p>
         <div class="flex items-center">
             <ng-icon name="heroClock" color="white" size="30" />
@@ -15,7 +15,7 @@
 <app-layout class="mt-10">
     <app-steps [currentStep]="3"></app-steps>
 
-    <main class="grow w-full max-w-6xl mx-auto px-6 py-10 flex flex-col lg:flex-row gap-8 items-start">
+    <main class="grow w-full max-w-6xl mx-auto px-4 py-6 md:px-6 md:py-10 flex flex-col lg:flex-row gap-8 items-start">
 
         <!-- COLUMNA IZQUIERDA: Selector o Widget Oficial -->
         <section class="w-full lg:w-3/5 space-y-6">
@@ -352,7 +352,7 @@
                     </div>
                     }
 
-                    <button type="button" (click)="resetToSelector()"
+                    <button type="button" (click)="volverAlInicio()"
                         class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold text-sm shadow-md shadow-emerald-600/10 hover:shadow-lg transition-all flex justify-center items-center gap-2 cursor-pointer">
                         <span class="material-symbols-outlined text-[18px]">home</span>
                         Volver al Inicio
@@ -444,8 +444,8 @@
     </main>
 </app-layout>
 } @else {
-<div class="w-screen flex flex-col mx-auto py-16 text-white bg-primary ">
-    <div class="w-3/4 flex flex-col mx-auto">
+<div class="w-screen flex flex-col mx-auto py-8 md:py-16 text-white bg-primary ">
+    <div class="w-full max-w-6xl flex flex-col mx-auto px-4">
         <h3 class="text-4xl font-bold mb-4">Servicio no encontrado</h3>
         <p class="text-lg">El servicio que estás buscando no existe o no está disponible.</p>
     </div>
