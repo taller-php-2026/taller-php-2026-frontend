@@ -73,10 +73,17 @@ export interface Reserva {
   fechaReserva: string;
   estado: 'pendiente' | 'confirmada' | 'cancelada' | 'completada' | 'enCurso' | string;
   comentarios?: string | null;
+  idPaqueteComprado?: number | null;
   servicio?: ReservaServicio | null;
   profesional?: ReservaProfesional | null;
   horario?: ReservaHorario | null;
   pago?: ReservaPago | null;
+  paqueteComprado?: {
+    idPaqueteComprado: number;
+    sesionesUsadas?: number;
+    sesionesRestantes?: number;
+    estado?: string;
+  } | null;
 }
 
 export interface MisReservasResponse {

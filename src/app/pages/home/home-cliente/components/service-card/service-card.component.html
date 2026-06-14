@@ -1,34 +1,55 @@
-<a [routerLink]="['/servicio/' + service.idServicio + '/seleccionar-profesional']" class="flex w-full flex-col border border-gray-400 rounded-lg overflow-hidden space-y-2
-          hover:border-primary transition-all duration-200 select-none no-underline
-          cursor-pointer hover:shadow-sm active:scale-[0.99]">
+<article class="flex h-full w-full flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md">
+    <a [routerLink]="['/servicio/' + service.idServicio + '/seleccionar-profesional']" class="block no-underline text-inherit">
+        <div class="relative h-44 w-full bg-gray-100">
+            @if (service.imagenUrl) {
+            <img
+                [src]="service.imagenUrl"
+                [alt]="service.nombre"
+                class="h-full w-full object-cover"
+                (error)="onImgError($event)"
+            />
+            } @else {
+            <div class="flex h-full w-full flex-col items-center justify-center gap-2 bg-gradient-to-br from-primary/10 to-sky-50 text-primary">
+                <span class="material-symbols-outlined text-5xl">{{ getPlaceholderIcon() }}</span>
+                <span class="text-sm font-semibold">{{ getModalidadLabel() }}</span>
+            </div>
+            }
 
-    <img
-      [src]="service.imagenUrl || 'assets/placeholders/service-placeholder.svg'"
-      [alt]="service.nombre"
-      class="w-full h-40 object-cover bg-gray-100"
-      (error)="onImgError($event)"
-    />
+            <span class="absolute left-3 top-3 rounded-full px-3 py-1 text-xs font-bold shadow-sm" [ngClass]="getModalidadClass()">
+                {{ getModalidadLabel() }}
+            </span>
+        </div>
+    </a>
 
-    <div class="flex flex-col p-4 space-y-2">
-      <div class="flex justify-between items-start gap-2">
-          <h3 class="text-lg font-semibold">{{ service.nombre }}</h3>
-          <span class="text-xs px-2 py-1 rounded-md whitespace-nowrap" [ngClass]="{
-      'bg-green-100 text-green-800': service.modalidad === 'presencial',
-      'bg-blue-100 text-blue-800':  service.modalidad === 'virtual',
-      'bg-yellow-100 text-yellow-800': service.modalidad === 'hibrida'
-  }">
-              {{ service.modalidad | uppercase }}
-          </span>
-      </div>
+    <div class="flex flex-1 flex-col p-4">
+        <a [routerLink]="['/servicio/' + service.idServicio + '/seleccionar-profesional']" class="no-underline text-inherit">
+            <h3 class="text-lg font-bold text-gray-900">{{ service.nombre }}</h3>
+            <p class="mt-1 min-h-10 text-sm leading-5 text-gray-600">{{ getDescripcionCorta() }}</p>
+        </a>
 
-      <p class="text-gray-600">{{ service.descripcion }}</p>
-      <div class="flex items-center justify-between">
-          <p class="flex items-center gap-1">
-              <ng-icon name="heroClock" class="text-blue-500 shrink-0"></ng-icon>
-              {{ service.duracionMinutos }} min
-          </p>
-          <p class="text-primary font-semibold">${{ service.precio }}</p>
-      </div>
+        <div class="mt-4 flex flex-wrap gap-2 text-sm text-gray-600">
+            <span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1">
+                <ng-icon name="heroClock" class="text-primary shrink-0"></ng-icon>
+                {{ service.duracionMinutos }} min
+            </span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1">
+                <span class="material-symbols-outlined text-[18px] text-primary">{{ getPlaceholderIcon() }}</span>
+                {{ getModalidadLabel() }}
+            </span>
+        </div>
+
+        <div class="mt-auto flex items-center justify-between gap-3 pt-5">
+            <div>
+                <p class="text-xs font-semibold uppercase text-gray-500">Precio</p>
+                <p class="text-2xl font-bold text-primary">${{ service.precio }}</p>
+            </div>
+
+            <a
+                [routerLink]="['/servicio/' + service.idServicio + '/seleccionar-profesional']"
+                class="rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white no-underline transition-all hover:brightness-110 active:scale-95"
+            >
+                Reservar
+            </a>
+        </div>
     </div>
-
-</a>
+</article>

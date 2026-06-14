@@ -166,6 +166,10 @@ export class Reservas implements OnInit {
   }
 
   getPagoDetalle(reserva: Reserva): string {
+    if (reserva.paqueteComprado || reserva.idPaqueteComprado) {
+      return 'Pagada con paquete';
+    }
+
     if (reserva.pago?.estado === 'pendiente') {
       return 'Mercado Pago esta validando tu pago';
     }
@@ -209,6 +213,7 @@ export class Reservas implements OnInit {
   }
 
   puedePagar(reserva: Reserva): boolean {
+    if (reserva.paqueteComprado || reserva.idPaqueteComprado) return false;
     if (reserva.estado === 'cancelada') return false;
     return reserva.estado === 'pendiente' || reserva.pago?.estado === 'rechazado';
   }

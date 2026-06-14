@@ -1,13 +1,21 @@
-<section class="w-screen! flex flex-col items-center bg-primary text-white py-32">
-    <h3 class="text-6xl font-bold mb-4">Encuentra y reserva tus servicios</h3>
-    <p class="text-lg mb-6">Explora una amplia gama de servicios disponibles en tu área y reserva fácilmente con solo
-        unos clicks.</p>
+<section class="w-full flex flex-col items-center bg-primary text-white px-4 py-10 sm:py-12">
+    <div class="w-full max-w-4xl text-center">
+        <h3 class="text-3xl sm:text-4xl font-bold mb-3">Encuentra y reserva tus servicios</h3>
+        <p class="text-sm sm:text-base mb-5 text-white/90">
+            Explora servicios profesionales, compara opciones y reserva en pocos pasos.
+        </p>
 
-    <div class="relative w-full md:w-1/2">
-        <button (click)="search()" class="absolute left-3 inset-y-0 flex items-center">
-            <ng-icon name="heroMagnifyingGlass" color="black" size="20" />
-        </button>
-        <input type="text" [(ngModel)]="searchTerm" (input)="search()" placeholder="Busca un servicio o un profesional"
-            class="w-full bg-white p-4 pl-12 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-300" />
+        <div class="relative w-full max-w-2xl mx-auto">
+            <button (click)="search()" class="absolute left-3 inset-y-0 flex items-center">
+                <ng-icon name="heroMagnifyingGlass" color="black" size="20" />
+            </button>
+            <input
+                type="text"
+                [(ngModel)]="searchTerm"
+                (input)="search()"
+                placeholder="Busca un servicio o un profesional"
+                class="w-full bg-white p-3.5 pl-12 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-300"
+            />
+        </div>
     </div>
 </section>
