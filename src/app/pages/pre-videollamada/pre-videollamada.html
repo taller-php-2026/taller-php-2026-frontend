@@ -3,12 +3,10 @@
     <!-- Video Preview Column -->
     <div class="lg:col-span-8 flex flex-col gap-md">
       <div class="relative aspect-video bg-inverse-surface rounded-xl overflow-hidden soft-shadow border border-outline-variant/30">
-        <img 
-          *ngIf="!videoDesactivado()"
-          alt="Camera Preview" 
-          class="w-full h-full object-cover grayscale-[0.2]" 
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbbOoyKG0I2amA-oFkVkQBJTUXYCEk8wf4-yM69cUJ9kW7bCVoJjDg3adPoS8EHoKnCssWL9zB03GX3E-A0MzUbEAgWMLXCX80rF-Ul2-da16AlFbRXEB2Cb1zbi7zpyRTnI3m-knjL_yl82_XMQ0BXL1e0dzE1S68q0C2P-ACzNw6Jl61njklronTbDDd9NobRfvcSRnm0B6B34EkAm9ATuStpP0WkZHLPtHbS8aKZLnfKM-CcpemHQwWg8MZMdft9mTkYeT0OWBy"
-        >
+        <div *ngIf="!videoDesactivado()" class="w-full h-full flex flex-col items-center justify-center bg-slate-950 text-white/70">
+          <span class="material-symbols-outlined text-5xl mb-2">videocam</span>
+          <p class="text-sm">Vista previa de cámara</p>
+        </div>
         <div *ngIf="videoDesactivado()" class="w-full h-full flex flex-col items-center justify-center text-white/50 bg-black">
           <span class="material-symbols-outlined text-4xl mb-2">videocam_off</span>
           <p class="text-sm">La cámara está desactivada</p>
@@ -62,12 +60,13 @@
             <img 
               alt="Professional profile" 
               class="w-full h-full object-cover" 
-              [src]="profesionalFoto() || 'https://lh3.googleusercontent.com/aida-public/AB6AXuDxb6pHCGWjXLQbnKAbenNkbI2DWWylyG0y2I2_CAHQ086cDP2YwpEzaztXuakYIZSn3gU2q9A5czYJeHIochXqlJW7TJYvFAGXX10fglWSfu27boe5U6BBSLLrCc_lLrVKHnACH3IjV9QM_Yign9afg47AEvkt23PxCCcJSGtDT_150-1mnyFmP5puoVYqmE_7RKTOcflkc6F0uj41ikG06mdYtTKpkZPuzGivFrA2if5YZOW4DcDqwU6KO2BwWKkyHsnm1fQv417M'"
+              [src]="profesionalFoto() || '/assets/placeholders/user-placeholder.svg'"
             >
           </div>
           <div class="flex flex-col min-w-0">
             <h2 class="font-title-sm text-title-sm text-on-surface truncate">{{ profesionalNombre() }}</h2>
             <span class="font-body-sm text-body-sm text-secondary truncate">{{ servicioNombre() }}</span>
+            <span *ngIf="modalidad()" class="font-caption text-caption text-on-surface-variant capitalize">{{ modalidad() }}</span>
           </div>
         </div>
         <!-- Device Settings -->
