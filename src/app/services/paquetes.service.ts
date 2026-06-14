@@ -1,0 +1,43 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { environment } from '@env/environment';
+import {
+  ComprarPaqueteResponse,
+  MercadoPagoPaqueteResponse,
+  MisPaquetesResponse,
+  PaquetesDisponiblesResponse,
+} from 'app/models/paquete.model';
+import { Observable } from 'rxjs';
+
+@Injectable({ providedIn: 'root' })
+export class PaquetesService {
+  constructor(private http: HttpClient) {}
+
+  getPaquetesDisponibles(): Observable<PaquetesDisponiblesResponse> {
+    return this.http.get<PaquetesDisponiblesResponse>(`${environment.apiUrl}/paquete-servicios`);
+  }
+
+  comprarPaquete(idPaqueteServicio: number): Observable<ComprarPaqueteResponse> {
+    return this.http.post<ComprarPaqueteResponse>(
+      `${environment.apiUrl}/paquete-servicios/${idPaqueteServicio}/comprar`,
+      {},
+    );
+  }
+
+  getMisPaquetes(): Observable<MisPaquetesResponse> {
+    return this.http.get<MisPaquetesResponse>(`${environment.apiUrl}/me/paquetes`);
+  }
+
+  pagarPaquete(idPaqueteComprado: number): Observable<unknown> {
+    return this.http.post(`${environment.apiUrl}/paquetes-comprados/${idPaqueteComprado}/pagar`, {});
+  }
+
+  crearPreferenciaMercadoPagoPaquete(
+    idPaqueteComprado: number,
+  ): Observable<MercadoPagoPaqueteResponse> {
+    return this.http.post<MercadoPagoPaqueteResponse>(
+      `${environment.apiUrl}/paquetes-comprados/${idPaqueteComprado}/mercadopago`,
+      {},
+    );
+  }
+}

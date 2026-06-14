@@ -3,6 +3,7 @@ import { Service } from '../models/service.model';
 import { Professional } from '../models/professional.model';
 import { Slot } from '../models/schedule.model';
 import { ReservaCreada } from '../models/reserva.model';
+import { PaqueteComprado } from 'app/models/paquete.model';
 
 @Injectable({ providedIn: 'root' })
 export class BookingStateService {
@@ -15,6 +16,7 @@ export class BookingStateService {
   selectedService: Service | null = null;
   selectedProfessional: Professional | null = null;
   selectedSlot: Slot | null = null;
+  selectedPaqueteComprado: PaqueteComprado | null = null;
   createdReserva: ReservaCreada | null = null;
 
   reset() {
@@ -25,6 +27,7 @@ export class BookingStateService {
     this.selectedService = null;
     this.selectedProfessional = null;
     this.selectedSlot = null;
+    this.selectedPaqueteComprado = null;
     this.createdReserva = null;
   }
 
@@ -54,6 +57,10 @@ export class BookingStateService {
 
   setSelectedSlot(slot: Slot) {
     this.selectedSlot = slot;
+  }
+
+  setSelectedPaqueteComprado(paquete: PaqueteComprado | null) {
+    this.selectedPaqueteComprado = paquete;
   }
 
   setCreatedReserva(reserva: ReservaCreada) {
