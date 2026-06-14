@@ -152,7 +152,7 @@ export class Reservas implements OnInit {
   }
 
   esVirtual(reserva: Reserva): boolean {
-    return reserva.servicio?.modalidad === 'virtual';
+    return reserva.servicio?.modalidad === 'virtual' || reserva.servicio?.modalidad === 'hibrida';
   }
 
   getMonto(reserva: Reserva): string {

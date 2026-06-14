@@ -48,6 +48,14 @@
     <!-- Join Column -->
     <div class="lg:col-span-4 flex flex-col gap-lg">
       <div class="bg-surface-container-lowest p-lg rounded-xl soft-shadow border border-outline-variant/20 flex flex-col gap-lg">
+        <div *ngIf="cargando()" class="rounded-lg bg-surface-container-low p-md text-secondary text-sm">
+          Preparando videollamada...
+        </div>
+
+        <div *ngIf="error()" class="rounded-lg border border-red-100 bg-red-50 p-md text-red-700 text-sm">
+          {{ error() }}
+        </div>
+
         <!-- Professional Details -->
         <div class="flex items-center gap-md">
           <div class="w-14 h-14 rounded-xl overflow-hidden border-2 border-primary-container/20 flex-shrink-0">
@@ -93,8 +101,12 @@
           </div>
         </div>
         <!-- Join Button -->
-        <button (click)="unirseLlamada()" class="w-full bg-primary text-white font-title-sm py-md rounded-lg soft-shadow hover:brightness-110 transition-all active:scale-[0.98] mt-md">
-          Unirse a la Llamada
+        <button
+          (click)="unirseLlamada()"
+          [disabled]="cargando() || !!error()"
+          class="w-full bg-primary text-white font-title-sm py-md rounded-lg soft-shadow hover:brightness-110 transition-all active:scale-[0.98] mt-md disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          {{ cargando() ? 'Preparando...' : 'Unirse a la Llamada' }}
         </button>
         <!-- Status Text -->
         <p class="text-caption text-secondary text-center">
