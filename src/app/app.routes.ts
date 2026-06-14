@@ -153,6 +153,11 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/reservas/reservas').then((m) => m.Reservas),
       },
       {
+        path: 'mis-paquetes',
+        loadComponent: () =>
+          import('./pages/mis-paquetes/mis-paquetes').then((m) => m.MisPaquetes),
+      },
+      {
         path: 'reservas/:id/confirmacion',
         loadComponent: () =>
           import('./pages/reserva-confirmacion/reserva-confirmacion.component').then(
