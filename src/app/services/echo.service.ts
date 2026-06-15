@@ -3,6 +3,8 @@ import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 import { AuthService } from './auth.service';
 
+import { environment } from '@env/environment';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -21,16 +23,20 @@ export class EchoService {
     }
 
     const token = this.authService.getToken();
+    const isProd = environment.production;
+    const hostname = window.location.hostname;
 
     this.echoInstance = new Echo({
       broadcaster: 'reverb',
       key: 'oyojr5fjueiwm9uagyyq', // From .env
-      wsHost: 'localhost',
-      wsPort: 8081,
-      wssPort: 8081,
-      forceTLS: false,
+      wsHost: isProd ? hostname : 'localhost',
+      wsPort: isProd ? 443 : 8081,
+      wssPort: isProd ? 443 : 8081,
+      forceTLS: isProd,
       enabledTransports: ['ws', 'wss'],
-      authEndpoint: 'http://localhost:8080/broadcasting/auth',
+      authEndpoint: isProd
+        ? `https://${hostname}/broadcasting/auth`
+        : 'http://localhost:8080/broadcasting/auth',
       auth: {
         headers: {
           Authorization: `Bearer ${token}`,
