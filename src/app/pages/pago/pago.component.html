@@ -29,7 +29,6 @@
 
                     <!-- Bloque: Mercado Pago Cuenta (Billetera) -->
                     <div (click)="selectMethodOption('mercadopago')"
-                        [class]="selectedMethod() === 'mercadopago' ? 'border-blue-500 bg-blue-50/10 ring-2 ring-blue-500/10' : 'border-slate-100 hover:bg-slate-50'"
                         class="flex items-center justify-between p-4 border rounded-2xl cursor-pointer transition-all">
                         <div class="flex items-center gap-4">
                             <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all"
@@ -129,8 +128,7 @@
 
                 <!-- Botón de Continuar Oficial -->
                 <div class="pt-6 mt-6 border-t border-slate-100">
-                    <button type="button" (click)="selectedMethod() ? selectMethodOption(selectedMethod()!) : null"
-                        [disabled]="!selectedMethod()"
+                    <button type="button" (click)="confirmarMetodoSeleccionado()" [disabled]="!selectedMethod()"
                         [class]="selectedMethod() ? 'bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-500/25 active:scale-[0.98]' : 'bg-slate-200 text-slate-400 cursor-not-allowed'"
                         class="w-full text-white py-3.5 rounded-xl font-bold text-sm transition-all flex justify-center items-center gap-2 cursor-pointer">
                         <span class="material-symbols-outlined text-[18px]">lock</span>

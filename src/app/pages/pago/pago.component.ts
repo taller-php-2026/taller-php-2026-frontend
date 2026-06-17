@@ -10,6 +10,8 @@ import { NgIcon } from '@ng-icons/core';
 import { StepsComponent } from '@components/steps/steps.component';
 import { Layout } from '@shared/layout/layout.component';
 
+type MethodOption = 'mercadopago' | 'tarjeta_credito' | 'tarjeta_debito' | 'efectivo';
+
 @Component({
   selector: 'app-pago',
   standalone: true,
@@ -17,7 +19,7 @@ import { Layout } from '@shared/layout/layout.component';
   templateUrl: './pago.component.html',
   styleUrl: './pago.component.css',
 })
-export class PagoSeguroComponent implements OnInit {
+export class PagoSeguroComponent {
   private router = inject(Router);
   private servicesService = inject(ServicesService);
   private bookingState = inject(BookingStateService);
@@ -27,15 +29,13 @@ export class PagoSeguroComponent implements OnInit {
   serviceId: string | null = null;
   service: Service | null = null;
 
-  paymentStatus = signal<
-    'selector' | 'formulario_tarjeta' | 'efectivo' | 'procesando' | 'exito'
-  >('selector');
+  paymentStatus = signal<'selector' | 'formulario_tarjeta' | 'efectivo' | 'procesando' | 'exito'>(
+    'selector',
+  );
 
   transactionStatus = signal<'approved' | 'pending' | 'rejected'>('approved');
 
-  selectedMethod = signal<'mercadopago' | 'tarjeta_credito' | 'tarjeta_debito' | 'efectivo' | null>(
-    null,
-  );
+  selectedMethod = signal<MethodOption | null>(null);
   cashProvider = signal<'abitab' | 'redpagos'>('abitab');
 
   errorMsg = signal('');
@@ -56,23 +56,6 @@ export class PagoSeguroComponent implements OnInit {
     total: 0,
   };
 
-  constructor(private route: ActivatedRoute) {}
-
-  ngOnInit() {
-    if (!this.bookingState.createdReserva) {
-      this.router.navigate(['/']);
-      return;
-    }
-    this.buildReservationSummary();
-    this.route.paramMap.subscribe((params) => {
-      this.serviceId = params.get('id');
-      this.servicesService.getServiceById(this.serviceId!).subscribe((response) => {
-        this.service = response.data;
-        this.cdr.detectChanges();
-      });
-    });
-  }
-
   private buildReservationSummary() {
     const svc = this.bookingState.selectedService;
     const prof = this.bookingState.selectedProfessional;
@@ -86,9 +69,15 @@ export class PagoSeguroComponent implements OnInit {
     const profName = prof?.usuario?.nombre ?? prof?.nombreNegocio ?? '';
     const profRole = prof?.descripcion ?? '';
     const fechaStr = date
-      ? date.toLocaleDateString('es-UY', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+      ? date.toLocaleDateString('es-UY', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })
       : (reserva?.fechaReserva ?? '');
-    const timeStr = slot?.horaInicio ?? reserva?.horarioInicio ?? this.bookingState.selectedTime ?? '';
+    const timeStr =
+      slot?.horaInicio ?? reserva?.horarioInicio ?? this.bookingState.selectedTime ?? '';
     const tax = +(precio * 0.22).toFixed(2);
 
     this.reservation = {
@@ -125,24 +114,32 @@ export class PagoSeguroComponent implements OnInit {
       error: (err) => {
         const msg =
           err.error?.message ??
-          (String(Object.values(err.error?.errors ?? {}).flat().join(' ')) || 'Error al procesar el pago.');
+          (String(
+            Object.values(err.error?.errors ?? {})
+              .flat()
+              .join(' '),
+          ) ||
+            'Error al procesar el pago.');
         this.errorMsg.set(msg);
         this.paymentStatus.set('selector');
       },
     });
   }
 
-  selectMethodOption(
-    option: 'mercadopago' | 'tarjeta_credito' | 'tarjeta_debito' | 'efectivo',
-  ) {
-    this.selectedMethod.set(option);
-    this.errorMsg.set('');
+  selectMethodOption(method: MethodOption) {
+    this.selectedMethod.set(method);
+  }
 
-    if (option === 'tarjeta_credito' || option === 'tarjeta_debito') {
+  confirmarMetodoSeleccionado() {
+    const metodo = this.selectedMethod();
+    if (!metodo) return;
+
+    if (metodo === 'tarjeta_credito' || metodo === 'tarjeta_debito') {
       this.paymentStatus.set('formulario_tarjeta');
-    } else if (option === 'efectivo') {
+    } else if (metodo === 'efectivo') {
+      this.cashProvider.set('abitab');
       this.paymentStatus.set('efectivo');
-    } else if (option === 'mercadopago') {
+    } else if (metodo === 'mercadopago') {
       this.iniciarCheckoutPro();
     }
   }
@@ -151,10 +148,6 @@ export class PagoSeguroComponent implements OnInit {
   iniciarCheckoutPro(): void {
     const reserva = this.bookingState.createdReserva;
     const idReserva = (reserva as any)?.reserva?.idReserva ?? reserva?.idReserva;
-
-    console.log('[Pago] Iniciando Checkout Pro');
-    console.log('[Pago] createdReserva', reserva);
-    console.log('[Pago] idReserva', idReserva);
 
     if (!idReserva) {
       this.errorMsg.set('No se encontró la reserva. Volvé al inicio para repetir el flujo.');
@@ -179,7 +172,12 @@ export class PagoSeguroComponent implements OnInit {
         console.error('[Pago] error preferencia', err);
         const msg =
           err.error?.message ??
-          (String(Object.values(err.error?.errors ?? {}).flat().join(' ')) || 'Error al crear la preferencia de pago.');
+          (String(
+            Object.values(err.error?.errors ?? {})
+              .flat()
+              .join(' '),
+          ) ||
+            'Error al crear la preferencia de pago.');
         this.errorMsg.set(msg);
         this.paymentStatus.set('selector');
       },
@@ -215,5 +213,22 @@ export class PagoSeguroComponent implements OnInit {
     } else {
       this.router.navigate(['/']);
     }
+  }
+
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit() {
+    if (!this.bookingState.createdReserva) {
+      this.router.navigate(['/']);
+      return;
+    }
+    this.buildReservationSummary();
+    this.route.paramMap.subscribe((params) => {
+      this.serviceId = params.get('id');
+      this.servicesService.getServiceById(this.serviceId!).subscribe((response) => {
+        this.service = response.data;
+        this.cdr.detectChanges();
+      });
+    });
   }
 }
