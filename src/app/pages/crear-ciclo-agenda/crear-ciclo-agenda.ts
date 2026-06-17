@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AgendaService } from '../../services/agenda.service';
-import { AuthService } from '../../services/auth.service';
 import { forkJoin, Observable, switchMap } from 'rxjs';
 
 interface HorarioBloque {
@@ -21,7 +20,6 @@ interface HorarioBloque {
 export class CrearCicloAgenda {
   private enrutador = inject(Router);
   private agendaService = inject(AgendaService);
-  private authService = inject(AuthService);
 
   // Nombre del ciclo.
   nombreCiclo = signal<string>('Horario Estándar');
@@ -129,12 +127,6 @@ export class CrearCicloAgenda {
     this.mensajeError.set('');
     this.mensajeExito.set('Guardando configuración...');
 
-    const idProfesional = this.authService.currentUser()?.idUsuario;
-    if (!idProfesional) {
-      this.mensajeError.set('No se pudo identificar al profesional logueado.');
-      return;
-    }
-
     // 1. Crear el ciclo en el backend.
     this.agendaService.crearCiclo(this.nombreCiclo()).pipe(
       switchMap((cicloRes) => {
@@ -175,8 +167,7 @@ export class CrearCicloAgenda {
                     pausaMinutos: 0,
                     bufferMinutos: this.tieneDescanso() ? this.tiempoDescansoMinutos() : 0,
                     activa: true,
-                    idAgenda: idAgenda,
-                    idProfesional: idProfesional
+                    idAgenda: idAgenda
                   })
                 );
               });

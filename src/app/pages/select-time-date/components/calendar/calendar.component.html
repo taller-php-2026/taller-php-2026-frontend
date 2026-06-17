@@ -1,19 +1,19 @@
-<div class="w-full">
+<div class="w-full max-w-sm mx-auto overflow-hidden">
     <div class="flex items-center justify-between mb-4">
-        <button (click)="prevMonth()">←</button>
-        <span class="font-bold">{{ getCurrentMonthName() }}</span>
-        <button (click)="nextMonth()">→</button>
+        <button class="min-h-10 min-w-10 rounded-full hover:bg-surface-container-low text-lg" (click)="prevMonth()">&larr;</button>
+        <span class="font-bold text-sm sm:text-base text-center">{{ getCurrentMonthName() }}</span>
+        <button class="min-h-10 min-w-10 rounded-full hover:bg-surface-container-low text-lg" (click)="nextMonth()">&rarr;</button>
     </div>
 
-    <div class="grid grid-cols-7 text-center font-semibold mb-2">
-        @for (day of ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb']; track day) {
+    <div class="grid grid-cols-7 text-center font-semibold mb-2 text-xs sm:text-sm">
+        @for (day of ['Dom','Lun','Mar','Mie','Jue','Vie','Sab']; track day) {
         <span>{{ day }}</span>
         }
     </div>
 
     <div class="grid grid-cols-7 text-center gap-1">
         @for (day of days; track $index) {
-        <span class="p-2 rounded-full" [ngClass]="getDayClasses(day)"
+        <span class="aspect-square min-h-9 flex items-center justify-center rounded-full text-sm sm:text-base" [ngClass]="getDayClasses(day)"
             (click)="day !== null && !isPastDay(day) && selectDay(day)">
             {{ day }}
         </span>

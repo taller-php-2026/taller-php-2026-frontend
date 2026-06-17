@@ -33,7 +33,7 @@
       </div>
       <button 
         (click)="goToAddServicio()" 
-        class="w-full bg-[#00685f] hover:bg-[#005a52] text-white py-3 px-6 rounded-lg font-bold shadow-md transition-all duration-200 active:scale-95 cursor-pointer"
+        class="w-full bg-primary hover:opacity-90 text-white py-3 px-6 rounded-lg font-bold shadow-md transition-all duration-200 active:scale-95 cursor-pointer"
       >
         Crear Primer Servicio
       </button>
@@ -153,7 +153,7 @@
       <div class="mt-xl flex flex-col gap-md pt-sm">
         <button
           type="submit"
-          style="background: linear-gradient(180deg, #0e9488 0%, #005049 100%) !important; color: white !important;"
+          style="background: var(--primary-color, #00685f) !important; color: white !important;"
           class="w-full py-md rounded-xl text-on-primary font-label-bold text-label-bold soft-shadow transition-all active:scale-95 h-12 flex items-center justify-center disabled:opacity-50"
           [disabled]="loading()"
         >

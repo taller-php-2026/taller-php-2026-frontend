@@ -3,7 +3,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AgendaService } from '../../services/agenda.service';
-import { AuthService } from '../../services/auth.service';
 import { forkJoin, Observable, switchMap } from 'rxjs';
 
 interface HorarioBloque {
@@ -21,7 +20,6 @@ interface HorarioBloque {
 export class EditarCicloAgenda implements OnInit {
   private enrutador = inject(Router);
   private agendaService = inject(AgendaService);
-  private authService = inject(AuthService);
   private rutaActiva = inject(ActivatedRoute);
 
   // ID del ciclo que estamos editando.
@@ -176,12 +174,6 @@ export class EditarCicloAgenda implements OnInit {
     this.mensajeError.set('');
     this.mensajeExito.set('Guardando cambios...');
 
-    const idProfesional = this.authService.currentUser()?.idUsuario;
-    if (!idProfesional) {
-      this.mensajeError.set('No se pudo identificar al profesional logueado.');
-      return;
-    }
-
     // 1. Eliminar el ciclo antiguo.
     this.agendaService.eliminarCiclo(this.idCiclo).pipe(
       // 2. Crear el ciclo actualizado.
@@ -224,8 +216,7 @@ export class EditarCicloAgenda implements OnInit {
                     pausaMinutos: 0,
                     bufferMinutos: this.tieneDescanso() ? this.tiempoDescansoMinutos() : 0,
                     activa: true,
-                    idAgenda: idAgenda,
-                    idProfesional: idProfesional
+                    idAgenda: idAgenda
                   })
                 );
               });

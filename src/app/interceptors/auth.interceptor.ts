@@ -1,5 +1,9 @@
-import { HttpInterceptorFn } from '@angular/common/http';
+import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '@env/environment';
+import { inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+import { catchError, throwError } from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   // Solo interceptar requests al backend propio
@@ -8,17 +12,28 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   const token = localStorage.getItem('access_token');
-  if (!token) {
-    return next(req);
+  const headers: Record<string, string> = {
+    Accept: 'application/json',
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
   }
 
-  // Clonar sin tocar Content-Type (necesario para multipart/form-data)
-  const authReq = req.clone({
-    setHeaders: {
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/json',
-    },
+  const backendReq = req.clone({
+    setHeaders: headers,
   });
 
-  return next(authReq);
+  const router = inject(Router);
+  const authService = inject(AuthService);
+
+  return next(backendReq).pipe(
+    catchError((error: HttpErrorResponse) => {
+      if (error.status === 401 || error.status === 403) {
+        authService.logout();
+        router.navigate(['/login']);
+      }
+      return throwError(() => error);
+    })
+  );
 };

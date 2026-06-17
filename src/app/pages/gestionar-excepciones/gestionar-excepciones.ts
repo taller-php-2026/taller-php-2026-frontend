@@ -3,8 +3,6 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ExcepcionService, ExcepcionPayload } from '../../services/excepcion.service';
-import { AuthService } from '../../services/auth.service';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-gestionar-excepciones',
@@ -15,7 +13,6 @@ import { Observable } from 'rxjs';
 })
 export class GestionarExcepcionesComponent implements OnInit {
   private router = inject(Router);
-  private authService = inject(AuthService);
   private excepcionService = inject(ExcepcionService);
 
   // Listado de excepciones del profesional activo.
@@ -45,24 +42,17 @@ export class GestionarExcepcionesComponent implements OnInit {
     this.cargarDatos();
   }
 
-  // Cargar agendas y filtrar por el profesional activo.
+  // Cargar agendas del profesional autenticado.
   cargarDatos(): void {
     this.loading.set(true);
-    const idUsuarioActivo = this.authService.currentUser()?.idUsuario;
 
-    this.excepcionService.obtenerAgendas().subscribe({
+    this.excepcionService.obtenerAgendasProfesional().subscribe({
       next: (res) => {
-        const todasAgendas = res.data || [];
-        // Filtrar las agendas que pertenezcan al profesional activo (mediante sus reglas de disponibilidad).
-        const filtradas = todasAgendas.filter((agenda) =>
-          agenda.reglas_disponibilidad?.some(
-            (regla: any) => Number(regla.idProfesional) === Number(idUsuarioActivo),
-          ),
-        );
-        this.agendasProfesional.set(filtradas);
+        const agendas = res.data || [];
+        this.agendasProfesional.set(agendas);
 
-        if (filtradas.length > 0) {
-          this.idAgendaSeleccionada.set(filtradas[0].idAgenda);
+        if (agendas.length > 0) {
+          this.idAgendaSeleccionada.set(agendas[0].idAgenda);
         }
         this.cargarExcepciones();
       },
@@ -73,21 +63,11 @@ export class GestionarExcepcionesComponent implements OnInit {
     });
   }
 
-  // Cargar excepciones y filtrar por las agendas del profesional.
+  // Cargar excepciones del profesional autenticado.
   cargarExcepciones(): void {
-    const agendaIds = this.agendasProfesional().map((a) => a.idAgenda);
-    if (agendaIds.length === 0) {
-      this.excepciones.set([]);
-      this.loading.set(false);
-      return;
-    }
-
-    this.excepcionService.obtenerExcepciones().subscribe({
+    this.excepcionService.obtenerMisExcepciones().subscribe({
       next: (res) => {
-        const todasExcepciones = res.data || [];
-        // Filtrar excepciones asociadas a las agendas del profesional.
-        const filtradas = todasExcepciones.filter((e) => agendaIds.includes(e.idAgenda));
-        this.excepciones.set(filtradas);
+        this.excepciones.set(res.data || []);
         this.loading.set(false);
       },
       error: () => {

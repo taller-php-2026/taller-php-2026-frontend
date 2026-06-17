@@ -3,8 +3,6 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
-import { AgendaService } from '../../services/agenda.service';
 import { Observable, of, switchMap } from 'rxjs';
 import { environment } from '@env/environment';
 import * as L from 'leaflet';
@@ -19,8 +17,6 @@ import * as L from 'leaflet';
 export class AnadirServicioComponent implements OnInit {
   private router = inject(Router);
   private http = inject(HttpClient);
-  private authService = inject(AuthService);
-  private agendaService = inject(AgendaService);
   private backendBaseUrl = environment.apiUrl.replace(/\/api$/, '');
 
   name = signal('');
@@ -207,12 +203,6 @@ export class AnadirServicioComponent implements OnInit {
       }
     }
 
-    const idProfesional = this.authService.currentUser()?.idUsuario;
-    if (!idProfesional) {
-      this.errorMsg.set('No se pudo identificar al profesional logueado.');
-      return;
-    }
-
     this.loading.set(true);
     this.errorMsg.set('');
     this.successMsg.set('');
@@ -252,7 +242,7 @@ export class AnadirServicioComponent implements OnInit {
           duracionMinutos: duracionMinutos > 0 ? duracionMinutos : 30,
           modalidad: this.modalidad() === 'online' ? 'virtual' : 'presencial',
           activo: true,
-          idProfesional: idProfesional,
+
         };
 
         if (this.modalidad() === 'presencial') {

@@ -23,7 +23,7 @@
         <button 
           (click)="goToAddPaquete()" 
           [disabled]="!tieneServiciosBase()" 
-          [ngClass]="tieneServiciosBase() ? 'bg-teal-700 hover:bg-teal-800' : 'bg-teal-900/30 cursor-not-allowed opacity-50'"
+          [ngClass]="tieneServiciosBase() ? 'bg-primary hover:brightness-110' : 'bg-primary/30 cursor-not-allowed opacity-50'"
           class="text-white py-3 px-2 rounded-lg flex items-center justify-center gap-1 shadow-md transition-all duration-200 active:scale-95 cursor-pointer font-bold text-xs"
         >
           <span class="material-symbols-outlined text-[18px]">inventory_2</span>
@@ -55,7 +55,7 @@
                 <span class="bg-white text-slate-500 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-slate-100">
                   {{ serv.esPaquete ? serv.totalSesiones + ' Sesiones' : formatDuration(serv.duracionMinutos) }}
                 </span>
-                <span class="text-[#00685f] font-black text-sm">${{ serv.precio }}</span>
+                <span class="text-primary font-black text-sm">${{ serv.precio }}</span>
               </div>
             </div>
           </div>

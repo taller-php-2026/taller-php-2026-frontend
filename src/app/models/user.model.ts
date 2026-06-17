@@ -7,6 +7,13 @@ export interface UserProfile {
   telefono?: string;
   imagenPerfilUrl?: string;
   imagenPerfilPublicId?: string;
+  roles?: string[];
+  profesional?: {
+    idUsuario?: number;
+    nombreNegocio?: string;
+    descripcion?: string;
+    color?: string;
+  } | null;
 }
 
 export interface BackendUsuario {
@@ -19,6 +26,12 @@ export interface BackendUsuario {
   tipoPrincipal?: 'cliente' | 'profesional' | null;
   imagenPerfilUrl?: string;
   imagenPerfilPublicId?: string;
+  profesional?: {
+    idUsuario?: number;
+    nombreNegocio?: string;
+    descripcion?: string;
+    color?: string;
+  } | null;
 }
 
 export interface AuthResponse {

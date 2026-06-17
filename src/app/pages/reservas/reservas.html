@@ -80,6 +80,9 @@
           <span [ngClass]="getBadgeClass(res)" class="px-sm py-[2px] rounded-full text-caption font-label-bold">
             {{ getBadge(res).text }}
           </span>
+          <span *ngIf="res.paqueteComprado || res.idPaqueteComprado" class="px-sm py-[2px] rounded-full text-caption font-label-bold bg-sky-100 text-sky-800">
+            Pagada con paquete
+          </span>
         </div>
 
         <p class="text-secondary font-body-sm flex items-center gap-xs mb-sm">
@@ -130,7 +133,7 @@
         </button>
 
         <button
-          *ngIf="!puedePagar(res) && esVirtual(res) && res.estado === 'confirmada'"
+          *ngIf="!puedePagar(res) && esVirtual(res) && (res.estado === 'confirmada' || res.estado === 'enCurso')"
           (click)="unirseVideollamada(res.idReserva)"
           class="flex-1 md:flex-none px-md py-sm rounded-lg bg-emerald-600 text-white font-label-bold soft-shadow hover:bg-emerald-700 active:scale-95 transition-all text-sm flex items-center justify-center gap-xs"
         >

@@ -18,15 +18,27 @@ export class ExcepcionService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/excepciones-disponibilidad`;
   private agendaUrl = `${environment.apiUrl}/agendas`;
+  private misAgendasUrl = `${environment.apiUrl}/me/profesional/agendas`;
+  private misExcepcionesUrl = `${environment.apiUrl}/me/profesional/excepciones`;
 
   // Obtener todas las agendas.
   obtenerAgendas(): Observable<{ data: any[] }> {
     return this.http.get<{ data: any[] }>(this.agendaUrl);
   }
 
+  // Obtener agendas del profesional autenticado.
+  obtenerAgendasProfesional(): Observable<{ data: any[] }> {
+    return this.http.get<{ data: any[] }>(this.misAgendasUrl);
+  }
+
   // Obtener todas las excepciones de disponibilidad.
   obtenerExcepciones(): Observable<{ data: any[] }> {
     return this.http.get<{ data: any[] }>(this.apiUrl);
+  }
+
+  // Obtener excepciones del profesional autenticado.
+  obtenerMisExcepciones(): Observable<{ data: any[] }> {
+    return this.http.get<{ data: any[] }>(this.misExcepcionesUrl);
   }
 
   // Crear una nueva excepción de disponibilidad.
