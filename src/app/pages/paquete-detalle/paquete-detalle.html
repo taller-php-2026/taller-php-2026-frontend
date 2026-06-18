@@ -1,0 +1,107 @@
+<app-layout>
+  <main class="mx-auto flex w-full max-w-5xl flex-col gap-lg px-lg py-xl">
+    <button
+      type="button"
+      (click)="volver()"
+      class="inline-flex w-fit items-center gap-xs rounded-lg border border-gray-200 px-md py-sm text-sm font-bold text-gray-700 transition-colors hover:border-primary hover:text-primary"
+    >
+      <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+      Volver
+    </button>
+
+    @if (loading()) {
+      <section class="rounded-2xl border border-gray-100 bg-white p-xl text-center shadow-sm">
+        <span class="material-symbols-outlined animate-spin text-4xl text-primary">sync</span>
+        <p class="mt-md text-secondary">Cargando paquete...</p>
+      </section>
+    }
+
+    @if (errorMsg()) {
+      <div class="rounded-xl border border-red-100 bg-red-50 p-md text-red-700">
+        {{ errorMsg() }}
+      </div>
+    }
+
+    @if (successMsg()) {
+      <div class="rounded-xl border border-emerald-100 bg-emerald-50 p-md text-emerald-800">
+        {{ successMsg() }}
+      </div>
+    }
+
+    @if (paquete(); as paquete) {
+      <section class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+        <div class="grid grid-cols-1 md:grid-cols-[1.1fr_0.9fr]">
+          <div class="relative min-h-72 bg-gray-100">
+            <img
+              [src]="getImagen(paquete)"
+              [alt]="getNombre(paquete)"
+              (error)="onImgError($event)"
+              class="h-full min-h-72 w-full object-cover"
+            >
+            <span class="absolute left-4 top-4 rounded-full bg-primary px-4 py-2 text-sm font-bold text-white shadow-sm">
+              Paquete
+            </span>
+          </div>
+
+          <div class="flex flex-col gap-md p-lg">
+            <div>
+              <p class="text-sm font-bold uppercase tracking-wide text-primary">{{ paquete.totalSesiones }} sesiones incluidas</p>
+              <h1 class="mt-xs text-3xl font-bold text-gray-900">{{ getNombre(paquete) }}</h1>
+              <p class="mt-sm text-gray-600">{{ getDescripcion(paquete) }}</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-sm text-sm text-gray-700">
+              <div class="rounded-xl bg-gray-50 p-md">
+                <p class="text-xs font-bold uppercase text-gray-500">Modalidad</p>
+                <p class="mt-xs font-bold">{{ getModalidad(paquete) }}</p>
+              </div>
+              <div class="rounded-xl bg-gray-50 p-md">
+                <p class="text-xs font-bold uppercase text-gray-500">Profesional</p>
+                <p class="mt-xs font-bold">{{ getProfesional(paquete) }}</p>
+              </div>
+              <div class="rounded-xl bg-gray-50 p-md">
+                <p class="text-xs font-bold uppercase text-gray-500">Precio total</p>
+                <p class="mt-xs font-bold">${{ paquete.precio }}</p>
+              </div>
+              <div class="rounded-xl bg-gray-50 p-md">
+                <p class="text-xs font-bold uppercase text-gray-500">Por sesión</p>
+                <p class="mt-xs font-bold">{{ getPrecioPorSesion(paquete) }}</p>
+              </div>
+            </div>
+
+            <div class="rounded-xl border border-sky-100 bg-sky-50 p-md text-sm text-sky-900">
+              Comprás créditos de sesiones. Después de pagar, reservás cada sesión desde <strong>Mis paquetes</strong> según la disponibilidad del profesional.
+            </div>
+
+            <button
+              type="button"
+              (click)="comprarPaquete()"
+              [disabled]="comprando()"
+              class="mt-auto rounded-xl bg-primary px-lg py-md text-base font-bold text-white shadow-sm transition-all hover:brightness-110 active:scale-95 disabled:opacity-60"
+            >
+              {{ comprando() ? 'Redirigiendo...' : 'Comprar paquete' }}
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="rounded-2xl border border-gray-100 bg-white p-lg shadow-sm">
+        <h2 class="text-xl font-bold text-gray-900">Servicios incluidos</h2>
+        <p class="mt-xs text-sm text-gray-500">Estas son las sesiones que vas a poder reservar usando este paquete.</p>
+
+        <div class="mt-md grid grid-cols-1 gap-md md:grid-cols-2">
+          @for (servicio of getServiciosIncluidos(paquete); track servicio.nombre) {
+            <article class="rounded-xl border border-gray-100 bg-gray-50 p-md">
+              <h3 class="font-bold text-gray-900">{{ servicio.nombre }}</h3>
+              <div class="mt-sm flex flex-wrap gap-sm text-sm text-gray-600">
+                <span class="rounded-full bg-white px-3 py-1">{{ servicio.modalidad }}</span>
+                <span class="rounded-full bg-white px-3 py-1">{{ servicio.duracion }}</span>
+                <span class="rounded-full bg-white px-3 py-1">{{ servicio.precio }}</span>
+              </div>
+            </article>
+          }
+        </div>
+      </section>
+    }
+  </main>
+</app-layout>

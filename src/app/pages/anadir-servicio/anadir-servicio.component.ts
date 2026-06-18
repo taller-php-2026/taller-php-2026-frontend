@@ -3,9 +3,11 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { Observable, of, switchMap } from 'rxjs';
+import { forkJoin, Observable, of, switchMap } from 'rxjs';
 import { environment } from '@env/environment';
 import * as L from 'leaflet';
+
+type ModalidadServicioForm = 'presencial' | 'online' | 'hibrida';
 
 @Component({
   selector: 'app-anadir-servicio',
@@ -28,7 +30,7 @@ export class AnadirServicioComponent implements OnInit {
   selectedFile: File | null = null;
 
   // Modalidad de servicio.
-  modalidad = signal<'presencial' | 'online'>('presencial');
+  modalidad = signal<ModalidadServicioForm>('presencial');
   direccion = signal('');
   ciudad = signal('');
   proveedor = signal('');
@@ -141,11 +143,19 @@ export class AnadirServicioComponent implements OnInit {
     });
   }
 
-  setModalidad(value: 'presencial' | 'online') {
+  setModalidad(value: ModalidadServicioForm) {
     this.modalidad.set(value);
-    if (value === 'presencial') {
+    if (this.requiereUbicacion()) {
       this.inicializarMapa(this.latitud() || -34.9011, this.longitud() || -56.1645);
     }
+  }
+
+  requiereUbicacion(): boolean {
+    return this.modalidad() === 'presencial' || this.modalidad() === 'hibrida';
+  }
+
+  requiereVideoSesion(): boolean {
+    return this.modalidad() === 'online' || this.modalidad() === 'hibrida';
   }
 
   onFileSelected(event: Event) {
@@ -187,6 +197,11 @@ export class AnadirServicioComponent implements OnInit {
     }
   }
 
+  private getErrorMessage(err: any, fallback: string): string {
+    const validationMessage = Object.values(err?.error?.errors ?? {}).flat().join(' ');
+    return validationMessage || err?.error?.message || fallback;
+  }
+
   onSubmit() {
     if (!this.name().trim()) {
       this.errorMsg.set('El nombre del servicio es requerido.');
@@ -196,9 +211,9 @@ export class AnadirServicioComponent implements OnInit {
       this.errorMsg.set('El precio debe ser mayor a 0.');
       return;
     }
-    if (this.modalidad() === 'presencial') {
+    if (this.requiereUbicacion()) {
       if (!this.direccion().trim() || !this.ciudad().trim()) {
-        this.errorMsg.set('La dirección y la ciudad son requeridas para la modalidad presencial.');
+        this.errorMsg.set('La dirección y la ciudad son requeridas para servicios presenciales o híbridos.');
         return;
       }
     }
@@ -209,28 +224,33 @@ export class AnadirServicioComponent implements OnInit {
 
     const duracionMinutos = (this.hours() || 0) * 60 + (this.minutes() || 0);
 
-    // 1. Crear Ubicación o VideoSesión si corresponde
+    // 1. Crear Ubicación y/o VideoSesión si corresponde
     let prepObs$: Observable<any>;
-    if (this.modalidad() === 'presencial') {
-      prepObs$ = this.http.post<any>(`${environment.apiUrl}/ubicaciones`, {
+    const ubicacionPayload = {
         direccion: this.direccion(),
         ciudad: this.ciudad(),
         pais: 'Uruguay',
         latitud: this.latitud(),
         longitud: this.longitud()
-      });
-    } else {
-      const room = this.nombreSala().trim() || ('sala-' + Math.random().toString(36).substring(2, 9));
-      const prov = this.proveedor().trim() || 'livekit';
-      const urlAcc = this.urlAcceso().trim() || this.backendBaseUrl;
-
-      prepObs$ = this.http.post<any>(`${environment.apiUrl}/video-sesiones`, {
-        proveedor: prov,
-        url: urlAcc,
+      };
+    const room = this.nombreSala().trim() || ('sala-' + Math.random().toString(36).substring(2, 9));
+    const videoPayload = {
+        proveedor: this.proveedor().trim() || 'livekit',
+        url: this.urlAcceso().trim() || this.backendBaseUrl,
         nombreSala: room,
         fechaHoraInicio: new Date().toISOString().slice(0, 19).replace('T', ' '),
         estado: 'programada'
+      };
+
+    if (this.modalidad() === 'hibrida') {
+      prepObs$ = forkJoin({
+        ubicacion: this.http.post<any>(`${environment.apiUrl}/ubicaciones`, ubicacionPayload),
+        videoSesion: this.http.post<any>(`${environment.apiUrl}/video-sesiones`, videoPayload),
       });
+    } else if (this.modalidad() === 'presencial') {
+      prepObs$ = this.http.post<any>(`${environment.apiUrl}/ubicaciones`, ubicacionPayload);
+    } else {
+      prepObs$ = this.http.post<any>(`${environment.apiUrl}/video-sesiones`, videoPayload);
     }
 
     prepObs$.pipe(
@@ -240,14 +260,17 @@ export class AnadirServicioComponent implements OnInit {
           descripcion: this.description(),
           precio: this.price(),
           duracionMinutos: duracionMinutos > 0 ? duracionMinutos : 30,
-          modalidad: this.modalidad() === 'online' ? 'virtual' : 'presencial',
+          modalidad: this.modalidad() === 'online' ? 'virtual' : this.modalidad(),
           activo: true,
 
         };
 
-        if (this.modalidad() === 'presencial') {
+        if (this.modalidad() === 'hibrida') {
+          payload.idUbicacion = prepRes.ubicacion.idUbicacion;
+          payload.idVideoSesion = prepRes.videoSesion.idVideoSesion;
+        } else if (this.modalidad() === 'presencial') {
           payload.idUbicacion = prepRes.idUbicacion;
-        } else {
+        } else if (this.modalidad() === 'online') {
           payload.idVideoSesion = prepRes.idVideoSesion;
         }
 
@@ -276,7 +299,7 @@ export class AnadirServicioComponent implements OnInit {
       },
       error: (err) => {
         this.loading.set(false);
-        this.errorMsg.set(err?.error?.message || 'Error al crear el servicio.');
+        this.errorMsg.set(this.getErrorMessage(err, 'Error al crear el servicio.'));
       }
     });
   }

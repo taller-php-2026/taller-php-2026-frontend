@@ -15,7 +15,7 @@
       {{ successMsg() }}
     </div>
   }
-  @if (errorMsg()) {
+      @if (errorMsg()) {
     <div class="p-sm bg-error-container text-on-error-container rounded-lg text-body-sm text-center border border-error/20 mb-md">
       {{ errorMsg() }}
     </div>
@@ -75,7 +75,7 @@
           type="text"
           name="name"
           [ngModel]="name()"
-          (ngModelChange)="name.set($event)"
+          (ngModelChange)="onNameChange($event)"
         />
       </div>
 
@@ -128,7 +128,8 @@
 
       <!-- Select Services (List checklist) -->
       <div class="space-y-xs">
-        <label class="font-label-bold text-label-bold text-on-surface-variant">Servicio a empaquetar</label>
+        <label class="font-label-bold text-label-bold text-on-surface-variant">Servicios incluidos en el paquete</label>
+        <p class="text-caption text-outline">El paquete tiene nombre, precio e imagen propios. Estos son los servicios que el cliente podrá reservar usando sus sesiones.</p>
         <div class="flex flex-col gap-sm border border-[#e2e8f0] rounded-lg p-sm bg-surface max-h-40 overflow-y-auto">
           @for (s of servicios(); track s.idServicio) {
             <label class="flex items-center gap-sm cursor-pointer select-none text-body-md text-on-surface">
@@ -138,9 +139,15 @@
                 (change)="toggleServicio(s.idServicio)"
                 class="w-4 h-4 rounded text-primary border-outline-variant focus:ring-primary/20"
               />
-              <div class="flex justify-between w-full">
-                <span class="font-bold text-sm">{{ s.nombre }}</span>
-                <span class="text-xs text-outline">${{ s.precio }}</span>
+              <div class="flex flex-col w-full gap-1">
+                <div class="flex justify-between gap-sm">
+                  <span class="font-bold text-sm">{{ s.nombre }}</span>
+                  <span class="text-xs text-outline">${{ s.precio }}</span>
+                </div>
+                <div class="flex flex-wrap gap-sm text-xs text-outline">
+                  <span>{{ getModalidadLabel(s) }}</span>
+                  <span>{{ s.duracionMinutos }} min</span>
+                </div>
               </div>
             </label>
           } @empty {

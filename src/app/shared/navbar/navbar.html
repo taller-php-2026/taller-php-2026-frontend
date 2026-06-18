@@ -1,25 +1,72 @@
 <header class="bg-surface w-full sticky top-0 shadow-[0px_4px_20px_rgba(0,0,0,0.04)] z-40">
   <div class="flex items-center justify-between px-lg py-md w-full max-w-7xl mx-auto">
-    <!-- Logo y Título -->
     <a routerLink="/" class="flex items-center gap-md active:scale-95 transition-transform">
       <span class="material-symbols-outlined text-primary text-headline-md" data-icon="calendar_today">calendar_today</span>
       <h1 class="font-display-lg text-display-lg text-primary tracking-tight">AgendaPHP</h1>
     </a>
 
-
-    <!-- Enlaces y Sección de Usuario -->
     <div class="flex items-center gap-md">
-
-      <!-- Control de Sesión -->
       @if (authService.isAuthenticated()) {
         <div class="flex items-center gap-md relative">
-          <!-- Datos del usuario logueado -->
           <div class="hidden sm:flex flex-col text-right">
             <span class="font-label-bold text-sm text-on-surface">{{ authService.currentUser()?.name }}</span>
             <span class="text-xs text-on-surface-variant">{{ authService.currentUser()?.email }}</span>
           </div>
 
-          <!-- Avatar del perfil que actúa como trigger de la hamburguesa/dropdown -->
+          <div class="relative">
+            <button
+              type="button"
+              (click)="alternarNotificaciones()"
+              class="relative w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center hover:border-primary transition-all"
+              aria-label="Notificaciones"
+            >
+              <span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+              @if (notificacionService.unreadCount() > 0) {
+                <span class="absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full bg-error text-white text-[11px] leading-5 font-bold text-center">
+                  {{ notificacionService.unreadCount() > 9 ? '9+' : notificacionService.unreadCount() }}
+                </span>
+              }
+            </button>
+
+            <div *ngIf="notificacionesAbiertas()" class="absolute right-0 top-12 w-80 max-w-[calc(100vw-2rem)] bg-white border border-outline-variant/30 rounded-xl soft-shadow z-50 overflow-hidden">
+              <div class="flex items-center justify-between p-md border-b border-outline-variant/20">
+                <h2 class="font-label-bold text-sm text-on-surface">Notificaciones</h2>
+                <button
+                  *ngIf="notificacionService.unreadCount() > 0"
+                  type="button"
+                  (click)="marcarTodasLeidas()"
+                  class="text-xs font-label-bold text-primary hover:underline"
+                >
+                  Marcar leidas
+                </button>
+              </div>
+
+              <div class="max-h-96 overflow-y-auto">
+                @if (notificacionService.notificaciones().length === 0) {
+                  <p class="p-md text-sm text-on-surface-variant text-center">No tenes notificaciones.</p>
+                } @else {
+                  @for (notificacion of notificacionService.notificaciones(); track notificacion.idNotificacion) {
+                    <button
+                      type="button"
+                      (click)="marcarNotificacionLeida(notificacion.idNotificacion)"
+                      class="w-full text-left p-md border-b border-outline-variant/10 hover:bg-primary-container/10 transition-colors"
+                      [ngClass]="notificacion.leida ? 'bg-white' : 'bg-primary-container/20'"
+                    >
+                      <div class="flex items-start gap-sm">
+                        <span class="material-symbols-outlined text-base mt-0.5" [ngClass]="notificacion.leida ? 'text-on-surface-variant' : 'text-primary'">notifications</span>
+                        <div class="min-w-0 flex-1">
+                          <p class="font-label-bold text-sm text-on-surface truncate">{{ notificacion.titulo }}</p>
+                          <p class="text-xs text-on-surface-variant leading-5 line-clamp-2">{{ notificacion.mensaje }}</p>
+                          <p class="text-[11px] text-on-surface-variant mt-xs">{{ notificacion.fechaCreacion | date:'short' }}</p>
+                        </div>
+                      </div>
+                    </button>
+                  }
+                }
+              </div>
+            </div>
+          </div>
+
           <div (click)="alternarDropdown()" class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden border border-outline-variant hover:border-primary transition-all cursor-pointer">
             @if (authService.currentUser()?.picture) {
               <img [src]="authService.currentUser()?.picture" alt="User Profile" class="w-full h-full object-cover">
@@ -28,13 +75,11 @@
             }
           </div>
 
-          <!-- Dropdown / Menú Hamburguesa -->
           <div *ngIf="dropdownAbierto()" class="absolute right-0 top-12 w-56 bg-white border border-outline-variant/30 rounded-xl soft-shadow z-50 flex flex-col p-md gap-xs">
             <div class="flex flex-col border-b border-outline-variant/20 pb-sm mb-xs">
               <span class="font-label-bold text-sm text-on-surface truncate">{{ authService.currentUser()?.name }}</span>
               <span class="text-xs text-on-surface-variant truncate">{{ authService.currentUser()?.email }}</span>
             </div>
-            
 
             <a *ngIf="authService.userType() === 'cliente'" routerLink="/reservas" (click)="cerrarDropdown()" class="flex items-center gap-sm p-sm rounded-lg hover:bg-primary-container/10 text-on-surface-variant text-sm font-label-bold">
               <span class="material-symbols-outlined text-sm">calendar_today</span> Mis Reservas
@@ -55,23 +100,21 @@
             <a *ngIf="authService.userType() === 'profesional'" routerLink="/gestionar-excepciones" (click)="cerrarDropdown()" class="flex items-center gap-sm p-sm rounded-lg hover:bg-primary-container/10 text-on-surface-variant text-sm font-label-bold">
               <span class="material-symbols-outlined text-sm">block</span> Gestionar Excepciones
             </a>
-            
+
             <a [routerLink]="obtenerRutaConfiguracion()" (click)="cerrarDropdown()" class="flex items-center gap-sm p-sm rounded-lg hover:bg-primary-container/10 text-on-surface-variant text-sm font-label-bold">
-              <span class="material-symbols-outlined text-sm">settings</span> Configuración
+              <span class="material-symbols-outlined text-sm">settings</span> Configuracion
             </a>
-            
+
             <button (click)="logout()" class="flex items-center gap-sm p-sm rounded-lg hover:bg-error-container/30 text-error text-sm font-label-bold text-left w-full mt-xs border-t border-outline-variant/20 pt-sm">
-              <span class="material-symbols-outlined text-sm">logout</span> Cerrar sesión
+              <span class="material-symbols-outlined text-sm">logout</span> Cerrar sesion
             </button>
           </div>
         </div>
       } @else {
-        <!-- Botón para ir al Login si no está autenticado -->
         <a routerLink="/login" class="px-md py-sm bg-primary text-on-primary font-label-bold rounded-lg shadow-md hover:shadow-lg hover:bg-primary/90 transition-all duration-200 active:scale-95">
-          Iniciar Sesión
+          Iniciar Sesion
         </a>
       }
-
     </div>
   </div>
 </header>

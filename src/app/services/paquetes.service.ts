@@ -4,6 +4,7 @@ import { environment } from '@env/environment';
 import {
   ComprarPaqueteResponse,
   MercadoPagoPaqueteResponse,
+  PaqueteDetalleResponse,
   MisPaquetesResponse,
   PaquetesDisponiblesResponse,
 } from 'app/models/paquete.model';
@@ -15,6 +16,12 @@ export class PaquetesService {
 
   getPaquetesDisponibles(): Observable<PaquetesDisponiblesResponse> {
     return this.http.get<PaquetesDisponiblesResponse>(`${environment.apiUrl}/paquete-servicios`);
+  }
+
+  getPaqueteById(idPaqueteServicio: number): Observable<PaqueteDetalleResponse> {
+    return this.http.get<PaqueteDetalleResponse>(
+      `${environment.apiUrl}/paquete-servicios/${idPaqueteServicio}`,
+    );
   }
 
   comprarPaquete(idPaqueteServicio: number): Observable<ComprarPaqueteResponse> {
