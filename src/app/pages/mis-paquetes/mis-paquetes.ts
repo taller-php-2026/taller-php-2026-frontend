@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { PaqueteComprado } from 'app/models/paquete.model';
+import { Reserva } from 'app/models/reserva.model';
 import { PaquetesService } from 'app/services/paquetes.service';
 
 @Component({
@@ -60,6 +61,18 @@ export class MisPaquetes implements OnInit {
 
   getFechaCompra(paquete: PaqueteComprado): string {
     return paquete.fechaCompra?.split(' ')[0] ?? '';
+  }
+
+  getReservas(paquete: PaqueteComprado): Reserva[] {
+    return paquete.reservas ?? [];
+  }
+
+  getReservaResumen(reserva: Reserva): string {
+    const fecha = reserva.horario?.fecha ?? reserva.fechaReserva?.split(' ')[0] ?? '';
+    const hora = reserva.horario?.horaInicio?.slice(0, 5) ?? reserva.fechaReserva?.slice(11, 16) ?? '';
+    const profesional = reserva.profesional?.nombreNegocio || reserva.profesional?.usuario?.nombre || 'Profesional';
+
+    return `${fecha} ${hora} - ${profesional}`;
   }
 
   estaActivo(paquete: PaqueteComprado): boolean {

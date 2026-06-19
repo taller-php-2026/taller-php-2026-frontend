@@ -4,6 +4,82 @@
     <p class="text-secondary font-body-md">Administra tus proximas citas y revisa tu historial de servicios.</p>
   </div>
 
+  <section class="mb-xl">
+    <div class="flex items-center justify-between mb-md">
+      <div>
+        <h2 class="font-headline-md text-headline-md text-on-surface">Mis paquetes</h2>
+        <p class="text-secondary font-body-sm">Sesiones compradas y reservas hechas con paquete.</p>
+      </div>
+      <button
+        *ngIf="errorPaquetes()"
+        (click)="cargarPaquetes()"
+        class="px-md py-sm rounded-lg border border-outline-variant text-secondary font-label-bold hover:bg-surface-container-low"
+      >
+        Reintentar
+      </button>
+    </div>
+
+    <div
+      *ngIf="loadingPaquetes()"
+      class="flex items-center justify-center py-lg bg-surface-container-lowest rounded-xl soft-shadow border border-surface-container-low"
+    >
+      <span class="material-symbols-outlined animate-spin mr-sm">sync</span>
+      <span class="text-secondary font-body-md">Cargando paquetes...</span>
+    </div>
+
+    <div
+      *ngIf="errorPaquetes() && !loadingPaquetes()"
+      class="bg-amber-50 border border-amber-100 text-amber-800 rounded-xl p-md mb-md"
+    >
+      {{ errorPaquetes() }}
+    </div>
+
+    <div *ngIf="!loadingPaquetes() && !errorPaquetes() && paquetes().length > 0" class="grid grid-cols-1 gap-md">
+      <article
+        *ngFor="let paquete of paquetes()"
+        class="bg-surface-container-lowest rounded-xl p-md soft-shadow border border-surface-container-low flex flex-col md:flex-row gap-md"
+      >
+        <img
+          [src]="getPaqueteImagen(paquete)"
+          [alt]="getPaqueteNombre(paquete)"
+          class="w-full md:w-24 h-36 md:h-24 rounded-lg object-cover bg-surface-container-high"
+        >
+
+        <div class="flex-1 min-w-0">
+          <div class="flex flex-wrap items-center gap-sm mb-xs">
+            <h3 class="font-title-sm text-title-sm text-on-surface">{{ getPaqueteNombre(paquete) }}</h3>
+            <span class="px-sm py-[2px] rounded-full text-caption font-label-bold bg-sky-100 text-sky-800">
+              {{ paquete.estado }}
+            </span>
+          </div>
+
+          <p class="text-secondary font-body-sm mb-sm">
+            Paquete: {{ getPaqueteNombre(paquete) }} - {{ paquete.totalSesiones }} sesiones
+          </p>
+
+          <div class="flex flex-wrap gap-md text-secondary font-body-sm mb-sm">
+            <span>{{ getPaqueteSesiones(paquete) }}</span>
+            <span>Compra: {{ paquete.fechaCompra?.split('T')[0]?.split(' ')[0] }}</span>
+          </div>
+
+          <div *ngIf="getPaqueteReservas(paquete).length > 0" class="mt-sm rounded-lg bg-surface-container-low p-sm">
+            <p class="text-caption text-secondary font-label-bold mb-xs">Usado en reservas</p>
+            <div class="flex flex-col gap-xs">
+              <div
+                *ngFor="let reserva of getPaqueteReservas(paquete)"
+                class="flex flex-wrap items-center gap-sm text-secondary font-body-sm"
+              >
+                <span class="material-symbols-outlined text-[18px]">event_available</span>
+                <span>{{ getFecha(reserva) }} - {{ getHora(reserva) }}</span>
+                <span class="px-sm py-[2px] rounded-full text-caption bg-white text-secondary">{{ reserva.estado }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
   <div class="flex gap-lg border-b border-outline-variant mb-xl">
     <button
       (click)="seleccionarTab('proximas')"
@@ -110,6 +186,10 @@
             <span class="material-symbols-outlined text-[18px]">payments</span>
             {{ getPagoDetalle(res) }}
           </div>
+        </div>
+
+        <div *ngIf="res.paqueteComprado || res.idPaqueteComprado" class="mt-sm rounded-lg bg-sky-50 px-md py-sm text-sky-800 font-body-sm">
+          {{ getReservaPaqueteTexto(res) }}
         </div>
       </div>
 

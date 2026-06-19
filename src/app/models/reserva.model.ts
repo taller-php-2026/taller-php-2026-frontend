@@ -43,6 +43,13 @@ export interface ReservaServicio {
   duracionMinutos: number;
   modalidad: 'presencial' | 'virtual' | 'hibrida' | string;
   imagenUrl?: string | null;
+  ubicacion?: {
+    direccion?: string | null;
+    ciudad?: string | null;
+    pais?: string | null;
+    latitud?: string | number | null;
+    longitud?: string | number | null;
+  } | null;
 }
 
 export interface ReservaProfesional {
@@ -86,9 +93,16 @@ export interface Reserva {
   pago?: ReservaPago | null;
   paqueteComprado?: {
     idPaqueteComprado: number;
+    totalSesiones?: number;
     sesionesUsadas?: number;
     sesionesRestantes?: number;
     estado?: string;
+    paqueteServicio?: {
+      idPaqueteServicio: number;
+      totalSesiones?: number;
+      precio?: number | string;
+      servicio?: ReservaServicio | null;
+    } | null;
   } | null;
 }
 

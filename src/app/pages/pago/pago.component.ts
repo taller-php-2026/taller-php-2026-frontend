@@ -9,11 +9,12 @@ import { ReservaService } from 'app/services/reserva.service';
 import { NgIcon } from '@ng-icons/core';
 import { StepsComponent } from '@components/steps/steps.component';
 import { Layout } from '@shared/layout/layout.component';
+import { ServiceLocationMap } from 'app/components/service-location-map/service-location-map';
 
 @Component({
   selector: 'app-pago',
   standalone: true,
-  imports: [FormsModule, CurrencyPipe, NgIcon, StepsComponent, Layout],
+  imports: [FormsModule, CurrencyPipe, NgIcon, StepsComponent, Layout, ServiceLocationMap],
   templateUrl: './pago.component.html',
   styleUrl: './pago.component.css',
 })

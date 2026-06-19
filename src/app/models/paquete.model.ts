@@ -1,4 +1,4 @@
-import { ReservaPago } from './reserva.model';
+import { Reserva, ReservaPago } from './reserva.model';
 import { Service } from './service.model';
 
 export interface PaqueteServicio {
@@ -43,6 +43,7 @@ export interface PaqueteComprado {
   fechaCompra: string;
   paqueteServicio?: PaqueteServicio | null;
   pago?: ReservaPago | null;
+  reservas?: Reserva[];
 }
 
 export interface PaquetesDisponiblesResponse {

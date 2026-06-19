@@ -2,6 +2,8 @@ import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Reserva } from 'app/models/reserva.model';
+import { PaqueteComprado } from 'app/models/paquete.model';
+import { PaquetesService } from 'app/services/paquetes.service';
 import { ReservaService } from 'app/services/reserva.service';
 
 type ReservaTab = 'proximas' | 'anteriores' | 'canceladas';
@@ -18,10 +20,14 @@ type PageSizeOption = '5' | '10' | 'all';
 export class Reservas implements OnInit {
   private router = inject(Router);
   private reservaService = inject(ReservaService);
+  private paquetesService = inject(PaquetesService);
 
   reservas = signal<Reserva[]>([]);
+  paquetes = signal<PaqueteComprado[]>([]);
   loading = signal(false);
+  loadingPaquetes = signal(false);
   errorMsg = signal('');
+  errorPaquetes = signal('');
   successMsg = signal('');
   pagandoId = signal<number | null>(null);
   reservaACancelar = signal<Reserva | null>(null);
@@ -57,6 +63,7 @@ export class Reservas implements OnInit {
 
   ngOnInit(): void {
     this.cargarReservas();
+    this.cargarPaquetes();
   }
 
   cargarReservas(): void {
@@ -72,6 +79,22 @@ export class Reservas implements OnInit {
       error: (err) => {
         this.loading.set(false);
         this.errorMsg.set(err.error?.message ?? 'No se pudieron cargar tus reservas.');
+      },
+    });
+  }
+
+  cargarPaquetes(): void {
+    this.loadingPaquetes.set(true);
+    this.errorPaquetes.set('');
+
+    this.paquetesService.getMisPaquetes().subscribe({
+      next: (response) => {
+        this.paquetes.set(response.data ?? []);
+        this.loadingPaquetes.set(false);
+      },
+      error: (err) => {
+        this.loadingPaquetes.set(false);
+        this.errorPaquetes.set(err.error?.message ?? 'No se pudieron cargar tus paquetes.');
       },
     });
   }
@@ -110,11 +133,15 @@ export class Reservas implements OnInit {
   }
 
   getServicioImagen(reserva: Reserva): string {
-    return reserva.servicio?.imagenUrl || '/assets/placeholders/service-placeholder.svg';
+    return reserva.servicio?.imagenUrl
+      || reserva.paqueteComprado?.paqueteServicio?.servicio?.imagenUrl
+      || '/assets/placeholders/service-placeholder.svg';
   }
 
   getServicioNombre(reserva: Reserva): string {
-    return reserva.servicio?.nombre ?? 'Servicio';
+    return reserva.servicio?.nombre
+      ?? reserva.paqueteComprado?.paqueteServicio?.servicio?.nombre
+      ?? 'Servicio';
   }
 
   getProfesionalNombre(reserva: Reserva): string {
@@ -140,19 +167,24 @@ export class Reservas implements OnInit {
   }
 
   getDuracion(reserva: Reserva): string {
-    const duracion = reserva.servicio?.duracionMinutos;
+    const duracion = reserva.servicio?.duracionMinutos
+      ?? reserva.paqueteComprado?.paqueteServicio?.servicio?.duracionMinutos;
     return duracion ? `${duracion} min` : '';
   }
 
   getModalidad(reserva: Reserva): string {
-    const modalidad = reserva.servicio?.modalidad ?? 'presencial';
+    const modalidad = reserva.servicio?.modalidad
+      ?? reserva.paqueteComprado?.paqueteServicio?.servicio?.modalidad
+      ?? 'presencial';
     if (modalidad === 'virtual') return 'Online';
     if (modalidad === 'hibrida') return 'Hibrida';
     return 'Presencial';
   }
 
   esVirtual(reserva: Reserva): boolean {
-    return reserva.servicio?.modalidad === 'virtual' || reserva.servicio?.modalidad === 'hibrida';
+    const modalidad = reserva.servicio?.modalidad
+      ?? reserva.paqueteComprado?.paqueteServicio?.servicio?.modalidad;
+    return modalidad === 'virtual' || modalidad === 'hibrida';
   }
 
   getMonto(reserva: Reserva): string {
@@ -175,6 +207,41 @@ export class Reservas implements OnInit {
     }
 
     return `Pago: ${this.getMetodoPago(reserva)} - ${this.getMonto(reserva)}`;
+  }
+
+  getPaqueteNombre(paquete: PaqueteComprado): string {
+    return paquete.paqueteServicio?.servicio?.nombre ?? 'Paquete de servicio';
+  }
+
+  getPaqueteImagen(paquete: PaqueteComprado): string {
+    return paquete.paqueteServicio?.imagenUrl
+      || paquete.paqueteServicio?.servicio?.imagenUrl
+      || '/assets/placeholders/service-placeholder.svg';
+  }
+
+  getPaqueteSesiones(paquete: PaqueteComprado): string {
+    const disponibles = Number(paquete.sesionesRestantes ?? 0);
+    const total = Number(paquete.totalSesiones ?? paquete.paqueteServicio?.totalSesiones ?? 0);
+    const usadas = Number(paquete.sesionesUsadas ?? 0);
+
+    return `${disponibles} de ${total} disponibles · ${usadas} usadas`;
+  }
+
+  getPaqueteReservas(paquete: PaqueteComprado): Reserva[] {
+    return paquete.reservas ?? [];
+  }
+
+  getReservaPaqueteTexto(reserva: Reserva): string {
+    const paquete = reserva.paqueteComprado;
+    const servicio = paquete?.paqueteServicio?.servicio?.nombre ?? this.getServicioNombre(reserva);
+    const total = paquete?.totalSesiones ?? paquete?.paqueteServicio?.totalSesiones;
+    const restantes = paquete?.sesionesRestantes;
+
+    if (total !== undefined && restantes !== undefined) {
+      return `Paquete: ${servicio} - ${restantes} de ${total} sesiones disponibles`;
+    }
+
+    return `Paquete: ${servicio}`;
   }
 
   getBadge(reserva: Reserva): { text: string; kind: BadgeKind } {

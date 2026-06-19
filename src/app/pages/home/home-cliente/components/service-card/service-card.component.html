@@ -38,6 +38,13 @@
             </span>
         </div>
 
+        @if (getDireccion()) {
+        <div class="mt-3 flex items-start gap-2 rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-600">
+            <span class="material-symbols-outlined text-[18px] text-primary mt-0.5">location_on</span>
+            <span>{{ getDireccion() }}</span>
+        </div>
+        }
+
         <div class="mt-auto flex items-center justify-between gap-3 pt-5">
             <div>
                 <p class="text-xs font-semibold uppercase text-gray-500">Precio</p>
