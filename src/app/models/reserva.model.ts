@@ -104,6 +104,11 @@ export interface Reserva {
       servicio?: ReservaServicio | null;
     } | null;
   } | null;
+  resena?: {
+    idResena: number;
+    calificacion: number;
+    comentario?: string | null;
+  } | null;
 }
 
 export interface MisReservasResponse {

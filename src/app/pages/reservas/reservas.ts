@@ -225,7 +225,7 @@ export class Reservas implements OnInit {
     return `${disponibles} de ${total} disponibles · ${usadas} usadas`;
   }
 
-  getPaqueteReservas(paquete: PaqueteComprado): Reserva[] {
+  getPaqueteReservas(paquete: PaqueteComprado): any[] {
     return paquete.reservas ?? [];
   }
 
@@ -391,6 +391,14 @@ export class Reservas implements OnInit {
 
   unirseVideollamada(idReserva: number): void {
     this.router.navigate(['/pre-videollamada'], { queryParams: { reserva: idReserva } });
+  }
+
+  irACalificar(idReserva: number): void {
+    this.router.navigate([`/reservas/${idReserva}/calificar`]);
+  }
+
+  esCalificada(reserva: Reserva): boolean {
+    return !!reserva.resena;
   }
 
   buscarServicios(): void {

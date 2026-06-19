@@ -110,29 +110,26 @@
                 <button *ngIf="puedeCancelar(res)" (click)="abrirModalCancelacion(res)"
                     [disabled]="cancelandoReserva() || pagandoId() === res.idReserva"
                     class="flex-1 md:flex-none px-md py-sm rounded-lg border border-red-200 text-red-700 font-label-bold hover:bg-red-50 transition-colors active:scale-95 text-sm disabled:opacity-60">
+                    Cancelar
+                </button>
 
-                    <button (click)="cancelarReserva(res.id)"
-                        class="flex-1 md:flex-none px-md py-sm rounded-lg border border-outline-variant text-secondary font-label-bold hover:bg-surface-container-low transition-colors active:scale-95 text-sm">
-                        Cancelar
-                    </button>
-
-                    <button
-                        *ngIf="!puedePagar(res) && esVirtual(res) && (res.estado === 'confirmada' || res.estado === 'enCurso')"
-                        (click)="unirseVideollamada(res.idReserva)"
-                        class="flex-1 md:flex-none px-md py-sm rounded-lg bg-emerald-600 text-white font-label-bold soft-shadow hover:bg-emerald-700 active:scale-95 transition-all text-sm flex items-center justify-center gap-xs">
-                        <span class="material-symbols-outlined text-[18px]">videocam</span>
-                        Unirse
-                    </button>
+                <button
+                    *ngIf="!puedePagar(res) && esVirtual(res) && (res.estado === 'confirmada' || res.estado === 'enCurso')"
+                    (click)="unirseVideollamada(res.idReserva)"
+                    class="flex-1 md:flex-none px-md py-sm rounded-lg bg-emerald-600 text-white font-label-bold soft-shadow hover:bg-emerald-700 active:scale-95 transition-all text-sm flex items-center justify-center gap-xs">
+                    <span class="material-symbols-outlined text-[18px]">videocam</span>
+                    Unirse
+                </button>
             </div>
 
-            <div *ngIf="res.tipo === 'anteriores' && res.estado === 'FINALIZADA'"
+            <div *ngIf="clasificarReserva(res) === 'anteriores'"
                 class="flex flex-wrap gap-sm w-full md:w-auto mt-md md:mt-0">
-                <button *ngIf="!esCalificada(res.id)" (click)="irACalificar(res.id)"
+                <button *ngIf="!esCalificada(res)" (click)="irACalificar(res.idReserva)"
                     class="flex-1 md:flex-none px-md py-sm rounded-lg bg-primary text-white font-label-bold soft-shadow hover:brightness-110 active:scale-95 transition-all text-sm flex items-center justify-center gap-xs">
                     <span class="material-symbols-outlined text-[18px]">star</span>
                     Calificar Profesional
                 </button>
-                <span *ngIf="esCalificada(res.id)"
+                <span *ngIf="esCalificada(res)"
                     class="text-secondary text-caption font-label-bold px-md py-sm border border-outline-variant/30 rounded-lg bg-surface-container-low">
                     Calificado
                 </span>

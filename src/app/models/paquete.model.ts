@@ -64,7 +64,6 @@ export interface PaqueteComprado {
   fechaCompra: string;
   paqueteServicio?: PaqueteServicio | null;
   pago?: ReservaPago | null;
-  reservas?: Reserva[];
   reservas?: PaqueteReserva[];
 }
 
