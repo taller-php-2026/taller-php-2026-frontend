@@ -38,12 +38,74 @@
             </span>
         </div>
 
-        @if (getDireccion()) {
-        <div class="mt-3 flex items-start gap-2 rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-600">
-            <span class="material-symbols-outlined text-[18px] text-primary mt-0.5">location_on</span>
-            <span>{{ getDireccion() }}</span>
+        <!-- Información de Ubicación / Virtual -->
+        <div class="mt-4 border-t border-gray-100 pt-3 flex flex-col gap-2">
+          @if (service.modalidad !== 'virtual' && service.ubicacion) {
+            <div class="flex flex-col gap-2">
+              <div class="flex items-start gap-1 text-sm text-gray-700">
+                <span class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-[2px]">location_on</span>
+                <div>
+                  <p class="font-semibold text-[10px] text-gray-500 uppercase tracking-wider">Dirección</p>
+                  <p class="font-medium text-xs text-gray-800">{{ service.ubicacion.direccion }}{{ service.ubicacion.ciudad ? ', ' + service.ubicacion.ciudad : '' }}</p>
+                </div>
+              </div>
+              @if (getMapUrl()) {
+                <div class="mt-1 h-28 w-full overflow-hidden rounded-lg border border-gray-200">
+                  <iframe
+                    [src]="getMapUrl()"
+                    class="h-full w-full border-0"
+                    allowfullscreen=""
+                    loading="lazy"
+                  ></iframe>
+                </div>
+              }
+            </div>
+          } @else if (service.modalidad === 'virtual') {
+            <div class="flex items-start gap-2 rounded-lg bg-sky-50/50 p-2.5 border border-sky-100/30 text-sm text-sky-900">
+              <span class="material-symbols-outlined text-[20px] text-sky-600 shrink-0 mt-[2px]">videocam</span>
+              <div>
+                <p class="font-semibold text-[10px] text-sky-700 uppercase tracking-wider">Modalidad Virtual</p>
+                <p class="text-[11px] text-sky-800 mt-[2px] leading-normal">
+                  Este servicio se realiza de forma 100% online.
+                  @if (service.video_sesion?.proveedor) {
+                    Conexión mediante <strong class="capitalize">{{ service.video_sesion?.proveedor }}</strong>.
+                  } @else {
+                    En pestaña de reservas se habilitará el boton para acceder a la videollamada.
+                  }
+                </p>
+              </div>
+            </div>
+          } @else if (service.modalidad === 'hibrida') {
+            <div class="flex flex-col gap-2">
+              <div class="flex items-start gap-2 rounded-lg bg-amber-50/50 p-2.5 border border-amber-100/30 text-sm text-amber-900 mb-1">
+                <span class="material-symbols-outlined text-[20px] text-amber-600 shrink-0 mt-[2px]">hub</span>
+                <div>
+                  <p class="font-semibold text-[10px] text-amber-700 uppercase tracking-wider">Modalidad Híbrida</p>
+                  <p class="text-[11px] text-amber-800 mt-[2px] leading-normal">Disponible de forma presencial u online.</p>
+                </div>
+              </div>
+              @if (service.ubicacion) {
+                <div class="flex items-start gap-1 text-sm text-gray-700">
+                  <span class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-[2px]">location_on</span>
+                  <div>
+                    <p class="font-semibold text-[10px] text-gray-500 uppercase tracking-wider">Dirección Física</p>
+                    <p class="font-medium text-xs text-gray-800">{{ service.ubicacion.direccion }}{{ service.ubicacion.ciudad ? ', ' + service.ubicacion.ciudad : '' }}</p>
+                  </div>
+                </div>
+                @if (getMapUrl()) {
+                  <div class="mt-1 h-28 w-full overflow-hidden rounded-lg border border-gray-200">
+                    <iframe
+                      [src]="getMapUrl()"
+                      class="h-full w-full border-0"
+                      allowfullscreen=""
+                      loading="lazy"
+                    ></iframe>
+                  </div>
+                }
+              }
+            </div>
+          }
         </div>
-        }
 
         <div class="mt-auto flex items-center justify-between gap-3 pt-5">
             <div>
@@ -60,3 +122,4 @@
         </div>
     </div>
 </article>
+
