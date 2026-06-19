@@ -66,6 +66,7 @@
           <span>{{ paquete.sesionesRestantes }} de {{ paquete.totalSesiones }} sesiones disponibles</span>
           <span>{{ paquete.sesionesUsadas }} usadas</span>
           <span>{{ getPrecio(paquete) }}</span>
+          <span>{{ getModalidad(paquete) }}</span>
           <span>Compra: {{ getFechaCompra(paquete) }}</span>
         </div>
 
@@ -78,6 +79,40 @@
               <span class="px-sm py-[2px] rounded-full text-caption bg-white text-secondary">{{ reserva.estado }}</span>
             </div>
           </div>
+        <div class="mt-md rounded-lg border border-surface-container-high bg-surface-container-low p-sm">
+          <p class="text-caption font-label-bold text-on-surface-variant mb-xs">Servicios incluidos</p>
+          <p class="text-sm text-secondary">{{ getServiciosIncluidos(paquete) }}</p>
+        </div>
+
+        <div class="mt-md rounded-lg border border-surface-container-high bg-white p-sm">
+          <div class="flex items-center justify-between gap-sm mb-sm">
+            <p class="text-caption font-label-bold text-on-surface-variant">Sesiones reservadas</p>
+            <span class="text-xs text-outline">{{ getReservas(paquete).length }} agendadas</span>
+          </div>
+
+          @if (getReservas(paquete).length === 0) {
+            <p class="text-sm text-secondary">Todavía no reservaste sesiones de este paquete.</p>
+          } @else {
+            <div class="flex flex-col gap-sm">
+              @for (reserva of getReservas(paquete); track reserva.idReserva) {
+                <div class="flex flex-col gap-sm rounded-lg border border-surface-container-high p-sm md:flex-row md:items-center md:justify-between">
+                  <div class="text-sm text-secondary">
+                    <p class="font-bold text-on-surface">{{ reserva.servicio?.nombre || getNombre(paquete) }}</p>
+                    <p>{{ getFechaReserva(reserva) }} - {{ getHoraReserva(reserva) }}</p>
+                    <p>{{ getProfesionalReserva(reserva) }} · {{ getModalidadReserva(reserva) }} · {{ reserva.estado }}</p>
+                  </div>
+                  <button
+                    *ngIf="puedeUnirse(reserva)"
+                    type="button"
+                    (click)="unirseVideollamada(reserva)"
+                    class="w-full rounded-lg bg-emerald-600 px-md py-sm text-sm font-label-bold text-white transition-all hover:bg-emerald-700 active:scale-95 md:w-auto"
+                  >
+                    Unirse
+                  </button>
+                </div>
+              }
+            </div>
+          }
         </div>
       </div>
 

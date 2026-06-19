@@ -1,9 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '@env/environment';
 import {
   ComprarPaqueteResponse,
   MercadoPagoPaqueteResponse,
+  PaqueteDetalleResponse,
   MisPaquetesResponse,
   PaquetesDisponiblesResponse,
 } from 'app/models/paquete.model';
@@ -13,8 +14,15 @@ import { Observable } from 'rxjs';
 export class PaquetesService {
   constructor(private http: HttpClient) {}
 
-  getPaquetesDisponibles(): Observable<PaquetesDisponiblesResponse> {
-    return this.http.get<PaquetesDisponiblesResponse>(`${environment.apiUrl}/paquete-servicios`);
+  getPaquetesDisponibles(filtros: Record<string, string | number> = {}): Observable<PaquetesDisponiblesResponse> {
+    const params = new HttpParams({ fromObject: filtros });
+    return this.http.get<PaquetesDisponiblesResponse>(`${environment.apiUrl}/paquete-servicios`, { params });
+  }
+
+  getPaqueteById(idPaqueteServicio: number): Observable<PaqueteDetalleResponse> {
+    return this.http.get<PaqueteDetalleResponse>(
+      `${environment.apiUrl}/paquete-servicios/${idPaqueteServicio}`,
+    );
   }
 
   comprarPaquete(idPaqueteServicio: number): Observable<ComprarPaqueteResponse> {

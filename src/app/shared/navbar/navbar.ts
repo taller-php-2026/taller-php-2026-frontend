@@ -1,8 +1,9 @@
-import { Component, inject, signal, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { NotificacionService } from '../../services/notificacion.service';
+import { Notificacion } from '../../models/notificacion.model';
 import { CommonModule } from '@angular/common';
-import { NotificacionService, Notificacion } from '../../services/notificacion.service';
 import { BookingDetailModalComponent } from '../../components/booking-detail-modal/booking-detail-modal';
 
 @Component({
@@ -10,84 +11,83 @@ import { BookingDetailModalComponent } from '../../components/booking-detail-mod
   standalone: true,
   imports: [RouterLink, CommonModule, BookingDetailModalComponent],
   templateUrl: './navbar.html',
-  styleUrl: './navbar.css'
+  styleUrl: './navbar.css',
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit, OnDestroy {
   protected authService = inject(AuthService);
-  protected notifService = inject(NotificacionService);
+  protected notificacionService = inject(NotificacionService);
   private router = inject(Router);
 
   @ViewChild(BookingDetailModalComponent) bookingModal!: BookingDetailModalComponent;
 
-  // Estado de los dropdowns
   dropdownAbierto = signal<boolean>(false);
-  notifDropdownAbierto = signal<boolean>(false);
+  notificacionesAbiertas = signal<boolean>(false);
 
-  // Obtener ruta de configuracion segun tipo de usuario.
-  obtenerRutaConfiguracion(): string {
-    const isAdmin = this.authService.currentUser()?.roles?.includes('administrador');
-    return (this.authService.userType() === 'cliente' || isAdmin)
-      ? '/configuracion-cliente'
-      : '/configuracion-negocio';
-  }
-
-  // Alternar visibilidad del dropdown de usuario
-  alternarDropdown(): void {
-    this.dropdownAbierto.update((v) => !v);
-    if (this.dropdownAbierto()) {
-      this.notifDropdownAbierto.set(false);
+  ngOnInit(): void {
+    if (this.authService.isAuthenticated()) {
+      this.notificacionService.iniciarRealtime();
     }
   }
 
-  // Cerrar dropdown de usuario
+  ngOnDestroy(): void {
+    this.notificacionService.detenerRealtime();
+  }
+
+  obtenerRutaConfiguracion(): string {
+    const isAdmin = this.authService.currentUser()?.roles?.includes('administrador');
+    return this.authService.userType() === 'cliente' || isAdmin ? '/configuracion-cliente' : '/configuracion-negocio';
+  }
+
+  alternarDropdown(): void {
+    this.dropdownAbierto.update((v) => !v);
+    this.notificacionesAbiertas.set(false);
+  }
+
   cerrarDropdown(): void {
     this.dropdownAbierto.set(false);
   }
 
-  // Alternar visibilidad del dropdown de notificaciones
-  alternarNotifDropdown(): void {
-    this.notifDropdownAbierto.update((v) => !v);
-    if (this.notifDropdownAbierto()) {
-      this.dropdownAbierto.set(false);
+  alternarNotificaciones(): void {
+    this.notificacionesAbiertas.update((v) => !v);
+    this.dropdownAbierto.set(false);
+    this.notificacionService.cargar();
+  }
+
+  cerrarNotificaciones(): void {
+    this.notificacionesAbiertas.set(false);
+  }
+
+  marcarNotificacionLeida(notificacion: Notificacion): void {
+    if (!notificacion.leida) {
+      this.notificacionService.marcarComoLeida(notificacion.idNotificacion);
+    }
+
+    this.cerrarNotificaciones();
+
+    if (notificacion.idReserva) {
+      this.bookingModal.open(notificacion.idReserva);
     }
   }
 
-  // Cerrar dropdown de notificaciones
-  cerrarNotifDropdown(): void {
-    this.notifDropdownAbierto.set(false);
+  marcarTodasLeidas(): void {
+    this.notificacionService.marcarTodasComoLeidas();
   }
 
-  // Eliminar una notificación
-  eliminarNotificacion(id: number, event: Event): void {
+  eliminarNotificacion(idNotificacion: number, event: Event): void {
     event.stopPropagation();
-    this.notifService.deleteNotification(id);
+    this.notificacionService.eliminar(idNotificacion);
   }
 
-  // Eliminar todas las notificaciones
   eliminarTodasLasNotificaciones(event: Event): void {
     event.stopPropagation();
-    this.notifService.deleteAllNotifications();
+    this.notificacionService.eliminarTodas();
   }
 
-  // Ver detalles de la agenda de la notificación
-  verDetalleNotificacion(notif: Notificacion): void {
-    if (!notif.leida) {
-      this.notifService.markAsRead(notif.idNotificacion);
-    }
-    this.cerrarNotifDropdown();
-
-    if (notif.idReserva) {
-      this.bookingModal.open(notif.idReserva);
-    } else {
-      alert('Esta notificación no tiene detalles de reserva asociados.');
-    }
-  }
-
-  logout() {
+  logout(): void {
     this.cerrarDropdown();
-    this.cerrarNotifDropdown();
+    this.cerrarNotificaciones();
+    this.notificacionService.detenerRealtime();
     this.authService.logout();
     this.router.navigate(['/login']);
   }
 }
-

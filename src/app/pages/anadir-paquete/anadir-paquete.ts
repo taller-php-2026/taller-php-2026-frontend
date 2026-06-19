@@ -31,6 +31,7 @@ export class AnadirPaqueteComponent implements OnInit {
 
   // Servicios seleccionados (permitimos múltiples en UI pero tomamos el primero).
   selectedServicios = signal<number[]>([]);
+  private autoFilledFromService = false;
 
   // Imagen cargada.
   imagePreview = signal<string | null>(null);
@@ -73,15 +74,32 @@ export class AnadirPaqueteComponent implements OnInit {
       this.selectedServicios.set([...current, id]);
     }
     
-    // Si hay al menos un servicio seleccionado, sugerir nombre del primero
+    // Si hay al menos un servicio seleccionado, sugerir nombre del primero sin pisar texto propio.
     const firstId = this.selectedServicios()[0];
     if (firstId) {
       const serv = this.servicios().find(s => s.idServicio === firstId);
-      if (serv) {
+      if (serv && (!this.name().trim() || this.autoFilledFromService)) {
         this.name.set(`Paquete: ${serv.nombre}`);
         this.description.set(serv.descripcion || '');
+        this.autoFilledFromService = true;
       }
     }
+  }
+
+  onNameChange(value: string): void {
+    this.name.set(value);
+    this.autoFilledFromService = false;
+  }
+
+  getModalidadLabel(servicio: any): string {
+    if (servicio.modalidad === 'virtual') return 'Virtual';
+    if (servicio.modalidad === 'hibrida') return 'Híbrida';
+    return 'Presencial';
+  }
+
+  private getErrorMessage(err: any, fallback: string): string {
+    const validationMessage = Object.values(err?.error?.errors ?? {}).flat().join(' ');
+    return validationMessage || err?.error?.message || fallback;
   }
 
   goBack(): void {
@@ -147,7 +165,7 @@ export class AnadirPaqueteComponent implements OnInit {
       },
       error: (err) => {
         this.loading.set(false);
-        this.errorMsg.set(err?.error?.message || 'Error al guardar el paquete.');
+        this.errorMsg.set(this.getErrorMessage(err, 'Error al guardar el paquete.'));
       }
     });
   }

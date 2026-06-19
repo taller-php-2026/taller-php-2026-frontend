@@ -74,16 +74,10 @@ export class Calendar {
   generateCalendar() {
     const year = this.currentDate.getFullYear();
     const month = this.currentDate.getMonth();
-    const today = new Date();
-    const isCurrentMonth = year === today.getFullYear() && month === today.getMonth();
-
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-    const allDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-    const filteredDays = isCurrentMonth ? allDays.filter((d) => d >= today.getDate()) : allDays;
-
-    this.days = [...Array(firstDay).fill(null), ...filteredDays];
+    this.days = [...Array(firstDay).fill(null), ...Array.from({ length: daysInMonth }, (_, i) => i + 1)];
     this.visibleMonthChanged.emit({ year, month: month + 1 });
   }
 
