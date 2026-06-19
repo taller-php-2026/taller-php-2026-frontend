@@ -430,6 +430,16 @@ export class Reservas implements OnInit {
     return !!reserva.resena;
   }
 
+  getGoogleMapsExternalUrl(reserva: Reserva): string {
+    const direccion = reserva.servicio?.ubicacion?.direccion;
+    const ciudad = reserva.servicio?.ubicacion?.ciudad;
+    if (direccion) {
+      const query = encodeURIComponent(`${direccion}${ciudad ? ', ' + ciudad : ''}`);
+      return `https://www.google.com/maps/search/?api=1&query=${query}`;
+    }
+    return '';
+  }
+
   buscarServicios(): void {
     this.router.navigate(['/']);
   }

@@ -9,12 +9,12 @@ import { ReservaService } from 'app/services/reserva.service';
 import { NgIcon } from '@ng-icons/core';
 import { StepsComponent } from '@components/steps/steps.component';
 import { Layout } from '@shared/layout/layout.component';
-import { ServiceLocationMap } from 'app/components/service-location-map/service-location-map';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-pago',
   standalone: true,
-  imports: [FormsModule, CurrencyPipe, NgIcon, StepsComponent, Layout, ServiceLocationMap],
+  imports: [FormsModule, CurrencyPipe, NgIcon, StepsComponent, Layout],
   templateUrl: './pago.component.html',
   styleUrl: './pago.component.css',
 })
@@ -24,6 +24,7 @@ export class PagoSeguroComponent implements OnInit {
   private bookingState = inject(BookingStateService);
   private reservaService = inject(ReservaService);
   private cdr = inject(ChangeDetectorRef);
+  private sanitizer = inject(DomSanitizer);
 
   serviceId: string | null = null;
   service: Service | null = null;
@@ -220,5 +221,16 @@ export class PagoSeguroComponent implements OnInit {
     } else {
       this.router.navigate(['/']);
     }
+  }
+
+  getMapUrl(): SafeResourceUrl | null {
+    const direccion = this.service?.ubicacion?.direccion;
+    const ciudad = this.service?.ubicacion?.ciudad;
+    if (direccion) {
+      const query = encodeURIComponent(`${direccion}${ciudad ? ', ' + ciudad : ''}`);
+      const url = `https://maps.google.com/maps?q=${query}&z=15&output=embed`;
+      return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    }
+    return null;
   }
 }

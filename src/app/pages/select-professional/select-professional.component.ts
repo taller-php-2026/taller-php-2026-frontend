@@ -8,12 +8,11 @@ import { Professional } from 'app/models/professional.model';
 import { NgIcon } from '@ng-icons/core';
 import { StepsComponent } from '@components/steps/steps.component';
 import { BookingStateService } from 'app/services/booking-state.service';
-import { ServiceLocationMap } from 'app/components/service-location-map/service-location-map';
 
 @Component({
   selector: 'app-select-professional',
   templateUrl: './select-professional.component.html',
-  imports: [Layout, ProfessionalCard, NgIcon, StepsComponent, ServiceLocationMap],
+  imports: [Layout, ProfessionalCard, NgIcon, StepsComponent],
 })
 export class SelectProfessional {
   private servicesService = inject(ServicesService);
