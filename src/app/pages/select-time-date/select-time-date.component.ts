@@ -14,12 +14,11 @@ import { NgIcon } from '@ng-icons/core';
 import { catchError, forkJoin, of } from 'rxjs';
 import { PaquetesService } from 'app/services/paquetes.service';
 import { PaqueteComprado } from 'app/models/paquete.model';
-import { ServiceLocationMap } from 'app/components/service-location-map/service-location-map';
 
 @Component({
   selector: 'app-select-time-date',
   templateUrl: './select-time-date.component.html',
-  imports: [Layout, StepsComponent, Calendar, NgClass, NgIcon, ServiceLocationMap],
+  imports: [Layout, StepsComponent, Calendar, NgClass, NgIcon],
 })
 export class SelectTimeDateComponent implements OnInit {
   private route = inject(ActivatedRoute);

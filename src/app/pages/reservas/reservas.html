@@ -93,6 +93,13 @@
                             'location_on' }}</span>
                         {{ getModalidad(res) }}
                     </div>
+                    <div *ngIf="res.servicio?.ubicacion?.direccion" class="flex items-center gap-xs text-secondary font-body-sm">
+                        <span class="material-symbols-outlined text-[18px]">map</span>
+                        <span class="truncate max-w-[150px] sm:max-w-xs">{{ res.servicio?.ubicacion?.direccion }}{{ res.servicio?.ubicacion?.ciudad ? ', ' + res.servicio?.ubicacion?.ciudad : '' }}</span>
+                        <a [href]="getGoogleMapsExternalUrl(res)" target="_blank" class="inline-flex items-center justify-center p-1 rounded-full text-primary hover:bg-primary/10 transition-colors" title="Ver en Google Maps">
+                            <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+                        </a>
+                    </div>
                     <div class="flex items-center gap-xs text-secondary font-body-sm">
                         <span class="material-symbols-outlined text-[18px]">payments</span>
                         {{ getPagoDetalle(res) }}
