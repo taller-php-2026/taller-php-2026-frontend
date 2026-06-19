@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --configuration production --allowed-hosts=true --host 0.0.0.0",
+    "start": "ng serve --configuration development --allowed-hosts=true --host 0.0.0.0",
+    "start:prod": "ng serve --configuration production --allowed-hosts=true --host 0.0.0.0",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -22,8 +23,8 @@
     "@tailwindcss/postcss": "^4.3.0",
     "laravel-echo": "^2.3.7",
     "leaflet": "^1.9.4",
-    "pusher-js": "^8.5.0",
     "livekit-client": "^2.19.2",
+    "pusher-js": "^8.5.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },

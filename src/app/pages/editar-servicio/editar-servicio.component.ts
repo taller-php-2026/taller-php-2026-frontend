@@ -3,10 +3,12 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { Observable, of, switchMap } from 'rxjs';
+import { forkJoin, Observable, of, switchMap } from 'rxjs';
 import { environment } from '@env/environment';
 import { ServicesService } from '../../services/services.service';
 import * as L from 'leaflet';
+
+type ModalidadServicioForm = 'presencial' | 'online' | 'hibrida';
 
 @Component({
   selector: 'app-editar-servicio',
@@ -20,6 +22,7 @@ export class EditarServicioComponent implements OnInit {
   private servicesService = inject(ServicesService);
   private http = inject(HttpClient);
   private route = inject(ActivatedRoute);
+  private backendBaseUrl = environment.apiUrl.replace(/\/api$/, '');
 
   idServicio: number | null = null;
   idUbicacion: number | null = null;
@@ -35,7 +38,7 @@ export class EditarServicioComponent implements OnInit {
   isActive = signal(true);
 
   // Modalidad de servicio.
-  modalidad = signal<'presencial' | 'online'>('presencial');
+  modalidad = signal<ModalidadServicioForm>('presencial');
   direccion = signal('');
   ciudad = signal('');
   proveedor = signal('');
@@ -170,7 +173,7 @@ export class EditarServicioComponent implements OnInit {
         this.minutes.set(mins);
 
         // Mapear modalidad
-        const mod = serv.modalidad === 'virtual' ? 'online' : 'presencial';
+        const mod: ModalidadServicioForm = serv.modalidad === 'virtual' ? 'online' : serv.modalidad === 'hibrida' ? 'hibrida' : 'presencial';
         this.modalidad.set(mod);
 
         if (serv.ubicacion) {
@@ -186,7 +189,7 @@ export class EditarServicioComponent implements OnInit {
           } else {
             this.inicializarMapa();
           }
-        } else if (mod === 'presencial') {
+        } else if (this.requiereUbicacion()) {
           this.inicializarMapa();
         }
 
@@ -203,11 +206,19 @@ export class EditarServicioComponent implements OnInit {
     });
   }
 
-  setModalidad(value: 'presencial' | 'online') {
+  setModalidad(value: ModalidadServicioForm) {
     this.modalidad.set(value);
-    if (value === 'presencial') {
+    if (this.requiereUbicacion()) {
       this.inicializarMapa(this.latitud() || -34.9011, this.longitud() || -56.1645);
     }
+  }
+
+  requiereUbicacion(): boolean {
+    return this.modalidad() === 'presencial' || this.modalidad() === 'hibrida';
+  }
+
+  requiereVideoSesion(): boolean {
+    return this.modalidad() === 'online' || this.modalidad() === 'hibrida';
   }
 
   onFileSelected(event: Event) {
@@ -235,6 +246,11 @@ export class EditarServicioComponent implements OnInit {
     this.router.navigate(['/configurar-servicios']);
   }
 
+  private getErrorMessage(err: any, fallback: string): string {
+    const validationMessage = Object.values(err?.error?.errors ?? {}).flat().join(' ');
+    return validationMessage || err?.error?.message || fallback;
+  }
+
   onSubmit() {
     if (!this.name().trim()) {
       this.errorMsg.set('El nombre del servicio es requerido.');
@@ -244,9 +260,9 @@ export class EditarServicioComponent implements OnInit {
       this.errorMsg.set('El precio debe ser mayor a 0.');
       return;
     }
-    if (this.modalidad() === 'presencial') {
+    if (this.requiereUbicacion()) {
       if (!this.direccion().trim() || !this.ciudad().trim()) {
-        this.errorMsg.set('La dirección y la ciudad son requeridas para la modalidad presencial.');
+        this.errorMsg.set('La dirección y la ciudad son requeridas para servicios presenciales o híbridos.');
         return;
       }
     }
@@ -257,39 +273,42 @@ export class EditarServicioComponent implements OnInit {
 
     const duracionMinutos = (this.hours() || 0) * 60 + (this.minutes() || 0);
 
-    // 1. Guardar/Actualizar Ubicación o VideoSesión si corresponde
+    // 1. Guardar/Actualizar Ubicación y/o VideoSesión si corresponde
     let prepObs$: Observable<any> = of(null);
-    if (this.modalidad() === 'presencial') {
+    const ubicacionPayload = {
+      direccion: this.direccion(),
+      ciudad: this.ciudad(),
+      pais: 'Uruguay',
+      latitud: this.latitud(),
+      longitud: this.longitud()
+    };
+    const videoPayload = {
+      proveedor: this.proveedor().trim() || 'livekit',
+      url: this.urlAcceso().trim() || this.backendBaseUrl,
+      nombreSala: this.nombreSala().trim() || ('sala-' + Math.random().toString(36).substring(2, 9)),
+      fechaHoraInicio: new Date().toISOString().slice(0, 19).replace('T', ' '),
+      estado: 'programada'
+    };
+    const ubicacionObs$ = this.idUbicacion
+      ? this.http.put<any>(`${environment.apiUrl}/ubicaciones/${this.idUbicacion}`, ubicacionPayload)
+      : this.http.post<any>(`${environment.apiUrl}/ubicaciones`, ubicacionPayload);
+    const videoObs$ = this.idVideoSession
+      ? this.http.put<any>(`${environment.apiUrl}/video-sesiones/${this.idVideoSession}`, videoPayload)
+      : this.http.post<any>(`${environment.apiUrl}/video-sesiones`, videoPayload);
+
+    if (this.modalidad() === 'hibrida') {
+      prepObs$ = forkJoin({ ubicacion: ubicacionObs$, videoSesion: videoObs$ });
+    } else if (this.modalidad() === 'presencial') {
       if (this.idUbicacion) {
-        prepObs$ = this.http.put<any>(`${environment.apiUrl}/ubicaciones/${this.idUbicacion}`, {
-          direccion: this.direccion(),
-          ciudad: this.ciudad(),
-          pais: 'Uruguay',
-          latitud: this.latitud(),
-          longitud: this.longitud()
-        });
+        prepObs$ = ubicacionObs$;
       } else {
-        prepObs$ = this.http.post<any>(`${environment.apiUrl}/ubicaciones`, {
-          direccion: this.direccion(),
-          ciudad: this.ciudad(),
-          pais: 'Uruguay',
-          latitud: this.latitud(),
-          longitud: this.longitud()
-        });
+        prepObs$ = ubicacionObs$;
       }
     } else {
       if (this.idVideoSession) {
-        prepObs$ = this.http.put<any>(`${environment.apiUrl}/video-sesiones/${this.idVideoSession}`, {
-          proveedor: this.proveedor(),
-          urlAcceso: this.urlAcceso(),
-          nombreSala: this.nombreSala()
-        });
+        prepObs$ = videoObs$;
       } else {
-        prepObs$ = this.http.post<any>(`${environment.apiUrl}/video-sesiones`, {
-          proveedor: this.proveedor(),
-          urlAcceso: this.urlAcceso(),
-          nombreSala: this.nombreSala()
-        });
+        prepObs$ = videoObs$;
       }
     }
 
@@ -300,11 +319,14 @@ export class EditarServicioComponent implements OnInit {
           descripcion: this.description(),
           precio: this.price(),
           duracionMinutos: duracionMinutos > 0 ? duracionMinutos : 30,
-          modalidad: this.modalidad() === 'online' ? 'virtual' : 'presencial',
+          modalidad: this.modalidad() === 'online' ? 'virtual' : this.modalidad(),
           activo: this.isActive(),
         };
 
-        if (this.modalidad() === 'presencial' && prepRes) {
+        if (this.modalidad() === 'hibrida' && prepRes) {
+          payload.idUbicacion = prepRes.ubicacion.idUbicacion || this.idUbicacion;
+          payload.idVideoSesion = prepRes.videoSesion.idVideoSesion || this.idVideoSession;
+        } else if (this.modalidad() === 'presencial' && prepRes) {
           payload.idUbicacion = prepRes.idUbicacion || this.idUbicacion;
         } else if (this.modalidad() === 'online' && prepRes) {
           payload.idVideoSesion = prepRes.idVideoSesion || this.idVideoSession;
@@ -331,7 +353,7 @@ export class EditarServicioComponent implements OnInit {
       },
       error: (err) => {
         this.loading.set(false);
-        this.errorMsg.set(err?.error?.message || 'Error al guardar los cambios.');
+        this.errorMsg.set(this.getErrorMessage(err, 'Error al guardar los cambios.'));
       }
     });
   }

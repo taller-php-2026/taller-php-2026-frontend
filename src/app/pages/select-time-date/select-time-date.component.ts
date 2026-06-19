@@ -183,7 +183,14 @@ export class SelectTimeDateComponent implements OnInit {
         this.cargandoPaquetes.set(false);
 
         const disponibles = this.paquetesDisponiblesParaServicio();
-        if (disponibles.length === 1) {
+        const paqueteGuardado = this.bookingState.selectedPaqueteComprado;
+        const paqueteDisponible = paqueteGuardado
+          ? disponibles.find((paquete) => paquete.idPaqueteComprado === paqueteGuardado.idPaqueteComprado)
+          : null;
+
+        if (paqueteDisponible) {
+          this.seleccionarPaquete(paqueteDisponible);
+        } else if (disponibles.length === 1) {
           this.seleccionarPaquete(disponibles[0]);
         } else if (this.paqueteSeleccionado && !disponibles.some((paquete) => paquete.idPaqueteComprado === this.paqueteSeleccionado?.idPaqueteComprado)) {
           this.seleccionarPaquete(null);
