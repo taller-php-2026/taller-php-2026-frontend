@@ -32,16 +32,12 @@ export const routes: Routes = [
   {
     path: 'auth/callback',
     loadComponent: () =>
-      import('./pages/auth-callback/auth-callback.component').then(
-        (m) => m.AuthCallbackComponent,
-      ),
+      import('./pages/auth-callback/auth-callback.component').then((m) => m.AuthCallbackComponent),
   },
   {
     path: 'auth/google/callback',
     loadComponent: () =>
-      import('./pages/auth-callback/auth-callback.component').then(
-        (m) => m.AuthCallbackComponent,
-      ),
+      import('./pages/auth-callback/auth-callback.component').then((m) => m.AuthCallbackComponent),
   },
   {
     path: 'elegir-tipo',
@@ -163,8 +159,7 @@ export const routes: Routes = [
       },
       {
         path: 'mis-paquetes',
-        loadComponent: () =>
-          import('./pages/mis-paquetes/mis-paquetes').then((m) => m.MisPaquetes),
+        loadComponent: () => import('./pages/mis-paquetes/mis-paquetes').then((m) => m.MisPaquetes),
       },
       {
         path: 'paquete/:id',
@@ -205,6 +200,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/panel-administrador/panel-administrador.component').then(
             (m) => m.PanelAdministradorComponent,
+          ),
+      },
+      {
+        path: 'reservas/:id/calificar',
+        loadComponent: () =>
+          import('./pages/calificar-profesional/calificar-profesional').then(
+            (m) => m.CalificarProfesional,
           ),
       },
     ],

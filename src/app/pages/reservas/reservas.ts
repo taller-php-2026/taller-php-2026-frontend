@@ -119,9 +119,7 @@ export class Reservas implements OnInit {
 
   getProfesionalNombre(reserva: Reserva): string {
     return (
-      reserva.profesional?.nombreNegocio ||
-      reserva.profesional?.usuario?.nombre ||
-      'Profesional'
+      reserva.profesional?.nombreNegocio || reserva.profesional?.usuario?.nombre || 'Profesional'
     );
   }
 
@@ -304,7 +302,10 @@ export class Reservas implements OnInit {
     });
   }
 
-  private getMensajeErrorCancelacion(err: { status?: number; error?: { message?: string } }): string {
+  private getMensajeErrorCancelacion(err: {
+    status?: number;
+    error?: { message?: string };
+  }): string {
     switch (err.status) {
       case 401:
         return 'Tu sesión expiró. Volvé a iniciar sesión.';
@@ -338,7 +339,10 @@ export class Reservas implements OnInit {
   }
 
   private getReservaDateTime(reserva: Reserva): Date {
-    return this.parseLocalDateTime(this.getReservaDateString(reserva), this.getReservaTimeString(reserva));
+    return this.parseLocalDateTime(
+      this.getReservaDateString(reserva),
+      this.getReservaTimeString(reserva),
+    );
   }
 
   private parseLocalDate(dateString: string): Date {
@@ -351,7 +355,9 @@ export class Reservas implements OnInit {
   private parseLocalDateTime(dateString: string, timeString?: string): Date {
     const dateOnly = this.extractDatePart(dateString);
     const [year, month, day] = dateOnly.split('-').map(Number);
-    const timeOnly = (timeString ?? this.extractTimePart(dateString) ?? '00:00:00').split(/[Z+-]/)[0];
+    const timeOnly = (timeString ?? this.extractTimePart(dateString) ?? '00:00:00').split(
+      /[Z+-]/,
+    )[0];
     const [hour = 0, minute = 0, second = 0] = timeOnly.split(':').map(Number);
 
     return new Date(year, month - 1, day, hour || 0, minute || 0, second || 0);
