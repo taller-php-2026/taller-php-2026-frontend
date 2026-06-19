@@ -1,24 +1,35 @@
 <main class="grow max-w-5xl w-full mx-auto px-lg py-xl">
+
+    <!-- HEADER -->
     <div class="mb-xl">
         <h1 class="font-display-lg text-display-lg text-on-surface mb-sm">Mis Reservas</h1>
-        <p class="text-secondary font-body-md">Administra tus proximas citas y revisa tu historial de servicios.</p>
+        <p class="text-secondary font-body-md">
+            Administra tus próximas citas y revisa tu historial de servicios.
+        </p>
     </div>
 
+    <!-- TABS -->
     <div class="flex gap-lg border-b border-outline-variant mb-xl">
-        <button (click)="seleccionarTab('proximas')"
-            [ngClass]="tabSeleccionada() === 'proximas' ? 'text-primary border-b-2 border-primary font-label-bold pb-md px-xs' : 'text-secondary hover:text-primary transition-colors pb-md px-xs font-label-bold'">
-            Proximas
+        <button (click)="seleccionarTab('proximas')" [ngClass]="tabSeleccionada() === 'proximas'
+                ? 'text-primary border-b-2 border-primary font-label-bold pb-md px-xs'
+                : 'text-secondary hover:text-primary transition-colors pb-md px-xs font-label-bold'">
+            Próximas
         </button>
-        <button (click)="seleccionarTab('anteriores')"
-            [ngClass]="tabSeleccionada() === 'anteriores' ? 'text-primary border-b-2 border-primary font-label-bold pb-md px-xs' : 'text-secondary hover:text-primary transition-colors pb-md px-xs font-label-bold'">
+
+        <button (click)="seleccionarTab('anteriores')" [ngClass]="tabSeleccionada() === 'anteriores'
+                ? 'text-primary border-b-2 border-primary font-label-bold pb-md px-xs'
+                : 'text-secondary hover:text-primary transition-colors pb-md px-xs font-label-bold'">
             Anteriores
         </button>
-        <button (click)="seleccionarTab('canceladas')"
-            [ngClass]="tabSeleccionada() === 'canceladas' ? 'text-primary border-b-2 border-primary font-label-bold pb-md px-xs' : 'text-secondary hover:text-primary transition-colors pb-md px-xs font-label-bold'">
+
+        <button (click)="seleccionarTab('canceladas')" [ngClass]="tabSeleccionada() === 'canceladas'
+                ? 'text-primary border-b-2 border-primary font-label-bold pb-md px-xs'
+                : 'text-secondary hover:text-primary transition-colors pb-md px-xs font-label-bold'">
             Canceladas
         </button>
     </div>
 
+    <!-- SELECT -->
     <div class="flex justify-end mb-lg">
         <label class="flex items-center gap-sm text-secondary font-body-sm">
             <span>Mostrar</span>
@@ -31,204 +42,198 @@
         </label>
     </div>
 
+    <!-- LISTA -->
     <div class="grid grid-cols-1 gap-lg">
+
+        <!-- LOADING -->
         <div *ngIf="loading()"
             class="flex items-center justify-center py-xl bg-surface-container-lowest rounded-xl soft-shadow border border-surface-container-low">
             <span class="material-symbols-outlined animate-spin mr-sm">sync</span>
             <span class="text-secondary font-body-md">Cargando reservas...</span>
         </div>
 
+        <!-- ERROR -->
         <div *ngIf="errorMsg() && !loading()"
             class="bg-red-50 border border-red-100 text-red-700 rounded-xl p-md flex flex-col sm:flex-row gap-md sm:items-center sm:justify-between">
-            <span class="font-body-md">{{ errorMsg() }}</span>
+            <span>{{ errorMsg() }}</span>
             <button (click)="cargarReservas()" class="px-md py-sm rounded-lg bg-red-600 text-white font-label-bold">
                 Reintentar
             </button>
         </div>
 
+        <!-- SUCCESS -->
         <div *ngIf="successMsg() && !loading()"
             class="bg-emerald-50 border border-emerald-100 text-emerald-800 rounded-xl p-md">
             {{ successMsg() }}
         </div>
 
+        <!-- RESERVAS -->
         <div *ngFor="let res of reservasPaginadas()"
             class="bg-surface-container-lowest rounded-xl p-md soft-shadow border border-surface-container-low flex flex-col md:flex-row gap-lg items-start md:items-center">
+
+            <!-- IMG -->
             <div
                 class="w-16 h-16 rounded-lg bg-surface-container-high flex items-center justify-center shrink-0 overflow-hidden">
-                <img [alt]="getServicioNombre(res)" class="w-full h-full object-cover rounded-lg"
-                    [src]="getServicioImagen(res)">
+                <img [src]="getServicioImagen(res)" [alt]="getServicioNombre(res)"
+                    class="w-full h-full object-cover rounded-lg">
             </div>
 
+            <!-- INFO -->
             <div class="grow min-w-0">
+
                 <div class="flex flex-wrap items-center gap-sm mb-xs">
-                    <h3 class="font-title-sm text-title-sm text-on-surface truncate">{{ getServicioNombre(res) }}</h3>
+                    <h3 class="font-title-sm text-on-surface truncate">
+                        {{ getServicioNombre(res) }}
+                    </h3>
+
                     <span [ngClass]="getBadgeClass(res)" class="px-sm py-0-5 rounded-full text-caption font-label-bold">
                         {{ getBadge(res).text }}
                     </span>
+
                     <span *ngIf="res.paqueteComprado || res.idPaqueteComprado"
                         class="px-sm py-0-5 rounded-full text-caption font-label-bold bg-sky-100 text-sky-800">
                         Pagada con paquete
                     </span>
                 </div>
 
-                <p class="text-secondary font-body-sm flex items-center gap-xs mb-sm">
+                <p class="text-secondary font-body-sm mb-sm">
                     {{ getProfesionalNombre(res) }}
                 </p>
 
-                <div class="flex flex-wrap gap-md">
-                    <div class="flex items-center gap-xs text-secondary font-body-sm">
+                <!-- META -->
+                <div class="flex flex-wrap gap-md text-secondary font-body-sm">
+
+                    <div class="flex items-center gap-xs">
                         <span class="material-symbols-outlined text-[18px]">calendar_today</span>
                         {{ getFecha(res) }}
                     </div>
-                    <div class="flex items-center gap-xs text-secondary font-body-sm">
+
+                    <div class="flex items-center gap-xs">
                         <span class="material-symbols-outlined text-[18px]">schedule</span>
                         {{ getHora(res) }}
                     </div>
-                    <div *ngIf="getDuracion(res)" class="flex items-center gap-xs text-secondary font-body-sm">
+
+                    <div *ngIf="getDuracion(res)" class="flex items-center gap-xs">
                         <span class="material-symbols-outlined text-[18px]">hourglass_empty</span>
                         {{ getDuracion(res) }}
                     </div>
-                    <div class="flex items-center gap-xs text-secondary font-body-sm">
-                        <span class="material-symbols-outlined text-[18px]">{{ esVirtual(res) ? 'videocam' :
-                            'location_on' }}</span>
+
+                    <div class="flex items-center gap-xs">
+                        <span class="material-symbols-outlined text-[18px]">
+                            {{ esVirtual(res) ? 'videocam' : 'location_on' }}
+                        </span>
                         {{ getModalidad(res) }}
                     </div>
-                    <div class="flex items-center gap-xs text-secondary font-body-sm">
+
+                    <div class="flex items-center gap-xs">
                         <span class="material-symbols-outlined text-[18px]">payments</span>
                         {{ getPagoDetalle(res) }}
                     </div>
+
                 </div>
             </div>
 
             <div class="flex flex-wrap gap-sm w-full md:w-auto mt-md md:mt-0">
+
                 <button *ngIf="puedePagar(res)" (click)="pagarReserva(res)"
                     [disabled]="pagandoId() === res.idReserva || cancelandoReserva()"
-                    class="flex-1 md:flex-none px-md py-sm rounded-lg bg-primary text-white font-label-bold soft-shadow hover:brightness-110 active:scale-95 transition-all text-sm disabled:opacity-60">
+                    class="px-md py-sm rounded-lg bg-primary text-white font-label-bold">
                     {{ pagandoId() === res.idReserva ? 'Redirigiendo...' : textoBotonPago(res) }}
                 </button>
 
-                <button *ngIf="puedeCancelar(res)" (click)="abrirModalCancelacion(res)"
-                    [disabled]="cancelandoReserva() || pagandoId() === res.idReserva"
-                    class="flex-1 md:flex-none px-md py-sm rounded-lg border border-red-200 text-red-700 font-label-bold hover:bg-red-50 transition-colors active:scale-95 text-sm disabled:opacity-60">
-
-                    <button (click)="cancelarReserva(res.id)"
-                        class="flex-1 md:flex-none px-md py-sm rounded-lg border border-outline-variant text-secondary font-label-bold hover:bg-surface-container-low transition-colors active:scale-95 text-sm">
-                        Cancelar
-                    </button>
-
-                    <button
-                        *ngIf="!puedePagar(res) && esVirtual(res) && (res.estado === 'confirmada' || res.estado === 'enCurso')"
-                        (click)="unirseVideollamada(res.idReserva)"
-                        class="flex-1 md:flex-none px-md py-sm rounded-lg bg-emerald-600 text-white font-label-bold soft-shadow hover:bg-emerald-700 active:scale-95 transition-all text-sm flex items-center justify-center gap-xs">
-                        <span class="material-symbols-outlined text-[18px]">videocam</span>
-                        Unirse
-                    </button>
-            </div>
-
-            <div *ngIf="res.tipo === 'anteriores' && res.estado === 'FINALIZADA'"
-                class="flex flex-wrap gap-sm w-full md:w-auto mt-md md:mt-0">
-                <button *ngIf="!esCalificada(res.id)" (click)="irACalificar(res.id)"
-                    class="flex-1 md:flex-none px-md py-sm rounded-lg bg-primary text-white font-label-bold soft-shadow hover:brightness-110 active:scale-95 transition-all text-sm flex items-center justify-center gap-xs">
-                    <span class="material-symbols-outlined text-[18px]">star</span>
-                    Calificar Profesional
+                <button *ngIf="puedeCancelar(res)" (click)="abrirModalCancelacion(res)" [disabled]="cancelandoReserva()"
+                    class="px-md py-sm rounded-lg border border-red-200 text-red-700 font-label-bold">
+                    Cancelar
                 </button>
-                <span *ngIf="esCalificada(res.id)"
-                    class="text-secondary text-caption font-label-bold px-md py-sm border border-outline-variant/30 rounded-lg bg-surface-container-low">
-                    Calificado
-                </span>
+
+                <button *ngIf="puedeUnirseVideollamada(res)" (click)="unirseVideollamada(res.idReserva)"
+                    class="px-md py-sm rounded-lg bg-emerald-600 text-white font-label-bold flex items-center gap-xs">
+                    <span class="material-symbols-outlined text-[18px]">videocam</span>
+                    Unirse
+                </button>
+
+                <button *ngIf="puedeCalificar(res)" (click)="irACalificar(res.idReserva)"
+                    class="px-md py-sm rounded-lg bg-primary text-white font-label-bold flex items-center gap-xs">
+                    <span class="material-symbols-outlined text-[18px]">star</span>
+                    Calificar
+                </button>
+
             </div>
+
         </div>
 
-        <div *ngIf="mostrarPaginado() && !loading() && !errorMsg()"
-            class="flex flex-col sm:flex-row items-center justify-center gap-md pt-md">
-            <button (click)="paginaAnterior()" [disabled]="paginaActual() === 1"
-                class="px-md py-sm rounded-lg border border-outline-variant text-secondary font-label-bold hover:bg-surface-container-low transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                Anterior
-            </button>
-
-            <span class="text-secondary font-body-sm">
-                Pagina {{ paginaActual() }} de {{ totalPaginas() }}
-            </span>
-
-            <button (click)="paginaSiguiente()" [disabled]="paginaActual() === totalPaginas()"
-                class="px-md py-sm rounded-lg border border-outline-variant text-secondary font-label-bold hover:bg-surface-container-low transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                Siguiente
-            </button>
-        </div>
-
+        <!-- EMPTY -->
         <div *ngIf="!loading() && !errorMsg() && reservasFiltradas().length === 0"
             class="flex flex-col items-center justify-center py-xl bg-surface-container-lowest rounded-xl soft-shadow border border-dashed border-outline-variant">
-            <div
-                class="w-24 h-24 bg-surface-container rounded-full flex items-center justify-center mb-md text-primary opacity-50">
-                <span class="material-symbols-outlined text-5xl">event_busy</span>
-            </div>
-            <h3 class="font-headline-md text-headline-md text-on-surface mb-sm">No tenes reservas en esta seccion.</h3>
-            <p class="text-secondary font-body-md mb-lg text-center max-w-xs">Cuando tengas reservas que coincidan con
-                esta pestana, van a aparecer aca.</p>
-            <button (click)="buscarServicios()"
-                class="bg-primary text-white px-xl py-md rounded-lg font-label-bold soft-shadow flex items-center gap-sm hover:brightness-110 active:scale-95 transition-all">
-                <span class="material-symbols-outlined">search</span>
+
+            <span class="material-symbols-outlined text-5xl text-primary opacity-50 mb-md">
+                event_busy
+            </span>
+
+            <h3 class="font-headline-md mb-sm">
+                No tenés reservas en esta sección
+            </h3>
+
+            <p class="text-secondary text-center mb-lg max-w-xs">
+                Cuando tengas reservas aparecerán acá.
+            </p>
+
+            <button (click)="buscarServicios()" class="bg-primary text-white px-xl py-md rounded-lg font-label-bold">
                 Buscar Servicios
             </button>
+
         </div>
+
     </div>
 
-    <div *ngIf="reservaACancelar() as reserva"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 px-md py-xl">
-        <section class="w-full max-w-lg rounded-2xl bg-white p-lg soft-shadow border border-surface-container-low">
-            <div class="flex items-start justify-between gap-md mb-md">
-                <div>
-                    <p class="text-caption font-label-bold text-red-700 mb-xs">Cancelar reserva</p>
-                    <h2 class="font-headline-md text-headline-md text-on-surface">¿Seguro que querés cancelar esta
-                        reserva?</h2>
-                </div>
-                <button type="button" (click)="cerrarModalCancelacion()" [disabled]="cancelandoReserva()"
-                    class="text-secondary hover:text-on-surface disabled:opacity-50" aria-label="Cerrar">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-            </div>
+    <!-- PAGINATION -->
+    <div *ngIf="mostrarPaginado() && !loading() && !errorMsg()" class="flex items-center justify-center gap-md pt-md">
 
-            <div class="rounded-xl bg-surface-container-low p-md border border-outline-variant mb-md space-y-sm">
-                <div>
-                    <p class="text-caption text-secondary font-label-bold">Servicio</p>
-                    <p class="font-title-sm text-on-surface">{{ getServicioNombre(reserva) }}</p>
-                </div>
-                <div>
-                    <p class="text-caption text-secondary font-label-bold">Profesional</p>
-                    <p class="font-body-md text-on-surface">{{ getProfesionalNombre(reserva) }}</p>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-md">
-                    <div>
-                        <p class="text-caption text-secondary font-label-bold">Fecha</p>
-                        <p class="font-body-md text-on-surface">{{ getFecha(reserva) }}</p>
-                    </div>
-                    <div>
-                        <p class="text-caption text-secondary font-label-bold">Hora</p>
-                        <p class="font-body-md text-on-surface">{{ getHora(reserva) }}</p>
-                    </div>
-                </div>
-            </div>
+        <button (click)="paginaAnterior()" [disabled]="paginaActual() === 1" class="px-md py-sm border rounded-lg">
+            Anterior
+        </button>
 
-            <div *ngIf="reserva.pago?.estado === 'aprobado'"
-                class="mb-md rounded-xl border border-amber-200 bg-amber-50 p-md text-amber-800 font-body-sm">
-                Esta reserva tiene un pago aprobado. La cancelación no realiza una devolución automática.
-            </div>
+        <span>
+            Página {{ paginaActual() }} de {{ totalPaginas() }}
+        </span>
 
-            <div *ngIf="errorCancelacion()"
-                class="mb-md rounded-xl border border-red-100 bg-red-50 p-md text-red-700 font-body-sm">
-                {{ errorCancelacion() }}
-            </div>
+        <button (click)="paginaSiguiente()" [disabled]="paginaActual() === totalPaginas()"
+            class="px-md py-sm border rounded-lg">
+            Siguiente
+        </button>
 
-            <div class="flex flex-col sm:flex-row justify-end gap-sm">
-                <button type="button" (click)="cerrarModalCancelacion()" [disabled]="cancelandoReserva()"
-                    class="px-lg py-sm rounded-lg border border-outline-variant text-secondary font-label-bold hover:bg-surface-container-low transition-colors disabled:opacity-50">
-                    Volver
-                </button>
-                <button type="button" (click)="confirmarCancelacion()" [disabled]="cancelandoReserva()"
-                    class="px-lg py-sm rounded-lg bg-red-600 text-white font-label-bold hover:bg-red-700 transition-colors disabled:opacity-60">
-                    {{ cancelandoReserva() ? 'Cancelando...' : 'Sí, cancelar' }}
-                </button>
-            </div>
-        </section>
     </div>
+
 </main>
+
+<!-- MODAL -->
+<div *ngIf="reservaACancelar() as reserva"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 px-md py-xl">
+
+    <section class="w-full max-w-lg rounded-2xl bg-white p-lg">
+
+        <div class="flex justify-between mb-md">
+            <div>
+                <p class="text-red-700 text-caption">Cancelar reserva</p>
+                <h2>¿Seguro que querés cancelar?</h2>
+            </div>
+
+            <button (click)="cerrarModalCancelacion()">✕</button>
+        </div>
+
+        <div class="space-y-sm mb-md">
+            <p><b>Servicio:</b> {{ getServicioNombre(reserva) }}</p>
+            <p><b>Profesional:</b> {{ getProfesionalNombre(reserva) }}</p>
+            <p><b>Fecha:</b> {{ getFecha(reserva) }}</p>
+            <p><b>Hora:</b> {{ getHora(reserva) }}</p>
+        </div>
+
+        <div class="flex justify-end gap-sm">
+            <button (click)="cerrarModalCancelacion()">Volver</button>
+            <button (click)="confirmarCancelacion()" class="bg-red-600 text-white px-md py-sm rounded">
+                Confirmar
+            </button>
+        </div>
+
+    </section>
+</div>
