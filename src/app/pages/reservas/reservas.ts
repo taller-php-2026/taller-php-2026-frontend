@@ -133,15 +133,19 @@ export class Reservas implements OnInit {
   }
 
   getServicioImagen(reserva: Reserva): string {
-    return reserva.servicio?.imagenUrl
-      || reserva.paqueteComprado?.paqueteServicio?.servicio?.imagenUrl
-      || '/assets/placeholders/service-placeholder.svg';
+    return (
+      reserva.servicio?.imagenUrl ||
+      reserva.paqueteComprado?.paqueteServicio?.servicio?.imagenUrl ||
+      '/assets/placeholders/service-placeholder.svg'
+    );
   }
 
   getServicioNombre(reserva: Reserva): string {
-    return reserva.servicio?.nombre
-      ?? reserva.paqueteComprado?.paqueteServicio?.servicio?.nombre
-      ?? 'Servicio';
+    return (
+      reserva.servicio?.nombre ??
+      reserva.paqueteComprado?.paqueteServicio?.servicio?.nombre ??
+      'Servicio'
+    );
   }
 
   getProfesionalNombre(reserva: Reserva): string {
@@ -165,23 +169,25 @@ export class Reservas implements OnInit {
   }
 
   getDuracion(reserva: Reserva): string {
-    const duracion = reserva.servicio?.duracionMinutos
-      ?? reserva.paqueteComprado?.paqueteServicio?.servicio?.duracionMinutos;
+    const duracion =
+      reserva.servicio?.duracionMinutos ??
+      reserva.paqueteComprado?.paqueteServicio?.servicio?.duracionMinutos;
     return duracion ? `${duracion} min` : '';
   }
 
   getModalidad(reserva: Reserva): string {
-    const modalidad = reserva.servicio?.modalidad
-      ?? reserva.paqueteComprado?.paqueteServicio?.servicio?.modalidad
-      ?? 'presencial';
+    const modalidad =
+      reserva.servicio?.modalidad ??
+      reserva.paqueteComprado?.paqueteServicio?.servicio?.modalidad ??
+      'presencial';
     if (modalidad === 'virtual') return 'Online';
     if (modalidad === 'hibrida') return 'Hibrida';
     return 'Presencial';
   }
 
   esVirtual(reserva: Reserva): boolean {
-    const modalidad = reserva.servicio?.modalidad
-      ?? reserva.paqueteComprado?.paqueteServicio?.servicio?.modalidad;
+    const modalidad =
+      reserva.servicio?.modalidad ?? reserva.paqueteComprado?.paqueteServicio?.servicio?.modalidad;
     return modalidad === 'virtual' || modalidad === 'hibrida';
   }
 
@@ -212,9 +218,11 @@ export class Reservas implements OnInit {
   }
 
   getPaqueteImagen(paquete: PaqueteComprado): string {
-    return paquete.paqueteServicio?.imagenUrl
-      || paquete.paqueteServicio?.servicio?.imagenUrl
-      || '/assets/placeholders/service-placeholder.svg';
+    return (
+      paquete.paqueteServicio?.imagenUrl ||
+      paquete.paqueteServicio?.servicio?.imagenUrl ||
+      '/assets/placeholders/service-placeholder.svg'
+    );
   }
 
   getPaqueteSesiones(paquete: PaqueteComprado): string {
@@ -416,10 +424,6 @@ export class Reservas implements OnInit {
 
   unirseVideollamada(idReserva: number): void {
     this.router.navigate(['/pre-videollamada'], { queryParams: { reserva: idReserva } });
-  }
-
-  irACalificar(idReserva: number): void {
-    this.router.navigate([`/reservas/${idReserva}/calificar`]);
   }
 
   esCalificada(reserva: Reserva): boolean {
