@@ -1,0 +1,24 @@
+@if (shouldShow()) {
+<section class="rounded-xl border border-slate-100 bg-white p-4 shadow-sm">
+  <div class="flex items-start gap-3">
+    <div class="h-10 w-10 shrink-0 rounded-xl bg-emerald-50 flex items-center justify-center text-primary">
+      <span class="material-symbols-outlined text-[22px]">location_on</span>
+    </div>
+    <div class="min-w-0">
+      <p class="text-xs font-bold uppercase tracking-wide text-slate-400">Ubicacion</p>
+      <p class="text-sm font-semibold text-slate-800">{{ getAddress() }}</p>
+      @if (modalidad === 'hibrida') {
+      <p class="mt-1 text-xs text-slate-500">Este servicio tambien puede tener opcion online.</p>
+      }
+    </div>
+  </div>
+
+  @if (hasCoordinates()) {
+  <div
+    [id]="mapId"
+    class="mt-4 w-full overflow-hidden rounded-lg border border-slate-100"
+    [ngClass]="compact ? 'h-36' : 'h-56 sm:h-64'"
+  ></div>
+  }
+</section>
+}

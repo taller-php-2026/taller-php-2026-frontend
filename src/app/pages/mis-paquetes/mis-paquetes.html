@@ -64,11 +64,21 @@
 
         <div class="flex flex-wrap gap-md text-secondary font-body-sm">
           <span>{{ paquete.sesionesRestantes }} de {{ paquete.totalSesiones }} sesiones disponibles</span>
+          <span>{{ paquete.sesionesUsadas }} usadas</span>
           <span>{{ getPrecio(paquete) }}</span>
           <span>{{ getModalidad(paquete) }}</span>
           <span>Compra: {{ getFechaCompra(paquete) }}</span>
         </div>
 
+        <div *ngIf="getReservas(paquete).length > 0" class="mt-md rounded-lg bg-surface-container-low p-sm">
+          <p class="text-caption text-secondary font-label-bold mb-xs">Reservas hechas con este paquete</p>
+          <div class="flex flex-col gap-xs">
+            <div *ngFor="let reserva of getReservas(paquete)" class="flex flex-wrap items-center gap-sm text-secondary font-body-sm">
+              <span class="material-symbols-outlined text-[18px]">event_available</span>
+              <span>{{ getReservaResumen(reserva) }}</span>
+              <span class="px-sm py-[2px] rounded-full text-caption bg-white text-secondary">{{ reserva.estado }}</span>
+            </div>
+          </div>
         <div class="mt-md rounded-lg border border-surface-container-high bg-surface-container-low p-sm">
           <p class="text-caption font-label-bold text-on-surface-variant mb-xs">Servicios incluidos</p>
           <p class="text-sm text-secondary">{{ getServiciosIncluidos(paquete) }}</p>

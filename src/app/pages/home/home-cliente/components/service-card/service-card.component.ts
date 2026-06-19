@@ -34,6 +34,11 @@ export class ServiceCardComponent {
     return 'location_on';
   }
 
+  getDireccion(): string {
+    const ubicacion = this.service.ubicacion;
+    return [ubicacion?.direccion, ubicacion?.ciudad, ubicacion?.pais].filter(Boolean).join(', ');
+  }
+
   getModalidadClass(): string {
     if (this.service.modalidad === 'virtual') return 'bg-sky-100 text-sky-800';
     if (this.service.modalidad === 'hibrida') return 'bg-amber-100 text-amber-800';

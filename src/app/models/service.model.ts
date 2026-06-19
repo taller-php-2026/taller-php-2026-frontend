@@ -1,3 +1,12 @@
+export interface UbicacionServicio {
+  idUbicacion?: number;
+  direccion?: string | null;
+  ciudad?: string | null;
+  pais?: string | null;
+  latitud?: string | number | null;
+  longitud?: string | number | null;
+}
+
 export interface Service {
   idServicio: number;
   nombre: string;
@@ -10,13 +19,7 @@ export interface Service {
   idVideoSesion?: number | null;
   imagenUrl?: string;
   imagenPublicId?: string;
-  ubicacion?: {
-    idUbicacion: number;
-    direccion?: string;
-    ciudad?: string;
-    latitud?: string;
-    longitud?: string;
-  } | null;
+  ubicacion?: UbicacionServicio | null;
   video_sesion?: {
     idVideoSesion: number;
     proveedor?: string;

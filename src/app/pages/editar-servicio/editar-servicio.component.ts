@@ -177,12 +177,12 @@ export class EditarServicioComponent implements OnInit {
         this.modalidad.set(mod);
 
         if (serv.ubicacion) {
-          this.idUbicacion = serv.ubicacion.idUbicacion;
+          this.idUbicacion = serv.ubicacion.idUbicacion ?? null;
           this.direccion.set(serv.ubicacion.direccion || '');
           this.ciudad.set(serv.ubicacion.ciudad || '');
           if (serv.ubicacion.latitud && serv.ubicacion.longitud) {
-            const lat = parseFloat(serv.ubicacion.latitud);
-            const lng = parseFloat(serv.ubicacion.longitud);
+            const lat = Number(serv.ubicacion.latitud);
+            const lng = Number(serv.ubicacion.longitud);
             this.latitud.set(lat);
             this.longitud.set(lng);
             this.inicializarMapa(lat, lng);
