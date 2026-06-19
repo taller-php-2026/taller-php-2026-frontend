@@ -1,31 +1,30 @@
-<article class="flex h-full w-full flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md">
-    <a [routerLink]="['/servicio/' + service.idServicio + '/seleccionar-profesional']" class="block no-underline text-inherit">
-        <div class="relative h-44 w-full bg-gray-100">
-            @if (service.imagenUrl) {
-            <img
-                [src]="service.imagenUrl"
-                [alt]="service.nombre"
-                class="h-full w-full object-cover"
-                (error)="onImgError($event)"
-            />
-            } @else {
-            <div class="flex h-full w-full flex-col items-center justify-center gap-2 bg-gradient-to-br from-primary/10 to-sky-50 text-primary">
-                <span class="material-symbols-outlined text-5xl">{{ getPlaceholderIcon() }}</span>
-                <span class="text-sm font-semibold">{{ getModalidadLabel() }}</span>
-            </div>
-            }
-
-            <span class="absolute left-3 top-3 rounded-full px-3 py-1 text-xs font-bold shadow-sm" [ngClass]="getModalidadClass()">
-                {{ getModalidadLabel() }}
-            </span>
+<article class="flex h-full w-full flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md cursor-pointer"
+         (click)="professionals.length > 0 ? selectProfessionalAndGoToSchedule(professionals[0], $event) : null">
+    <div class="relative h-44 w-full bg-gray-100">
+        @if (service.imagenUrl) {
+        <img
+            [src]="service.imagenUrl"
+            [alt]="service.nombre"
+            class="h-full w-full object-cover"
+            (error)="onImgError($event)"
+        />
+        } @else {
+        <div class="flex h-full w-full flex-col items-center justify-center gap-2 bg-gradient-to-br from-primary/10 to-sky-50 text-primary">
+            <span class="material-symbols-outlined text-5xl">{{ getPlaceholderIcon() }}</span>
+            <span class="text-sm font-semibold">{{ getModalidadLabel() }}</span>
         </div>
-    </a>
+        }
+
+        <span class="absolute left-3 top-3 rounded-full px-3 py-1 text-xs font-bold shadow-sm" [ngClass]="getModalidadClass()">
+            {{ getModalidadLabel() }}
+        </span>
+    </div>
 
     <div class="flex flex-1 flex-col p-4">
-        <a [routerLink]="['/servicio/' + service.idServicio + '/seleccionar-profesional']" class="no-underline text-inherit">
+        <div>
             <h3 class="text-lg font-bold text-gray-900">{{ service.nombre }}</h3>
             <p class="mt-1 min-h-10 text-sm leading-5 text-gray-600">{{ getDescripcionCorta() }}</p>
-        </a>
+        </div>
 
         <div class="mt-4 flex flex-wrap gap-2 text-sm text-gray-600">
             <span class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1">
@@ -50,7 +49,7 @@
                 </div>
               </div>
               @if (getMapUrl()) {
-                <div class="mt-1 h-28 w-full overflow-hidden rounded-lg border border-gray-200">
+                <div class="mt-1 h-28 w-full overflow-hidden rounded-lg border border-gray-200" (click)="$event.stopPropagation()">
                   <iframe
                     [src]="getMapUrl()"
                     class="h-full w-full border-0"
@@ -93,7 +92,7 @@
                   </div>
                 </div>
                 @if (getMapUrl()) {
-                  <div class="mt-1 h-28 w-full overflow-hidden rounded-lg border border-gray-200">
+                  <div class="mt-1 h-28 w-full overflow-hidden rounded-lg border border-gray-200" (click)="$event.stopPropagation()">
                     <iframe
                       [src]="getMapUrl()"
                       class="h-full w-full border-0"
@@ -107,18 +106,37 @@
           }
         </div>
 
+        <!-- Información del Profesional -->
+        <div class="mt-4 border-t border-gray-100 pt-3">
+            <p class="text-xs font-semibold uppercase text-gray-500 mb-2">Profesional</p>
+            <div class="flex flex-col gap-2">
+                @for (prof of professionals; track prof.idUsuario) {
+                    <div class="flex w-full items-center gap-4 border border-gray-400 rounded-xl p-4 bg-gray-50/30">
+                        <img class="w-20 h-20 rounded-full object-cover shrink-0 border-2 border-gray-100"
+                             [src]="prof.usuario?.imagenPerfilUrl || 'assets/placeholders/user-placeholder.svg'"
+                             [alt]="prof.usuario?.nombre ?? prof.nombreNegocio ?? 'Profesional'"
+                             (error)="onProfImgError($event)">
+                        <div class="flex flex-col flex-1 gap-1">
+                            <h3 class="text-base font-semibold text-gray-900">{{ prof.usuario?.nombre ?? prof.nombreNegocio }}</h3>
+                            <p class="text-sm text-gray-500 line-clamp-2">{{ prof.descripcion }}</p>
+                            <div class="flex items-center gap-1 mt-1">
+                                <ng-icon role="img" name="heroStarSolid" class="text-yellow-400 text-base shrink-0" aria-hidden="true"></ng-icon>
+                                <span class="text-sm font-medium text-gray-700">{{ prof.ratingPromedio }}</span>
+                                <span class="text-sm text-black">/ 5</span>
+                            </div>
+                        </div>
+                    </div>
+                } @empty {
+                    <p class="text-xs text-gray-400 italic">No hay profesionales disponibles para este servicio.</p>
+                }
+            </div>
+        </div>
+
         <div class="mt-auto flex items-center justify-between gap-3 pt-5">
             <div>
                 <p class="text-xs font-semibold uppercase text-gray-500">Precio</p>
                 <p class="text-2xl font-bold text-primary">${{ service.precio }}</p>
             </div>
-
-            <a
-                [routerLink]="['/servicio/' + service.idServicio + '/seleccionar-profesional']"
-                class="rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white no-underline transition-all hover:brightness-110 active:scale-95"
-            >
-                Reservar
-            </a>
         </div>
     </div>
 </article>

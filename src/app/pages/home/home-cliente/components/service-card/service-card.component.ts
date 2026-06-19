@@ -1,20 +1,39 @@
 import { NgClass } from '@angular/common';
-import { Component, Input, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, Input, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
 import { NgIcon } from '@ng-icons/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Service } from 'app/models/service.model';
+import { ServicesService } from 'app/services/services.service';
+import { BookingStateService } from 'app/services/booking-state.service';
+import { Professional } from 'app/models/professional.model';
 
 @Component({
   selector: 'app-service-card',
   templateUrl: './service-card.component.html',
-  imports: [NgIcon, RouterLink, NgClass],
+  imports: [NgIcon, NgClass],
   standalone: true,
 })
-export class ServiceCardComponent {
+export class ServiceCardComponent implements OnInit {
   private sanitizer = inject(DomSanitizer);
+  private servicesService = inject(ServicesService);
+  private bookingsService = inject(BookingStateService);
+  private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
 
   @Input() service!: Service;
+
+  professionals: Professional[] = [];
+
+  ngOnInit() {
+    // Cargar profesionales asociados al servicio.
+    this.servicesService.getProfessionalsByService(this.service.idServicio.toString()).subscribe({
+      next: (response) => {
+        this.professionals = response.data;
+        this.cdr.detectChanges();
+      }
+    });
+  }
 
   onImgError(event: Event) {
     (event.target as HTMLImageElement).src = '/assets/placeholders/service-placeholder.svg';
@@ -57,6 +76,22 @@ export class ServiceCardComponent {
       return this.sanitizer.bypassSecurityTrustResourceUrl(url);
     }
     return null;
+  }
+
+  // Guardar profesional y servicio seleccionados e ir al horario.
+  selectProfessionalAndGoToSchedule(professional: Professional, event: Event) {
+    event.stopPropagation();
+    event.preventDefault();
+    this.bookingsService.reset();
+    this.bookingsService.setServiceId(this.service.idServicio);
+    this.bookingsService.setSelectedService(this.service);
+    this.bookingsService.setProfessionalId(professional.idUsuario);
+    this.bookingsService.setSelectedProfessional(professional);
+    this.router.navigate([`/servicio/${this.service.idServicio}/seleccionar-horario`]);
+  }
+
+  onProfImgError(event: Event) {
+    (event.target as HTMLImageElement).src = 'assets/placeholders/user-placeholder.svg';
   }
 }
 

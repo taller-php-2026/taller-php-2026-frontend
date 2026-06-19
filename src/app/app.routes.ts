@@ -174,13 +174,6 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'servicio/:id/seleccionar-profesional',
-        loadComponent: () =>
-          import('@pages/select-professional/select-professional.component').then(
-            (m) => m.SelectProfessional,
-          ),
-      },
-      {
         path: 'servicio/:id/seleccionar-horario',
         loadComponent: () =>
           import('@pages/select-time-date/select-time-date.component').then(
