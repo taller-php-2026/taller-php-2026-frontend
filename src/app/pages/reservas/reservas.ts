@@ -280,11 +280,36 @@ export class Reservas implements OnInit {
   puedePagar(reserva: Reserva): boolean {
     if (reserva.paqueteComprado || reserva.idPaqueteComprado) return false;
     if (reserva.estado === 'cancelada') return false;
+    if (this.clasificarReserva(reserva) === 'anteriores') return false;
+
     return reserva.estado === 'pendiente' || reserva.pago?.estado === 'rechazado';
   }
 
   puedeCancelar(reserva: Reserva): boolean {
+    if (reserva.estado === 'cancelada') return false;
+    if (this.clasificarReserva(reserva) === 'anteriores') return false;
+
     return reserva.estado === 'pendiente' || reserva.estado === 'confirmada';
+  }
+
+  puedeUnirseVideollamada(reserva: Reserva): boolean {
+    if (reserva.estado === 'cancelada') return false;
+    if (this.clasificarReserva(reserva) === 'anteriores') return false;
+    if (!this.esVirtual(reserva)) return false;
+
+    return reserva.estado === 'confirmada';
+  }
+
+  puedeCalificar(reserva: Reserva): boolean {
+    if (reserva.estado === 'cancelada') return false;
+    if (this.clasificarReserva(reserva) !== 'anteriores') return false;
+
+    const estadosValidos = ['finalizada', 'completada', 'realizada'];
+    return estadosValidos.includes(reserva.estado);
+  }
+
+  irACalificar(reservaId: number): void {
+    this.router.navigate(['/calificar'], { queryParams: { reserva: reservaId } });
   }
 
   textoBotonPago(reserva: Reserva): string {
