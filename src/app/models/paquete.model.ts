@@ -1,6 +1,26 @@
 import { ReservaPago } from './reserva.model';
 import { Service } from './service.model';
 
+export interface PaqueteReserva {
+  idReserva: number;
+  fechaReserva: string;
+  estado: string;
+  servicio?: Service | null;
+  profesional?: {
+    idUsuario: number;
+    nombreNegocio?: string | null;
+    usuario?: {
+      nombre?: string | null;
+      email?: string | null;
+    } | null;
+  } | null;
+  horario?: {
+    fecha: string;
+    horaInicio: string;
+    horaFin: string;
+  } | null;
+}
+
 export interface PaqueteServicio {
   idPaqueteServicio: number;
   idServicio: number;
@@ -18,6 +38,7 @@ export interface PaqueteServicio {
     profesionales?: Array<{
       idUsuario: number;
       nombreNegocio?: string | null;
+      ratingPromedio?: number | string | null;
       usuario?: {
         nombre?: string | null;
         email?: string | null;
@@ -43,10 +64,15 @@ export interface PaqueteComprado {
   fechaCompra: string;
   paqueteServicio?: PaqueteServicio | null;
   pago?: ReservaPago | null;
+  reservas?: PaqueteReserva[];
 }
 
 export interface PaquetesDisponiblesResponse {
   data: PaqueteServicio[];
+}
+
+export interface PaqueteDetalleResponse {
+  data: PaqueteServicio;
 }
 
 export interface MisPaquetesResponse {

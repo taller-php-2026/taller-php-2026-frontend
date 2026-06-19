@@ -64,7 +64,7 @@
       <!-- Modalidad Selector -->
       <div class="space-y-xs">
         <label class="font-label-bold text-label-bold text-on-surface-variant">Modalidad de Servicio</label>
-        <div class="grid grid-cols-2 gap-md">
+        <div class="grid grid-cols-1 gap-md md:grid-cols-3">
           <label class="flex items-center gap-sm cursor-pointer p-md border border-[#e2e8f0] rounded-lg bg-surface">
             <input type="radio" name="modalidad" value="presencial" [checked]="modalidad() === 'presencial'" (change)="setModalidad('presencial')" class="w-4 h-4 text-primary focus:ring-primary/20" />
             <span class="font-bold text-sm text-on-surface">Presencial</span>
@@ -73,11 +73,15 @@
             <input type="radio" name="modalidad" value="online" [checked]="modalidad() === 'online'" (change)="setModalidad('online')" class="w-4 h-4 text-primary focus:ring-primary/20" />
             <span class="font-bold text-sm text-on-surface">Videollamada (Online)</span>
           </label>
+          <label class="flex items-center gap-sm cursor-pointer p-md border border-[#e2e8f0] rounded-lg bg-surface">
+            <input type="radio" name="modalidad" value="hibrida" [checked]="modalidad() === 'hibrida'" (change)="setModalidad('hibrida')" class="w-4 h-4 text-primary focus:ring-primary/20" />
+            <span class="font-bold text-sm text-on-surface">Híbrida</span>
+          </label>
         </div>
       </div>
 
       <!-- Presencial Fields (Ubicacion) -->
-      <div *ngIf="modalidad() === 'presencial'" class="space-y-md p-md bg-surface-container-low rounded-xl border border-outline-variant/10">
+      <div *ngIf="requiereUbicacion()" class="space-y-md p-md bg-surface-container-low rounded-xl border border-outline-variant/10">
         <h4 class="font-label-bold text-sm text-on-surface">Ubicación del Servicio</h4>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-sm">
           <div class="space-y-xs">
@@ -97,6 +101,25 @@
         <div class="grid grid-cols-2 gap-sm text-xs text-outline mt-xs">
           <span>Latitud: {{ latitud() }}</span>
           <span>Longitud: {{ longitud() }}</span>
+        </div>
+      </div>
+
+      <!-- Online Fields (VideoSesion) -->
+      <div *ngIf="requiereVideoSesion()" class="space-y-md p-md bg-surface-container-low rounded-xl border border-outline-variant/10">
+        <h4 class="font-label-bold text-sm text-on-surface">Datos de videollamada</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-sm">
+          <div class="space-y-xs">
+            <label class="text-xs font-label-bold text-on-surface-variant" for="proveedor">Proveedor</label>
+            <input type="text" id="proveedor" name="proveedor" [(ngModel)]="proveedor" class="w-full bg-surface border border-[#e2e8f0] rounded-lg px-md py-sm focus:border-primary outline-none text-sm" placeholder="Ej. LiveKit" />
+          </div>
+          <div class="space-y-xs">
+            <label class="text-xs font-label-bold text-on-surface-variant" for="nombreSala">Nombre de sala</label>
+            <input type="text" id="nombreSala" name="nombreSala" [(ngModel)]="nombreSala" class="w-full bg-surface border border-[#e2e8f0] rounded-lg px-md py-sm focus:border-primary outline-none text-sm" placeholder="Ej. consulta-online" />
+          </div>
+        </div>
+        <div class="space-y-xs">
+          <label class="text-xs font-label-bold text-on-surface-variant" for="urlAcceso">URL de acceso</label>
+          <input type="url" id="urlAcceso" name="urlAcceso" [(ngModel)]="urlAcceso" class="w-full bg-surface border border-[#e2e8f0] rounded-lg px-md py-sm focus:border-primary outline-none text-sm" placeholder="Se usa la URL del sistema si lo dejás vacío" />
         </div>
       </div>
 

@@ -1,131 +1,148 @@
-import { Injectable, inject, signal, effect } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
 import { environment } from '@env/environment';
+import { Notificacion, NotificacionesResponse } from '../models/notificacion.model';
 import { AuthService } from './auth.service';
-import { EchoService } from './echo.service';
-import { Observable } from 'rxjs';
 
-export interface Notificacion {
-  idNotificacion: number;
-  idUsuario: number;
-  titulo: string;
-  mensaje: string;
-  tipo: 'confirmacion' | 'recordatorio' | 'cancelacion' | 'actualizacion' | 'mensaje';
-  leida: boolean;
-  idReserva: number | null;
-  fechaCreacion: string;
-}
+type NotificacionRealtime = Omit<Notificacion, 'enviadaMail'> & {
+  enviadaMail?: boolean;
+};
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class NotificacionService {
-  private http = inject(HttpClient);
-  private authService = inject(AuthService);
-  private echoService = inject(EchoService);
+  notificaciones = signal<Notificacion[]>([]);
+  unreadCount = signal(0);
 
-  // State
-  notifications = signal<Notificacion[]>([]);
-  unreadCount = signal<number>(0);
+  private echo?: Echo<'reverb'>;
+  private canalActual?: string;
 
-  constructor() {
-    // Re-bind listener when auth status changes
-    effect(() => {
-      if (this.authService.isAuthenticated() && this.authService.currentUser()) {
-        this.fetchNotifications();
-        this.listenToRealTimeNotifications();
-      } else {
-        this.notifications.set([]);
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+  ) {}
+
+  cargar(): void {
+    this.http.get<NotificacionesResponse>(`${environment.apiUrl}/me/notificaciones`).subscribe({
+      next: (response) => {
+        this.notificaciones.set(response.data ?? []);
+        this.unreadCount.set(response.unreadCount ?? 0);
+      },
+      error: () => {
+        this.notificaciones.set([]);
         this.unreadCount.set(0);
-        this.echoService.disconnect();
+      },
+    });
+  }
+
+  iniciarRealtime(): void {
+    const idUsuario = this.authService.currentUser()?.idUsuario;
+    const token = this.authService.getToken();
+
+    this.cargar();
+
+    if (!idUsuario || !token || this.canalActual === `notificaciones.${idUsuario}`) return;
+
+    this.detenerRealtime(false);
+
+    (window as unknown as { Pusher: typeof Pusher }).Pusher = Pusher;
+
+    this.echo = new Echo<'reverb'>({
+      broadcaster: 'reverb',
+      key: environment.reverb.key,
+      wsHost: environment.reverb.host,
+      wsPort: environment.reverb.port,
+      wssPort: environment.reverb.port,
+      forceTLS: environment.reverb.scheme === 'https',
+      enabledTransports: ['ws', 'wss'],
+      authEndpoint: `${environment.apiUrl.replace(/\/api$/, '')}/broadcasting/auth`,
+      auth: {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+        },
+      },
+    });
+
+    this.canalActual = `notificaciones.${idUsuario}`;
+    this.echo.private(this.canalActual).listen('.NotificacionCreada', (event: NotificacionRealtime) => {
+      const notificacion: Notificacion = {
+        ...event,
+        enviadaMail: event.enviadaMail ?? false,
+      };
+
+      this.notificaciones.update((actuales) => {
+        if (actuales.some((item) => item.idNotificacion === notificacion.idNotificacion)) {
+          return actuales;
+        }
+
+        return [notificacion, ...actuales];
+      });
+
+      if (!notificacion.leida) {
+        this.unreadCount.update((count) => count + 1);
       }
     });
   }
 
-  private getHeaders(): HttpHeaders {
-    const token = this.authService.getToken();
-    return new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/json',
-    });
+  detenerRealtime(limpiarEstado = true): void {
+    if (this.canalActual) {
+      this.echo?.leave(this.canalActual);
+    }
+
+    this.echo?.disconnect();
+    this.echo = undefined;
+    this.canalActual = undefined;
+
+    if (limpiarEstado) {
+      this.notificaciones.set([]);
+      this.unreadCount.set(0);
+    }
   }
 
-  fetchNotifications(): void {
-    const headers = this.getHeaders();
-    this.http.get<Notificacion[]>(`${environment.apiUrl}/notificaciones`, { headers }).subscribe({
-      next: (res) => {
-        this.notifications.set(res);
-        this.updateUnreadCount();
-      },
-      error: (err) => console.error('Error fetching notifications:', err),
-    });
-  }
-
-  markAsRead(id: number): void {
-    const headers = this.getHeaders();
-    this.http.put<Notificacion>(`${environment.apiUrl}/notificaciones/${id}`, { leida: true }, { headers }).subscribe({
-      next: (updated) => {
-        this.notifications.update((list) =>
-          list.map((n) => (n.idNotificacion === id ? { ...n, leida: true } : n))
+  marcarComoLeida(idNotificacion: number): void {
+    this.http.patch(`${environment.apiUrl}/me/notificaciones/${idNotificacion}/leida`, {}).subscribe({
+      next: () => {
+        this.notificaciones.update((actuales) =>
+          actuales.map((item) =>
+            item.idNotificacion === idNotificacion ? { ...item, leida: true, fechaLectura: new Date().toISOString() } : item,
+          ),
         );
-        this.updateUnreadCount();
+        this.actualizarContadorNoLeidas();
       },
-      error: (err) => console.error('Error marking notification as read:', err),
     });
   }
 
-  deleteNotification(id: number): void {
-    const headers = this.getHeaders();
-    this.http.delete(`${environment.apiUrl}/notificaciones/${id}`, { headers }).subscribe({
+  marcarTodasComoLeidas(): void {
+    this.http.patch(`${environment.apiUrl}/me/notificaciones/leidas`, {}).subscribe({
       next: () => {
-        this.notifications.update((list) => list.filter((n) => n.idNotificacion !== id));
-        this.updateUnreadCount();
+        const fechaLectura = new Date().toISOString();
+        this.notificaciones.update((actuales) => actuales.map((item) => ({ ...item, leida: true, fechaLectura })));
+        this.unreadCount.set(0);
       },
-      error: (err) => console.error('Error deleting notification:', err),
     });
   }
 
-  deleteAllNotifications(): void {
-    const headers = this.getHeaders();
-    this.http.delete(`${environment.apiUrl}/notificaciones`, { headers }).subscribe({
+  eliminar(idNotificacion: number): void {
+    this.http.delete(`${environment.apiUrl}/notificaciones/${idNotificacion}`).subscribe({
       next: () => {
-        this.notifications.set([]);
-        this.updateUnreadCount();
+        this.notificaciones.update((actuales) => actuales.filter((item) => item.idNotificacion !== idNotificacion));
+        this.actualizarContadorNoLeidas();
       },
-      error: (err) => console.error('Error deleting all notifications:', err),
     });
   }
 
-  private listenToRealTimeNotifications(): void {
-    const user = this.authService.currentUser();
-    if (!user) return;
-
-    const echo = this.echoService.getEcho();
-    echo.private(`notificaciones.${user.idUsuario}`)
-      .listen('.NotificacionCreada', (e: any) => {
-        const newNotif: Notificacion = {
-          idNotificacion: e.idNotificacion,
-          idUsuario: e.idUsuario,
-          titulo: e.titulo,
-          mensaje: e.mensaje,
-          tipo: e.tipo,
-          leida: e.leida,
-          idReserva: e.idReserva,
-          fechaCreacion: e.fechaCreacion,
-        };
-        // Prepend new notification to the list only if not already present
-        this.notifications.update((list) => {
-          if (list.some((n) => n.idNotificacion === newNotif.idNotificacion)) {
-            return list;
-          }
-          return [newNotif, ...list];
-        });
-        this.updateUnreadCount();
-      });
+  eliminarTodas(): void {
+    this.http.delete(`${environment.apiUrl}/notificaciones`).subscribe({
+      next: () => {
+        this.notificaciones.set([]);
+        this.unreadCount.set(0);
+      },
+    });
   }
 
-  private updateUnreadCount(): void {
-    const count = this.notifications().filter((n) => !n.leida).length;
-    this.unreadCount.set(count);
+  private actualizarContadorNoLeidas(): void {
+    this.unreadCount.set(this.notificaciones().filter((notificacion) => !notificacion.leida).length);
   }
 }
