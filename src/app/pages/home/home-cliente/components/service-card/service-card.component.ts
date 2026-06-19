@@ -1,7 +1,8 @@
 import { NgClass } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgIcon } from '@ng-icons/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Service } from 'app/models/service.model';
 
 @Component({
@@ -11,6 +12,8 @@ import { Service } from 'app/models/service.model';
   standalone: true,
 })
 export class ServiceCardComponent {
+  private sanitizer = inject(DomSanitizer);
+
   @Input() service!: Service;
 
   onImgError(event: Event) {
@@ -24,7 +27,7 @@ export class ServiceCardComponent {
 
   getModalidadLabel(): string {
     if (this.service.modalidad === 'virtual') return 'Virtual';
-    if (this.service.modalidad === 'hibrida') return 'Hibrida';
+    if (this.service.modalidad === 'hibrida') return 'Híbrida';
     return 'Presencial';
   }
 
@@ -39,4 +42,16 @@ export class ServiceCardComponent {
     if (this.service.modalidad === 'hibrida') return 'bg-amber-100 text-amber-800';
     return 'bg-emerald-100 text-emerald-800';
   }
+
+  getMapUrl(): SafeResourceUrl | null {
+    const direccion = this.service.ubicacion?.direccion;
+    const ciudad = this.service.ubicacion?.ciudad;
+    if (direccion) {
+      const query = encodeURIComponent(`${direccion}${ciudad ? ', ' + ciudad : ''}`);
+      const url = `https://maps.google.com/maps?q=${query}&z=15&output=embed`;
+      return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    }
+    return null;
+  }
 }
+
