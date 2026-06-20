@@ -38,6 +38,7 @@ export interface PaqueteServicio {
     profesionales?: Array<{
       idUsuario: number;
       nombreNegocio?: string | null;
+      descripcion?: string | null;
       ratingPromedio?: number | string | null;
       usuario?: {
         nombre?: string | null;

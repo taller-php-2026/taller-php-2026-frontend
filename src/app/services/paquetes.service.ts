@@ -36,8 +36,8 @@ export class PaquetesService {
     return this.http.get<MisPaquetesResponse>(`${environment.apiUrl}/me/paquetes`);
   }
 
-  pagarPaquete(idPaqueteComprado: number): Observable<unknown> {
-    return this.http.post(`${environment.apiUrl}/paquetes-comprados/${idPaqueteComprado}/pagar`, {});
+  pagarPaquete(idPaqueteComprado: number, payload: { metodoPago: string; referenciaExterna?: string } = { metodoPago: 'tarjeta' }): Observable<unknown> {
+    return this.http.post(`${environment.apiUrl}/paquetes-comprados/${idPaqueteComprado}/pagar`, payload);
   }
 
   crearPreferenciaMercadoPagoPaquete(

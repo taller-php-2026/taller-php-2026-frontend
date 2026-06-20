@@ -100,9 +100,25 @@ export class PaqueteDetalle implements OnInit {
   }
 
   getModalidad(paquete: PaqueteServicio): string {
-    const modalidad = paquete.servicio?.modalidad;
-    if (modalidad === 'virtual') return 'Virtual';
-    if (modalidad === 'hibrida') return 'Hibrida';
+    const mainMod = paquete.servicio?.modalidad;
+    const comunes = paquete.serviciosComunes ?? [];
+    
+    const modalities = new Set<string>();
+    if (mainMod) modalities.add(mainMod);
+    comunes.forEach((c: any) => {
+      if (c.servicio?.modalidad) {
+        modalities.add(c.servicio.modalidad);
+      }
+    });
+
+    if (modalities.has('virtual') && (modalities.has('presencial') || modalities.has('hibrida'))) {
+      return 'Híbrida';
+    }
+    if (modalities.has('presencial') && modalities.has('hibrida')) {
+      return 'Híbrida';
+    }
+    if (modalities.has('virtual')) return 'Virtual';
+    if (modalities.has('hibrida')) return 'Híbrida';
     return 'Presencial';
   }
 
@@ -118,29 +134,42 @@ export class PaqueteDetalle implements OnInit {
     return `$${(precio / sesiones).toFixed(2)}`;
   }
 
-  getServiciosIncluidos(paquete: PaqueteServicio): Array<{ nombre: string; modalidad: string; duracion: string; precio: string }> {
-    const servicios = paquete.serviciosComunes ?? [];
-    if (!servicios.length && paquete.servicio) {
-      return [this.mapServicio(paquete.servicio)];
+  getServiciosIncluidos(paquete: any): Array<{ nombre: string; modalidad: string; duracion: string; precio: string; ubicacionText?: string; googleMapsUrl?: string }> {
+    const list: any[] = [];
+    if (paquete.servicio) {
+      list.push(this.mapServicio(paquete.servicio));
     }
-
-    return servicios
-      .map((item) => item.servicio)
-      .filter(Boolean)
-      .map((servicio) => this.mapServicio(servicio!));
+    const servicios = paquete.servicios_comunes ?? paquete.serviciosComunes ?? [];
+    servicios.forEach((item: any) => {
+      if (item.servicio) {
+        if (!list.some(s => s.nombre === item.servicio.nombre)) {
+          list.push(this.mapServicio(item.servicio));
+        }
+      }
+    });
+    return list;
   }
 
   onImgError(event: Event): void {
     (event.target as HTMLImageElement).src = '/assets/placeholders/service-placeholder.svg';
   }
 
-  private mapServicio(servicio: NonNullable<PaqueteServicio['servicio']>): { nombre: string; modalidad: string; duracion: string; precio: string } {
-    return {
+  private mapServicio(servicio: NonNullable<PaqueteServicio['servicio']>): { nombre: string; modalidad: string; duracion: string; precio: string; ubicacionText?: string; googleMapsUrl?: string } {
+    const res: any = {
       nombre: servicio.nombre,
       modalidad: servicio.modalidad === 'virtual' ? 'Virtual' : servicio.modalidad === 'hibrida' ? 'Hibrida' : 'Presencial',
       duracion: `${servicio.duracionMinutos} min`,
       precio: `$${servicio.precio}`,
     };
+
+    if (servicio.modalidad === 'presencial' && servicio.ubicacion) {
+      const u = servicio.ubicacion;
+      const text = `${u.direccion ?? ''}, ${u.ciudad ?? ''}`;
+      res.ubicacionText = text;
+      res.googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(text)}`;
+    }
+
+    return res;
   }
 
   private getErrorMessage(err: any, fallback: string): string {

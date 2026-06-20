@@ -149,9 +149,10 @@ export class SelectTimeDateComponent implements OnInit {
     const idServicio = Number(this.bookingState.serviceId ?? this.service?.idServicio);
     if (!idServicio) return [];
 
-    return this.misPaquetes.filter((paquete) => {
+    return this.misPaquetes.filter((paquete: any) => {
+      const pServ = paquete.paquete_servicio ?? paquete.paqueteServicio;
       const paqueteIdServicio = Number(
-        paquete.paqueteServicio?.servicio?.idServicio ?? paquete.paqueteServicio?.idServicio,
+        pServ?.servicio?.idServicio ?? pServ?.idServicio,
       );
 
       return (

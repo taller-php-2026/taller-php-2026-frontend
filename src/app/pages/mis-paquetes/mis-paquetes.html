@@ -39,8 +39,29 @@
   }
 
   @if (!loading() && !errorMsg() && paquetes().length > 0) {
+  <!-- Tabs Bar -->
+  <div class="mb-lg border-b border-surface-container-high flex gap-sm">
+    <button 
+      (click)="pestanaActiva.set('activos')"
+      [class]="pestanaActiva() === 'activos' ? 'border-primary text-primary font-bold border-b-2' : 'text-secondary hover:text-primary'"
+      class="pb-sm px-md text-sm font-label-bold transition-all cursor-pointer"
+    >
+      Activos ({{ getPaquetesActivos().length }})
+    </button>
+    <button 
+      (click)="pestanaActiva.set('anteriores')"
+      [class]="pestanaActiva() === 'anteriores' ? 'border-primary text-primary font-bold border-b-2' : 'text-secondary hover:text-primary'"
+      class="pb-sm px-md text-sm font-label-bold transition-all cursor-pointer"
+    >
+      Anteriores ({{ getPaquetesAnteriores().length }})
+    </button>
+  </div>
+
   <div class="grid grid-cols-1 gap-lg">
-    @for (paquete of paquetes(); track paquete.idPaqueteComprado) {
+    @if ((pestanaActiva() === 'activos' ? getPaquetesActivos() : getPaquetesAnteriores()).length === 0) {
+      <p class="text-secondary text-sm text-center py-lg">No hay paquetes en esta sección.</p>
+    }
+    @for (paquete of (pestanaActiva() === 'activos' ? getPaquetesActivos() : getPaquetesAnteriores()); track paquete.idPaqueteComprado) {
     <article class="bg-surface-container-lowest rounded-xl p-md soft-shadow border border-surface-container-low flex flex-col md:flex-row gap-lg">
       <img
         [src]="getImagen(paquete)"
@@ -66,13 +87,27 @@
           <span>{{ paquete.sesionesRestantes }} de {{ paquete.totalSesiones }} sesiones disponibles</span>
           <span>{{ paquete.sesionesUsadas }} usadas</span>
           <span>{{ getPrecio(paquete) }}</span>
-          <span>{{ getModalidad(paquete) }}</span>
           <span>Compra: {{ getFechaCompra(paquete) }}</span>
         </div>
 
         <div class="mt-md rounded-lg border border-surface-container-high bg-surface-container-low p-sm">
           <p class="text-caption font-label-bold text-on-surface-variant mb-xs">Servicios incluidos</p>
-          <p class="text-sm text-secondary">{{ getServiciosIncluidos(paquete) }}</p>
+          <div class="flex flex-col gap-xs">
+            @for (serv of getServiciosDetalle(paquete); track serv.idServicio) {
+              <div class="text-sm text-secondary flex flex-wrap items-center gap-xs">
+                <span class="font-bold text-on-surface-variant">{{ serv.nombre }}</span>
+                <span class="text-xs px-2 py-[2px] rounded-full bg-surface-container-high">{{ serv.modalidad === 'virtual' ? 'Virtual' : serv.modalidad === 'hibrida' ? 'Híbrida' : 'Presencial' }}</span>
+                @if (serv.modalidad === 'presencial' && getDireccionText(serv)) {
+                  <span class="text-xs flex items-center gap-2">
+                    · {{ getDireccionText(serv) }}
+                    <a target="_blank" title="Ver en Google Maps" class="inline-flex items-center justify-center p-1 rounded-full text-primary hover:bg-primary/10 transition-colors" [href]="getDireccionLink(serv)">
+                      <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                    </a>
+                  </span>
+                }
+              </div>
+            }
+          </div>
         </div>
 
         <div class="mt-md rounded-lg border border-surface-container-high bg-white p-sm">
@@ -90,7 +125,15 @@
                   <div class="text-sm text-secondary">
                     <p class="font-bold text-on-surface">{{ reserva.servicio?.nombre || getNombre(paquete) }}</p>
                     <p>{{ getFechaReserva(reserva) }} - {{ getHoraReserva(reserva) }}</p>
-                    <p>{{ getProfesionalReserva(reserva) }} · {{ getModalidadReserva(reserva) }} · {{ reserva.estado }}</p>
+                    <p class="flex flex-wrap items-center gap-xs">
+                      <span>{{ getProfesionalReserva(reserva) }} · {{ getModalidadReserva(reserva) }} · {{ reserva.estado }}</span>
+                      @if (reserva.servicio?.modalidad === 'presencial' && getDireccionText(reserva.servicio)) {
+                        <span>· {{ getDireccionText(reserva.servicio) }}</span>
+                        <a target="_blank" title="Ver en Google Maps" class="inline-flex items-center justify-center p-1 rounded-full text-primary hover:bg-primary/10 transition-colors" [href]="getDireccionLink(reserva.servicio)">
+                          <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                        </a>
+                      }
+                    </p>
                   </div>
                   <button
                     *ngIf="puedeUnirse(reserva)"
@@ -107,18 +150,171 @@
         </div>
       </div>
 
-      <div class="flex md:items-center">
-        <button
-          type="button"
-          (click)="reservarConPaquete(paquete)"
-          [disabled]="!estaActivo(paquete)"
-          class="w-full md:w-auto px-md py-sm rounded-lg bg-primary text-white font-label-bold hover:brightness-110 active:scale-95 transition-all disabled:bg-gray-300 disabled:cursor-not-allowed"
-        >
-          Reservar
-        </button>
+      <div class="flex md:items-center gap-sm">
+        @if (paquete.estado === 'pendiente') {
+          <button
+            type="button"
+            (click)="pagarPaquete(paquete)"
+            class="w-full md:w-auto px-md py-sm rounded-lg bg-amber-600 text-white font-label-bold hover:brightness-110 active:scale-95 transition-all"
+          >
+            Pagar
+          </button>
+        } @else {
+          <button
+            type="button"
+            (click)="reservarConPaquete(paquete)"
+            [disabled]="!estaActivo(paquete)"
+            class="w-full md:w-auto px-md py-sm rounded-lg bg-primary text-white font-label-bold hover:brightness-110 active:scale-95 transition-all disabled:bg-gray-300 disabled:cursor-not-allowed"
+          >
+            Reservar
+          </button>
+        }
       </div>
     </article>
     }
   </div>
+  }
+
+  <!-- Modal de Calendario de Turnos -->
+  @if (modalOpen() && modalPaquete()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+      <div class="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between px-lg py-md border-b border-outline-variant/20 bg-surface-container-low">
+          <div class="flex items-center gap-sm">
+            <span class="material-symbols-outlined text-primary text-headline-sm">calendar_month</span>
+            <h3 class="font-display-md text-headline-sm text-primary">Calendario de Turnos</h3>
+          </div>
+          <button (click)="cerrarModal()" aria-label="Cerrar" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container-high text-on-surface-variant transition-colors cursor-pointer">
+            <span class="material-symbols-outlined text-sm">close</span>
+          </button>
+        </div>
+
+        <!-- Body -->
+        <div class="p-lg overflow-y-auto flex-grow flex flex-col md:flex-row gap-lg">
+          
+          <!-- Calendario (Izquierda) -->
+          <div class="flex-1 flex flex-col border border-outline-variant/20 p-md rounded-xl bg-surface-container-lowest shadow-sm">
+            <div class="flex items-center justify-between mb-md">
+              <button (click)="prevMonth()" aria-label="Mes Anterior" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors cursor-pointer">
+                <span class="material-symbols-outlined text-sm">chevron_left</span>
+              </button>
+              <h4 class="font-label-bold text-sm text-on-surface uppercase tracking-wide">{{ getMonthYearLabel() }}</h4>
+              <button (click)="nextMonth()" aria-label="Siguiente Mes" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors cursor-pointer">
+                <span class="material-symbols-outlined text-sm">chevron_right</span>
+              </button>
+            </div>
+            
+            <div class="grid grid-cols-7 gap-xs text-center font-label-bold text-[11px] text-on-surface-variant uppercase tracking-wider mb-sm">
+              <span>Do</span><span>Lu</span><span>Ma</span><span>Mi</span><span>Ju</span><span>Vi</span><span>Sa</span>
+            </div>
+            
+            <div class="grid grid-cols-7 gap-xs text-center">
+              @for (empty of emptyDays; track $index) {
+                <div class="w-9 h-9"></div>
+              }
+              @for (day of daysInMonth; track day.dateString) {
+                <button 
+                  [class]="getDayClass(day)"
+                  (click)="selectCalendarDate(day.date)"
+                  [disabled]="isPast(day.date)"
+                >
+                  <span>{{ day.dayNum }}</span>
+                  @if (day.hasSlots) {
+                    <span class="absolute bottom-1 w-1 h-1 rounded-full bg-primary/80"></span>
+                  }
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- Servicios y Horarios (Derecha) -->
+          <div class="flex-1 flex flex-col border border-outline-variant/20 p-md rounded-xl bg-surface-container-lowest shadow-sm min-h-[300px]">
+            <!-- Selección de Servicio -->
+            <div class="mb-md">
+              <h5 class="text-xs font-bold uppercase tracking-wider text-secondary mb-2">Servicios Disponibles</h5>
+              <div class="flex flex-col gap-2">
+                @for (serv of modalServicios(); track serv.idServicio) {
+                  <button 
+                    (click)="seleccionarServicioModal(serv)"
+                    class="w-full text-left p-3 rounded-lg border text-sm font-medium transition-all"
+                    [class]="modalServicioSeleccionado()?.idServicio === serv.idServicio ? 'border-primary bg-primary/5 text-primary' : 'border-gray-200 hover:border-primary text-gray-700 bg-white'"
+                  >
+                    <div class="font-bold">{{ serv.nombre }}</div>
+                    <div class="text-xs text-gray-500">{{ serv.duracionMinutos }} min · ${{ serv.precio }}</div>
+                  </button>
+                }
+              </div>
+            </div>
+
+            <!-- Horarios disponibles -->
+            <div class="flex-1 flex flex-col">
+              <h4 class="font-label-bold text-sm text-on-surface border-b border-outline-variant/20 pb-xs mb-sm flex items-center gap-xs">
+                <span class="material-symbols-outlined text-primary text-sm">list_alt</span> 
+                Horarios del Día 
+                @if (selectedDate()) {
+                  <span class="text-primary-dim">({{ selectedDate() | date:'dd MMM' }})</span>
+                }
+              </h4>
+
+              @if (loadingSlots()) {
+                <div class="flex-1 flex items-center justify-center py-lg text-secondary">
+                  <span class="material-symbols-outlined animate-spin mr-sm">sync</span>
+                  <span class="text-xs">Buscando horarios...</span>
+                </div>
+              } @else if (!selectedDate()) {
+                <div class="flex-1 flex flex-col items-center justify-center py-lg gap-sm text-on-surface-variant text-center">
+                  <span class="material-symbols-outlined text-display-xs text-on-surface-variant/40">event</span>
+                  <p class="text-xs">Selecciona un día en el calendario.</p>
+                </div>
+              } @else if (slots().length === 0) {
+                <div class="flex-1 flex flex-col items-center justify-center py-lg gap-sm text-on-surface-variant text-center">
+                  <span class="material-symbols-outlined text-display-xs text-on-surface-variant/40">event_busy</span>
+                  <p class="text-xs">No hay turnos registrados para este día.</p>
+                </div>
+              } @else {
+                <div class="grid grid-cols-2 gap-2 max-h-[220px] overflow-y-auto pr-1">
+                  @for (slot of slots(); track slot.horaInicio) {
+                    <button 
+                      (click)="selectedSlot.set(slot)"
+                      [class]="selectedSlot()?.horaInicio === slot.horaInicio ? 'bg-primary text-white border-primary font-bold shadow-sm' : 'border-gray-200 hover:border-primary text-gray-700 bg-white'"
+                      class="border text-xs py-2 px-3 rounded-lg text-center transition-all cursor-pointer"
+                    >
+                      {{ slot.horaInicio }} - {{ slot.horaFin }}
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="px-lg py-md border-t border-outline-variant/20 bg-surface-container-low flex justify-between items-center">
+          <div class="text-xs text-red-600 font-medium">
+            @if (errorMsg()) {
+              {{ errorMsg() }}
+            }
+          </div>
+          <div class="flex gap-2">
+            <button (click)="cerrarModal()" class="px-lg py-sm bg-gray-200 text-gray-700 font-label-bold rounded-lg hover:bg-gray-300 transition-all cursor-pointer"> Cancelar </button>
+            <button 
+              (click)="confirmarReservaModal()" 
+              [disabled]="!selectedSlot() || reserving()"
+              class="px-lg py-sm bg-primary text-on-primary font-label-bold rounded-lg shadow-md hover:shadow-lg hover:bg-primary/90 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            > 
+              @if (reserving()) {
+                Reservando...
+              } @else {
+                Aceptar
+              }
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
   }
 </main>

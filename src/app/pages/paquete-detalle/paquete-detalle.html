@@ -50,11 +50,7 @@
               <p class="mt-sm text-gray-600">{{ getDescripcion(paquete) }}</p>
             </div>
 
-            <div class="grid grid-cols-2 gap-sm text-sm text-gray-700">
-              <div class="rounded-xl bg-gray-50 p-md">
-                <p class="text-xs font-bold uppercase text-gray-500">Modalidad</p>
-                <p class="mt-xs font-bold">{{ getModalidad(paquete) }}</p>
-              </div>
+            <div class="grid grid-cols-3 gap-sm text-sm text-gray-700">
               <div class="rounded-xl bg-gray-50 p-md">
                 <p class="text-xs font-bold uppercase text-gray-500">Profesional</p>
                 <p class="mt-xs font-bold">{{ getProfesional(paquete) }}</p>
@@ -97,6 +93,12 @@
                 <span class="rounded-full bg-white px-3 py-1">{{ servicio.modalidad }}</span>
                 <span class="rounded-full bg-white px-3 py-1">{{ servicio.duracion }}</span>
                 <span class="rounded-full bg-white px-3 py-1">{{ servicio.precio }}</span>
+                @if (servicio.ubicacionText) {
+                  <span class="rounded-full bg-white px-3 py-1 flex items-center gap-xs">
+                    {{ servicio.ubicacionText }}
+                    <a target="_blank" title="Ver en Google Maps" class="inline-flex items-center justify-center p-1 rounded-full text-primary hover:bg-primary/10 transition-colors" [href]="servicio.googleMapsUrl"><span class="material-symbols-outlined text-[16px]">open_in_new</span></a>
+                  </span>
+                }
               </div>
             </article>
           }

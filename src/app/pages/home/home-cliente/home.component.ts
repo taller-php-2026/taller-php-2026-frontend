@@ -129,6 +129,11 @@ export class HomeClientComponent {
     return profesional?.nombreNegocio || profesional?.usuario?.nombre || 'Profesional';
   }
 
+  getPaqueteRating(paquete: PaqueteServicio): number | null {
+    const rating = paquete.servicio?.profesionales?.[0]?.ratingPromedio;
+    return rating ? Number(rating) : null;
+  }
+
   getPrecioPorSesion(paquete: PaqueteServicio): string {
     const precio = Number(paquete.precio || 0);
     const sesiones = Number(paquete.totalSesiones || 0);
@@ -164,6 +169,11 @@ export class HomeClientComponent {
 
   onPaqueteImgError(event: Event): void {
     (event.target as HTMLImageElement).src = 'assets/placeholders/service-placeholder.svg';
+  }
+
+  // Manejar error de imagen de perfil de profesional.
+  onProfImgError(event: Event): void {
+    (event.target as HTMLImageElement).src = 'assets/placeholders/user-placeholder.svg';
   }
 
   private cargarServicios(): void {
