@@ -139,6 +139,10 @@
               <span class="material-symbols-outlined text-sm">admin_panel_settings</span> Panel Administrador
             </a>
 
+            <a *ngIf="authService.currentUser()?.roles?.includes('administrador')" routerLink="/gestionar-usuarios" (click)="cerrarDropdown()" class="flex items-center gap-sm p-sm rounded-lg hover:bg-primary-container/10 text-on-surface-variant text-sm font-label-bold">
+              <span class="material-symbols-outlined text-sm">group</span> Gestionar usuarios
+            </a>
+
             <button (click)="logout()" class="flex items-center gap-sm p-sm rounded-lg hover:bg-error-container/30 text-error text-sm font-label-bold text-left w-full mt-xs border-t border-outline-variant/20 pt-sm">
               <span class="material-symbols-outlined text-sm">logout</span> Cerrar sesion
             </button>

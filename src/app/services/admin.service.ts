@@ -54,4 +54,25 @@ export class AdminService {
       headers: this.getHeaders(),
     });
   }
+
+  // Obtener todos los usuarios.
+  getUsuarios(): Observable<{ data: any[] }> {
+    return this.http.get<{ data: any[] }>(`${environment.apiUrl}/usuarios`, {
+      headers: this.getHeaders(),
+    });
+  }
+
+  // Crear un nuevo usuario.
+  crearUsuario(data: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/usuarios`, data, {
+      headers: this.getHeaders(),
+    });
+  }
+
+  // Eliminar un usuario.
+  eliminarUsuario(id: number): Observable<any> {
+    return this.http.delete<any>(`${environment.apiUrl}/usuarios/${id}`, {
+      headers: this.getHeaders(),
+    });
+  }
 }

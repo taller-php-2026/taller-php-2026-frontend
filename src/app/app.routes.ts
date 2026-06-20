@@ -196,6 +196,14 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'gestionar-usuarios',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./pages/gestionar-usuarios/gestionar-usuarios.component').then(
+            (m) => m.GestionarUsuariosComponent,
+          ),
+      },
+      {
         path: 'reservas/:id/calificar',
         loadComponent: () =>
           import('./pages/calificar-profesional/calificar-profesional').then(
