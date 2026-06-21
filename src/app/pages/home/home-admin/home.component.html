@@ -1,0 +1,61 @@
+<div class="w-3/4 mx-auto py-8">
+    <h1 class="text-2xl font-bold mb-6">Panel de administrador — Reservas</h1>
+
+    @if (loading()) {
+    <p class="text-gray-500">Cargando reservas...</p>
+    } @else if (error()) {
+    <p class="text-red-600">{{ error() }}</p>
+    } @else if (reservas().length === 0) {
+    <p class="text-gray-500">No hay reservas registradas.</p>
+    } @else {
+    <div class="overflow-x-auto border border-gray-200 rounded-lg">
+        <table class="w-full text-left text-sm">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-3">ID</th>
+                    <th class="p-3">Cliente</th>
+                    <th class="p-3">Profesional</th>
+                    <th class="p-3">Servicio</th>
+                    <th class="p-3">Fecha</th>
+                    <th class="p-3">Horario</th>
+                    <th class="p-3">Estado</th>
+                    <th class="p-3">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (reserva of reservas(); track reserva.idReserva) {
+                <tr class="border-t border-gray-200">
+                    <td class="p-3">{{ reserva.idReserva }}</td>
+                    <td class="p-3">{{ reserva.cliente?.usuario?.nombre }}</td>
+                    <td class="p-3">{{ reserva.profesional?.usuario?.nombre ?? reserva.profesional?.nombreNegocio }}
+                    </td>
+                    <td class="p-3">{{ reserva.servicio?.nombre }}</td>
+                    <td class="p-3">{{ reserva.horario?.fecha }}</td>
+                    <td class="p-3">{{ reserva.horario?.horaInicio }} - {{ reserva.horario?.horaFin }}</td>
+                    <td class="p-3">
+                        <span class="px-2 py-1 rounded-full text-xs font-medium"
+                            [ngClass]="estadoClase(reserva.estado)">
+                            {{ reserva.estado | uppercase }}
+                        </span>
+                    </td>
+                    <td class="p-3">
+                        @if (puedeFinalizar(reserva)) {
+                        <button class="px-3 py-1 rounded bg-primary text-white text-xs disabled:opacity-50"
+                            [disabled]="procesandoId() === reserva.idReserva" (click)="marcarComoFinalizada(reserva)">
+                            @if (procesandoId() === reserva.idReserva) {
+                            Procesando...
+                            } @else {
+                            Marcar finalizada
+                            }
+                        </button>
+                        } @else {
+                        <span class="text-gray-400 text-xs">—</span>
+                        }
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+</div>

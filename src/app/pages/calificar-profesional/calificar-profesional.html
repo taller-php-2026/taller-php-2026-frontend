@@ -1,94 +1,83 @@
 <header class="w-full top-0 sticky z-50 shadow-[0px_4px_20px_rgba(0,0,0,0.04)] bg-surface dark:bg-on-background">
-  <div class="flex items-center justify-between px-lg py-md w-full max-w-7xl mx-auto">
-    <button (click)="cancelar()" class="active:scale-95 transition-transform duration-200 hover:opacity-80">
-      <span class="material-symbols-outlined text-primary">arrow_back</span>
-    </button>
-    <h1 class="font-headline-md text-headline-md text-primary">Calificar Servicio</h1>
-    <div class="w-6"></div>
-  </div>
+    <div class="flex items-center justify-between px-lg py-md w-full max-w-7xl mx-auto">
+        <button (click)="cancelar()" class="active:scale-95 transition-transform duration-200 hover:opacity-80">
+            <span class="material-symbols-outlined text-primary">arrow_back</span>
+        </button>
+        <h1 class="font-headline-md text-headline-md text-primary">Calificar Servicio</h1>
+        <div class="w-6"></div>
+    </div>
 </header>
 
 <main class="max-w-md mx-auto px-lg mt-lg space-y-lg">
-  <!-- Header Card (Professional Info) -->
-  <div class="soft-card bg-surface-container-lowest p-md rounded-xl flex items-center space-x-md animate-fadeIn">
-    <div class="relative">
-      <div class="w-16 h-16 rounded-full bg-primary-container/20 flex items-center justify-center border-2 border-primary-fixed">
-        <span class="material-symbols-outlined text-primary text-3xl">account_circle</span>
-      </div>
-      <div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+    <!-- Header Card (Professional Info) -->
+    <div class="soft-card bg-surface-container-lowest p-md rounded-xl flex items-center space-x-md animate-fadeIn">
+        <div class="relative">
+            <div
+                class="w-16 h-16 rounded-full bg-primary-container/20 flex items-center justify-center border-2 border-primary-fixed">
+                <span class="material-symbols-outlined text-primary text-3xl">account_circle</span>
+            </div>
+            <div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+        </div>
+        <div>
+            <h2 class="font-title-sm text-title-sm text-on-surface">{{ profesionalNombre() }}</h2>
+            <p class="font-body-sm text-body-sm text-on-surface-variant">{{ servicioNombre() }}</p>
+        </div>
     </div>
-    <div>
-      <h2 class="font-title-sm text-title-sm text-on-surface">{{ profesionalNombre() }}</h2>
-      <p class="font-body-sm text-body-sm text-on-surface-variant">{{ servicioNombre() }}</p>
-    </div>
-  </div>
 
-  <!-- Rating Section -->
-  <section class="soft-card bg-surface-container-lowest p-lg rounded-xl text-center space-y-md">
-    <h3 class="font-label-bold text-label-bold text-on-surface-variant uppercase tracking-wider">¿Cómo fue tu experiencia?</h3>
-    <div class="flex justify-center space-x-sm" id="star-rating">
-      <button 
-        *ngFor="let star of [1, 2, 3, 4, 5]" 
-        class="active:scale-90 transition-transform group" 
-        (click)="setRating(star)"
-      >
-        <span 
-          class="material-symbols-outlined text-[40px] star-icon"
-          [ngClass]="rating() >= star ? 'text-amber-500' : 'text-outline'"
-          [style.fontVariationSettings]="rating() >= star ? '\'FILL\' 1' : '\'FILL\' 0'"
-        >
-          star
-        </span>
-      </button>
-    </div>
-    <p class="text-primary font-label-bold h-5" id="rating-label">{{ ratingLabel() }}</p>
-  </section>
+    <!-- Rating Section -->
+    <section class="soft-card bg-surface-container-lowest p-lg rounded-xl text-center space-y-md">
+        <h3 class="font-label-bold text-label-bold text-on-surface-variant uppercase tracking-wider">¿Cómo fue tu
+            experiencia?</h3>
+        <div class="flex justify-center space-x-sm" id="star-rating">
+            <button *ngFor="let star of [1, 2, 3, 4, 5]" class="active:scale-90 transition-transform group"
+                (click)="setRating(star)">
+                <span class="material-symbols-outlined text-[40px] star-icon"
+                    [ngClass]="rating() >= star ? 'text-amber-500' : 'text-outline'"
+                    [style.fontVariationSettings]="rating() >= star ? '\'FILL\' 1' : '\'FILL\' 0'">
+                    star
+                </span>
+            </button>
+        </div>
+        <p class="text-primary font-label-bold h-5" id="rating-label">{{ ratingLabel() }}</p>
+    </section>
 
-  <!-- Review Section -->
-  <section class="space-y-sm">
-    <div class="flex justify-between items-end px-xs">
-      <label class="font-label-bold text-label-bold text-on-surface" for="review">Tu opinión nos importa</label>
-      <span class="text-caption font-caption text-on-surface-variant" [ngClass]="{'text-red-500': charCount() >= 250}">
-        {{ charCount() }}/250
-      </span>
-    </div>
-    <div class="relative">
-      <textarea 
-        class="w-full bg-surface-container-lowest border border-outline-variant focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-xl p-md text-body-md font-body-md transition-all resize-none outline-none" 
-        id="review" 
-        maxlength="250" 
-        [(ngModel)]="comentario" 
-        (input)="updateCount()" 
-        placeholder="Cuéntanos qué te pareció el servicio..." 
-        rows="4"
-      ></textarea>
-    </div>
-  </section>
+    <!-- Review Section -->
+    <section class="space-y-sm">
+        <div class="flex justify-between items-end px-xs">
+            <label class="font-label-bold text-label-bold text-on-surface" for="review">Tu opinión nos importa</label>
+            <span class="text-caption font-caption text-on-surface-variant"
+                [ngClass]="{'text-red-500': charCount() >= 250}">
+                {{ charCount() }}/250
+            </span>
+        </div>
+        <div class="relative">
+            <textarea
+                class="w-full bg-surface-container-lowest border border-outline-variant focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-xl p-md text-body-md font-body-md transition-all resize-none outline-none"
+                id="review" maxlength="250" [(ngModel)]="comentario" (input)="updateCount()"
+                placeholder="Cuéntanos qué te pareció el servicio..." rows="4"></textarea>
+        </div>
+    </section>
 
-  <!-- Summary Section -->
-  <section class="soft-card bg-surface-container-low p-md rounded-xl border border-outline-variant/30">
-    <div class="flex justify-between items-center">
-      <div class="flex items-center space-x-sm">
-        <span class="material-symbols-outlined text-on-surface-variant text-body-md">calendar_today</span>
-        <span class="text-body-sm font-body-sm text-on-surface-variant">{{ fecha() }}</span>
-      </div>
-      <div class="font-title-sm text-title-sm text-primary">${{ precio() | number:'1.2-2' }}</div>
-    </div>
-  </section>
+    <!-- Summary Section -->
+    <section class="soft-card bg-surface-container-low p-md rounded-xl border border-outline-variant/30">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-sm">
+                <span class="material-symbols-outlined text-on-surface-variant text-body-md">calendar_today</span>
+                <span class="text-body-sm font-body-sm text-on-surface-variant">{{ fecha() }}</span>
+            </div>
+            <div class="font-title-sm text-title-sm text-primary">${{ precio() | number:'1.2-2' }}</div>
+        </div>
+    </section>
 
-  <!-- Actions -->
-  <div class="flex flex-col space-y-md pt-md">
-    <button 
-      (click)="enviarCalificacion()" 
-      class="bg-gradient-to-b from-teal-600 to-teal-800 text-white font-label-bold text-label-bold py-lg rounded-xl shadow-lg active:scale-95 transition-all duration-200"
-    >
-      Enviar calificación
-    </button>
-    <button 
-      (click)="cancelar()" 
-      class="text-secondary font-label-bold text-label-bold py-md hover:opacity-80 transition-opacity"
-    >
-      Cancelar
-    </button>
-  </div>
+    <!-- Actions -->
+    <div class="flex flex-col space-y-md pt-md">
+        <button (click)="enviarCalificacion()"
+            class="bg-teal-400 hover:bg-teal-800 text-white font-label-bold text-label-bold py-lg rounded-xl shadow-lg active:scale-95 transition-all duration-200">
+            Enviar calificación
+        </button>
+        <button (click)="cancelar()"
+            class="text-secondary font-label-bold text-label-bold py-md hover:opacity-80 transition-opacity">
+            Cancelar
+        </button>
+    </div>
 </main>
