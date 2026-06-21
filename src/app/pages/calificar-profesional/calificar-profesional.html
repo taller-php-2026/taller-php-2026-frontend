@@ -81,3 +81,39 @@
         </button>
     </div>
 </main>
+
+<!-- ERROR MODAL -->
+<div *ngIf="errorMsg()"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm px-md py-xl animate-fadeIn">
+    <section class="w-full max-w-sm rounded-2xl bg-white p-lg shadow-2xl border border-red-100 flex flex-col items-center text-center space-y-md">
+        <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-red-500">
+            <span class="material-symbols-outlined text-[32px]">error</span>
+        </div>
+        <div class="space-y-xs">
+            <h2 class="font-title-md text-title-md text-red-700">Ocurrió un problema</h2>
+            <p class="font-body-md text-body-md text-secondary">{{ errorMsg() }}</p>
+        </div>
+        <button (click)="cerrarMensajeYVolver()"
+            class="w-full py-md bg-red-600 hover:bg-red-700 text-white font-label-bold rounded-xl transition-all duration-200 shadow-md">
+            Entendido
+        </button>
+    </section>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div *ngIf="successMsg()"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm px-md py-xl animate-fadeIn">
+    <section class="w-full max-w-sm rounded-2xl bg-white p-lg shadow-2xl border border-emerald-100 flex flex-col items-center text-center space-y-md">
+        <div class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500">
+            <span class="material-symbols-outlined text-[32px]">check_circle</span>
+        </div>
+        <div class="space-y-xs">
+            <h2 class="font-title-md text-title-md text-emerald-700">¡Calificación enviada!</h2>
+            <p class="font-body-md text-body-md text-secondary">{{ successMsg() }}</p>
+        </div>
+        <button (click)="cerrarMensajeYVolver()"
+            class="w-full py-md bg-emerald-600 hover:bg-emerald-700 text-white font-label-bold rounded-xl transition-all duration-200 shadow-md">
+            Continuar
+        </button>
+    </section>
+</div>

@@ -82,6 +82,9 @@ export interface ReservaCliente {
 
 export interface Reserva {
   idReserva: number;
+  idCliente: number;
+  idProfesional: number;
+  idServicio: number;
   fechaReserva: string;
   estado: 'pendiente' | 'confirmada' | 'cancelada' | 'completada' | 'enCurso' | string;
   comentarios?: string | null;

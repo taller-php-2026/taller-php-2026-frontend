@@ -110,4 +110,34 @@ export class AdminService {
       headers: this.getHeaders(),
     });
   }
+
+  // Obtener todos los clientes.
+  getClientes(): Observable<{ data: any[] }> {
+    return this.http.get<{ data: any[] }>(`${environment.apiUrl}/clientes`, {
+      headers: this.getHeaders(),
+    });
+  }
+
+  // Obtener todos los profesionales.
+  getProfesionales(): Observable<{ data: any[] }> {
+    return this.http.get<{ data: any[] }>(`${environment.apiUrl}/profesionales`, {
+      headers: this.getHeaders(),
+    });
+  }
+
+  // Obtener todos los servicios.
+  getServicios(): Observable<{ data: any[] }> {
+    return this.http.get<{ data: any[] }>(`${environment.apiUrl}/servicios`, {
+      headers: this.getHeaders(),
+    });
+  }
+
+  // Actualizar una reserva.
+  actualizarReserva(idReserva: number, data: any): Observable<{ message: string; data: any }> {
+    return this.http.put<{ message: string; data: any }>(
+      `${environment.apiUrl}/reservas/${idReserva}`,
+      data,
+      { headers: this.getHeaders() }
+    );
+  }
 }

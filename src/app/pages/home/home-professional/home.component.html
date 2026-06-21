@@ -15,7 +15,7 @@
 
   <!-- Quick Action Cards -->
   <h3 class="font-title-sm text-title-sm text-on-surface-variant mb-md">Acciones Rápidas</h3>
-  <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg mb-xl">
+  <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-lg mb-xl">
     <button (click)="goToConfigurarServicios()" class="flex flex-col items-start text-left bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 transition-all active:scale-95 hover:shadow-md group w-full cursor-pointer">
       <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-md group-hover:bg-primary group-hover:text-on-primary transition-colors">
         <span class="material-symbols-outlined">content_cut</span>
@@ -46,6 +46,14 @@
       </div>
       <span class="font-label-bold text-label-bold text-on-surface mb-xs">Configuración</span>
       <p class="font-body-sm text-body-sm text-on-surface-variant">Modifica los datos principales y mapa de tu negocio.</p>
+    </button>
+
+    <button (click)="goToResenas()" class="flex flex-col items-start text-left bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10 transition-all active:scale-95 hover:shadow-md group w-full cursor-pointer">
+      <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-md group-hover:bg-primary group-hover:text-on-primary transition-colors">
+        <span class="material-symbols-outlined">star</span>
+      </div>
+      <span class="font-label-bold text-label-bold text-on-surface mb-xs">Mis Reseñas</span>
+      <p class="font-body-sm text-body-sm text-on-surface-variant">Mira las opiniones y calificaciones de tus clientes.</p>
     </button>
   </section>
 

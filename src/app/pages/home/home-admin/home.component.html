@@ -26,31 +26,89 @@
                 @for (reserva of reservas(); track reserva.idReserva) {
                 <tr class="border-t border-gray-200">
                     <td class="p-3">{{ reserva.idReserva }}</td>
-                    <td class="p-3">{{ reserva.cliente?.usuario?.nombre }}</td>
-                    <td class="p-3">{{ reserva.profesional?.usuario?.nombre ?? reserva.profesional?.nombreNegocio }}
-                    </td>
-                    <td class="p-3">{{ reserva.servicio?.nombre }}</td>
-                    <td class="p-3">{{ reserva.horario?.fecha }}</td>
-                    <td class="p-3">{{ reserva.horario?.horaInicio }} - {{ reserva.horario?.horaFin }}</td>
+                    
                     <td class="p-3">
+                        @if (editingId() === reserva.idReserva) {
+                        <select [(ngModel)]="editForm().idCliente" class="border rounded p-1 text-xs">
+                            <option *ngFor="let c of clientes()" [value]="c.idUsuario">{{ c.usuario?.nombre }}</option>
+                        </select>
+                        } @else {
+                        {{ reserva.cliente?.usuario?.nombre }}
+                        }
+                    </td>
+
+                    <td class="p-3">
+                        @if (editingId() === reserva.idReserva) {
+                        <select [(ngModel)]="editForm().idProfesional" class="border rounded p-1 text-xs">
+                            <option *ngFor="let p of profesionales()" [value]="p.idUsuario">{{ p.usuario?.nombre ?? p.nombreNegocio }}</option>
+                        </select>
+                        } @else {
+                        {{ reserva.profesional?.usuario?.nombre ?? reserva.profesional?.nombreNegocio }}
+                        }
+                    </td>
+
+                    <td class="p-3">
+                        @if (editingId() === reserva.idReserva) {
+                        <select [(ngModel)]="editForm().idServicio" class="border rounded p-1 text-xs">
+                            <option *ngFor="let s of servicios()" [value]="s.idServicio">{{ s.nombre }}</option>
+                        </select>
+                        } @else {
+                        {{ reserva.servicio?.nombre }}
+                        }
+                    </td>
+
+                    <td class="p-3">
+                        @if (editingId() === reserva.idReserva) {
+                        <input type="date" [(ngModel)]="editForm().fecha" class="border rounded p-1 text-xs">
+                        } @else {
+                        {{ reserva.horario?.fecha }}
+                        }
+                    </td>
+                    <td class="p-3">
+                        @if (editingId() === reserva.idReserva) {
+                        <input type="time" [(ngModel)]="editForm().horaInicio" class="border rounded p-1 text-xs">
+                        } @else {
+                        {{ reserva.horario?.horaInicio }} - {{ reserva.horario?.horaFin }}
+                        }
+                    </td>
+
+                    <td class="p-3">
+                        @if (editingId() === reserva.idReserva) {
+                        <select [(ngModel)]="editForm().estado" class="border rounded p-1 text-xs">
+                            <option *ngFor="let est of estadosDisponibles" [value]="est">{{ est | uppercase }}</option>
+                        </select>
+                        } @else {
                         <span class="px-2 py-1 rounded-full text-xs font-medium"
                             [ngClass]="estadoClase(reserva.estado)">
                             {{ reserva.estado | uppercase }}
                         </span>
-                    </td>
-                    <td class="p-3">
-                        @if (puedeFinalizar(reserva)) {
-                        <button class="px-3 py-1 rounded bg-primary text-white text-xs disabled:opacity-50"
-                            [disabled]="procesandoId() === reserva.idReserva" (click)="marcarComoFinalizada(reserva)">
-                            @if (procesandoId() === reserva.idReserva) {
-                            Procesando...
-                            } @else {
-                            Marcar finalizada
-                            }
-                        </button>
-                        } @else {
-                        <span class="text-gray-400 text-xs">—</span>
                         }
+                    </td>
+
+                    <td class="p-3">
+                        <div class="flex gap-2">
+                            @if (editingId() === reserva.idReserva) {
+                            <button class="px-3 py-1 rounded bg-green-600 text-white text-xs disabled:opacity-50"
+                                [disabled]="procesandoId() === reserva.idReserva" (click)="guardarEdicion(reserva.idReserva)">
+                                {{ procesandoId() === reserva.idReserva ? '...' : 'Guardar' }}
+                            </button>
+                            <button class="px-3 py-1 rounded bg-gray-400 text-white text-xs"
+                                [disabled]="procesandoId() === reserva.idReserva" (click)="cancelarEdicion()">
+                                Cancelar
+                            </button>
+                            } @else {
+                            <button class="px-2 py-1 rounded bg-blue-600 text-white text-xs"
+                                (click)="iniciarEdicion(reserva)">
+                                Editar
+                            </button>
+                            @if (puedeFinalizar(reserva)) {
+                            <button class="px-2 py-1 rounded bg-green-600 text-white text-xs disabled:opacity-50"
+                                [disabled]="procesandoId() === reserva.idReserva" (click)="marcarComoFinalizada(reserva)">
+                                Finalizar
+                            </button>
+                            }
+                            }
+                        </div>
                     </td>
                 </tr>
                 }

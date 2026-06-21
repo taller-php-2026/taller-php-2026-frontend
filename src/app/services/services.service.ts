@@ -44,4 +44,9 @@ export class ServicesService {
     formData.append('imagen', file);
     return this.http.post<{ data: Service }>(`${this.apiUrl}/${serviceId}/imagen`, formData);
   }
+
+  // Obtener todas las reseñas de un servicio.
+  getResenasDelServicio(idServicio: number): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.apiUrl}/resenas?idServicio=${idServicio}`);
+  }
 }
