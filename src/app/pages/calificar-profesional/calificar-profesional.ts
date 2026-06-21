@@ -3,13 +3,16 @@ import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+
+const apiUrl = environment.apiUrl;
 
 @Component({
   selector: 'app-calificar-profesional',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './calificar-profesional.html',
-  styleUrl: './calificar-profesional.css'
+  styleUrl: './calificar-profesional.css',
 })
 export class CalificarProfesional implements OnInit {
   private router = inject(Router);
@@ -39,16 +42,20 @@ export class CalificarProfesional implements OnInit {
 
   // Cargar datos de la reserva.
   cargarReserva(id: number): void {
-    this.http.get<any[]>('/mock-reservas-lista.json').subscribe({
-      next: (datos) => {
-        const reserva = datos.find((r) => r.id === id);
-        if (reserva) {
-          this.profesionalNombre.set(reserva.profesionalNombre);
-          this.servicioNombre.set(reserva.servicioNombre);
-          this.fecha.set(reserva.fecha);
-          this.precio.set(reserva.duracionMinutos ? reserva.duracionMinutos * 0.75 : 45.00);
-        }
-      }
+    this.http.get<any>(`${apiUrl}/reservas/${id}`).subscribe({
+      next: (response) => {
+        const reserva = response.data;
+        this.profesionalNombre.set(
+          reserva.profesional?.usuario?.nombre ?? reserva.profesional?.nombreNegocio ?? '',
+        );
+        this.servicioNombre.set(reserva.servicio?.nombre ?? '');
+        this.fecha.set(reserva.horario?.fecha ?? '');
+        this.precio.set(reserva.servicio?.precio ?? 0);
+      },
+      error: () => {
+        alert('No se pudo cargar la información de la reserva.');
+        this.router.navigate(['/reservas']);
+      },
     });
   }
 
@@ -72,10 +79,10 @@ export class CalificarProfesional implements OnInit {
 
     const payload = {
       calificacion: this.rating(),
-      comentario: this.comentario()
+      comentario: this.comentario(),
     };
 
-    const url = `http://127.0.0.1:8000/api/reservas/${this.reservaId()}/resena`;
+    const url = `${apiUrl}/reservas/${this.reservaId()}/resena`;
 
     this.http.post(url, payload).subscribe({
       next: () => {
@@ -83,13 +90,17 @@ export class CalificarProfesional implements OnInit {
         this.router.navigate(['/reservas']);
       },
       error: (err) => {
-        if (err.status === 422 || err.error?.message?.includes('duplicate')) {
+        const mensaje: string = err.error?.message ?? '';
+
+        if (mensaje.toLowerCase().includes('ya') && mensaje.toLowerCase().includes('resen')) {
           alert('Esta reserva ya ha sido calificada.');
+        } else if (mensaje) {
+          alert(mensaje);
         } else {
           alert('Ocurrió un error al enviar la calificación.');
         }
         this.router.navigate(['/reservas']);
-      }
+      },
     });
   }
 

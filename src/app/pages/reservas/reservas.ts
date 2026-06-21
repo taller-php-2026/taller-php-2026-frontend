@@ -314,10 +314,11 @@ export class Reservas implements OnInit {
 
     const estadosValidos = ['finalizada', 'completada', 'realizada'];
     return estadosValidos.includes(reserva.estado);
+    return true;
   }
 
   irACalificar(reservaId: number): void {
-    this.router.navigate(['/calificar'], { queryParams: { reserva: reservaId } });
+    this.router.navigate(['/reservas', reservaId, 'calificar']);
   }
 
   textoBotonPago(reserva: Reserva): string {

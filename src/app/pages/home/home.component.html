@@ -1,5 +1,7 @@
 @if (auth.userType() === 'profesional') {
 <app-home-professional />
-} @else {
+} @else if (auth.userType() === 'cliente') {
 <app-home-client />
+} @else {
+<app-home-admin />
 }
