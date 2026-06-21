@@ -35,8 +35,8 @@ export class EchoService {
       forceTLS: isProd,
       enabledTransports: ['ws', 'wss'],
       authEndpoint: isProd
-        ? `https://${hostname}/broadcasting/auth`
-        : 'http://localhost:8080/broadcasting/auth',
+        ? `${environment.apiUrl}/broadcasting/auth`
+        : 'http://localhost:8080/api/broadcasting/auth',
       auth: {
         headers: {
           Authorization: `Bearer ${token}`,
