@@ -204,6 +204,11 @@ export class HomeProfessionalComponent implements OnInit {
     this.router.navigate(['/configuracion-negocio']);
   }
 
+  // Navegar a la vista de reseñas del profesional
+  goToResenas(): void {
+    this.router.navigate(['/resenas-profesional']);
+  }
+
   // Abrir modal de calendario completo de turnos
   abrirCalendarioCompleto(): void {
     this.calendarModal.open();

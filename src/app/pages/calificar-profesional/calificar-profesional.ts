@@ -28,6 +28,8 @@ export class CalificarProfesional implements OnInit {
   ratingLabel = signal<string>('');
   comentario = signal<string>('');
   charCount = signal<number>(0);
+  errorMsg = signal<string>('');
+  successMsg = signal<string>('');
 
   labels = ['', 'Muy Pobre', 'Regular', 'Bueno', 'Muy Bueno', 'Excelente'];
 
@@ -53,8 +55,7 @@ export class CalificarProfesional implements OnInit {
         this.precio.set(reserva.servicio?.precio ?? 0);
       },
       error: () => {
-        alert('No se pudo cargar la información de la reserva.');
-        this.router.navigate(['/reservas']);
+        this.errorMsg.set('No se pudo cargar la información de la reserva.');
       },
     });
   }
@@ -73,7 +74,7 @@ export class CalificarProfesional implements OnInit {
   // Enviar calificacion.
   enviarCalificacion(): void {
     if (this.rating() === 0) {
-      alert('Por favor selecciona una calificación de estrellas.');
+      this.errorMsg.set('Por favor selecciona una calificación de estrellas.');
       return;
     }
 
@@ -86,22 +87,27 @@ export class CalificarProfesional implements OnInit {
 
     this.http.post(url, payload).subscribe({
       next: () => {
-        alert('¡Gracias por calificar el servicio!');
-        this.router.navigate(['/reservas']);
+        this.successMsg.set('¡Gracias por calificar el servicio!');
       },
       error: (err) => {
         const mensaje: string = err.error?.message ?? '';
 
         if (mensaje.toLowerCase().includes('ya') && mensaje.toLowerCase().includes('resen')) {
-          alert('Esta reserva ya ha sido calificada.');
+          this.errorMsg.set('Esta reserva ya ha sido calificada.');
         } else if (mensaje) {
-          alert(mensaje);
+          this.errorMsg.set(mensaje);
         } else {
-          alert('Ocurrió un error al enviar la calificación.');
+          this.errorMsg.set('Ocurrió un error al enviar la calificación.');
         }
-        this.router.navigate(['/reservas']);
       },
     });
+  }
+
+  // Cerrar alerta de error o éxito y volver a reservas.
+  cerrarMensajeYVolver(): void {
+    this.errorMsg.set('');
+    this.successMsg.set('');
+    this.router.navigate(['/reservas']);
   }
 
   // Cancelar y volver.

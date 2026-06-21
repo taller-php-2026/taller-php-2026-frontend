@@ -137,7 +137,61 @@
                 <p class="text-xs font-semibold uppercase text-gray-500">Precio</p>
                 <p class="text-2xl font-bold text-primary">${{ service.precio }}</p>
             </div>
+            <button (click)="abrirResenas($event)" class="inline-flex items-center gap-1 text-sm font-semibold text-teal-600 hover:text-teal-800 transition-colors">
+                <span class="material-symbols-outlined text-[18px]">rate_review</span>
+                Ver Reseñas
+            </button>
         </div>
     </div>
 </article>
+
+<!-- MODAL DE RESEÑAS -->
+<div *ngIf="mostrarModal()" (click)="cerrarResenas(); $event.stopPropagation()"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm px-md py-xl">
+    <section class="w-full max-w-lg rounded-2xl bg-white p-lg shadow-2xl flex flex-col max-h-[85vh]" (click)="$event.stopPropagation()">
+        <div class="flex justify-between items-center border-b pb-sm mb-md">
+            <h2 class="font-title-md text-title-md text-primary flex items-center gap-xs">
+                <span class="material-symbols-outlined text-teal-600">rate_review</span>
+                Reseñas de {{ service.nombre }}
+            </h2>
+            <button (click)="cerrarResenas()" class="text-secondary hover:text-primary transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <!-- LISTA DE RESEÑAS -->
+        <div class="grow overflow-y-auto space-y-md pr-xs">
+            <div *ngIf="loadingResenas()" class="flex items-center justify-center py-xl">
+                <span class="material-symbols-outlined animate-spin mr-sm text-primary">sync</span>
+                <span class="text-secondary font-body-md">Cargando opiniones...</span>
+            </div>
+
+            <div *ngIf="!loadingResenas() && resenas().length === 0" class="text-center py-xl text-secondary font-body-md italic">
+                Este servicio aún no tiene calificaciones escritas.
+            </div>
+
+            <div *ngFor="let r of resenas()" class="border-b border-gray-100 pb-md last:border-b-0">
+                <div class="flex items-center justify-between mb-xs">
+                    <span class="font-label-bold text-sm text-on-surface">{{ r.cliente?.usuario?.nombre || 'Cliente Anónimo' }}</span>
+                    <span class="text-caption text-secondary font-body-sm">{{ r.fecha }}</span>
+                </div>
+                <div class="flex items-center space-x-xs mb-sm">
+                    <span class="material-symbols-outlined text-amber-500 text-[18px]" 
+                          *ngFor="let star of [1, 2, 3, 4, 5]"
+                          [style.fontVariationSettings]="r.calificacion >= star ? '\'FILL\' 1' : '\'FILL\' 0'">
+                        star
+                    </span>
+                </div>
+                <p class="font-body-md text-secondary italic">"{{ r.comentario || 'Calificado sin comentarios.' }}"</p>
+            </div>
+        </div>
+
+        <div class="flex justify-end pt-sm border-t mt-md">
+            <button (click)="cerrarResenas()" 
+                    class="px-xl py-md bg-teal-600 hover:bg-teal-700 text-white font-label-bold rounded-xl transition-all duration-200 shadow-md">
+                Cerrar
+            </button>
+        </div>
+    </section>
+</div>
 

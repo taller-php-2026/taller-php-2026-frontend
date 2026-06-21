@@ -1,5 +1,5 @@
-import { NgClass } from '@angular/common';
-import { Component, Input, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { NgClass, CommonModule } from '@angular/common';
+import { Component, Input, OnInit, inject, ChangeDetectorRef, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgIcon } from '@ng-icons/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -11,7 +11,7 @@ import { Professional } from 'app/models/professional.model';
 @Component({
   selector: 'app-service-card',
   templateUrl: './service-card.component.html',
-  imports: [NgIcon, NgClass],
+  imports: [NgIcon, NgClass, CommonModule],
   standalone: true,
 })
 export class ServiceCardComponent implements OnInit {
@@ -24,6 +24,9 @@ export class ServiceCardComponent implements OnInit {
   @Input() service!: Service;
 
   professionals: Professional[] = [];
+  resenas = signal<any[]>([]);
+  loadingResenas = signal<boolean>(false);
+  mostrarModal = signal<boolean>(false);
 
   ngOnInit() {
     // Cargar profesionales asociados al servicio.
@@ -92,6 +95,29 @@ export class ServiceCardComponent implements OnInit {
 
   onProfImgError(event: Event) {
     (event.target as HTMLImageElement).src = 'assets/placeholders/user-placeholder.svg';
+  }
+
+  // Abrir el modal de reseñas del servicio.
+  abrirResenas(event: Event): void {
+    event.stopPropagation();
+    event.preventDefault();
+    this.loadingResenas.set(true);
+    this.mostrarModal.set(true);
+    this.servicesService.getResenasDelServicio(this.service.idServicio).subscribe({
+      next: (data) => {
+        this.resenas.set(data);
+        this.loadingResenas.set(false);
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.loadingResenas.set(false);
+      }
+    });
+  }
+
+  // Cerrar el modal de reseñas.
+  cerrarResenas(): void {
+    this.mostrarModal.set(false);
   }
 }
 

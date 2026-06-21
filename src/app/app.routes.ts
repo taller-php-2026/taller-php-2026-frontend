@@ -210,6 +210,14 @@ export const routes: Routes = [
             (m) => m.CalificarProfesional,
           ),
       },
+      {
+        path: 'resenas-profesional',
+        canActivate: [professionalGuard],
+        loadComponent: () =>
+          import('./pages/resenas-profesional/resenas-profesional').then(
+            (m) => m.ResenasProfesional,
+          ),
+      },
     ],
   },
 

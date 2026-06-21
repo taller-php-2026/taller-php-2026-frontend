@@ -28,6 +28,7 @@ export class Reservas implements OnInit {
   loadingPaquetes = signal(false);
   errorMsg = signal('');
   errorPaquetes = signal('');
+  resenaSeleccionada = signal<Reserva | null>(null);
   successMsg = signal('');
   pagandoId = signal<number | null>(null);
   reservaACancelar = signal<Reserva | null>(null);
@@ -308,13 +309,14 @@ export class Reservas implements OnInit {
     return reserva.estado === 'confirmada';
   }
 
+  // Verificar si la reserva se puede calificar.
   puedeCalificar(reserva: Reserva): boolean {
     if (reserva.estado === 'cancelada') return false;
     if (this.clasificarReserva(reserva) !== 'anteriores') return false;
+    if (this.esCalificada(reserva)) return false;
 
     const estadosValidos = ['finalizada', 'completada', 'realizada'];
     return estadosValidos.includes(reserva.estado);
-    return true;
   }
 
   irACalificar(reservaId: number): void {
@@ -429,6 +431,16 @@ export class Reservas implements OnInit {
 
   esCalificada(reserva: Reserva): boolean {
     return !!reserva.resena;
+  }
+
+  // Abrir el modal para ver los detalles de una reseña.
+  abrirModalResena(reserva: Reserva): void {
+    this.resenaSeleccionada.set(reserva);
+  }
+
+  // Cerrar el modal de visualización de reseña.
+  cerrarModalResena(): void {
+    this.resenaSeleccionada.set(null);
   }
 
   getGoogleMapsExternalUrl(reserva: Reserva): string {
