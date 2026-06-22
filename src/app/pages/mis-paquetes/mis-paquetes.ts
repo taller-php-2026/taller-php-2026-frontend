@@ -164,7 +164,7 @@ export class MisPaquetes implements OnInit {
   }
 
   getReservas(paquete: PaqueteComprado): PaqueteReserva[] {
-    return paquete.reservas ?? [];
+    return (paquete.reservas ?? []).filter(r => r.estado !== 'cancelada');
   }
 
   getFechaReserva(reserva: PaqueteReserva): string {

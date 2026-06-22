@@ -1,119 +1,205 @@
 <div class="w-3/4 mx-auto py-8">
-    <h1 class="text-2xl font-bold mb-6">Panel de administrador — Reservas</h1>
+    <h1 class="text-2xl font-bold mb-6">Panel de Administrador</h1>
+
+    <!-- Tabs switcher -->
+    <div class="flex gap-4 mb-6 border-b border-gray-200 pb-2">
+        <button (click)="setTab('reservas')" 
+            [ngClass]="tabActivo() === 'reservas' ? 'border-primary text-primary font-bold border-b-2' : 'text-gray-500'"
+            class="pb-2 px-2 transition-all cursor-pointer">
+            Reservas
+        </button>
+        <button (click)="setTab('paquetes')" 
+            [ngClass]="tabActivo() === 'paquetes' ? 'border-primary text-primary font-bold border-b-2' : 'text-gray-500'"
+            class="pb-2 px-2 transition-all cursor-pointer">
+            Paquetes Adquiridos
+        </button>
+    </div>
 
     @if (loading()) {
-    <p class="text-gray-500">Cargando reservas...</p>
+    <p class="text-gray-500">Cargando...</p>
     } @else if (error()) {
     <p class="text-red-600">{{ error() }}</p>
-    } @else if (reservas().length === 0) {
-    <p class="text-gray-500">No hay reservas registradas.</p>
     } @else {
-    <div class="overflow-x-auto border border-gray-200 rounded-lg">
-        <table class="w-full text-left text-sm">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="p-3">ID</th>
-                    <th class="p-3">Cliente</th>
-                    <th class="p-3">Profesional</th>
-                    <th class="p-3">Servicio</th>
-                    <th class="p-3">Fecha</th>
-                    <th class="p-3">Horario</th>
-                    <th class="p-3">Estado</th>
-                    <th class="p-3">Acción</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (reserva of reservas(); track reserva.idReserva) {
-                <tr class="border-t border-gray-200">
-                    <td class="p-3">{{ reserva.idReserva }}</td>
-                    
-                    <td class="p-3">
-                        @if (editingId() === reserva.idReserva) {
-                        <select [(ngModel)]="editForm().idCliente" class="border rounded p-1 text-xs">
-                            <option *ngFor="let c of clientes()" [value]="c.idUsuario">{{ c.usuario?.nombre }}</option>
-                        </select>
-                        } @else {
-                        {{ reserva.cliente?.usuario?.nombre }}
-                        }
-                    </td>
 
-                    <td class="p-3">
-                        @if (editingId() === reserva.idReserva) {
-                        <select [(ngModel)]="editForm().idProfesional" class="border rounded p-1 text-xs">
-                            <option *ngFor="let p of profesionales()" [value]="p.idUsuario">{{ p.usuario?.nombre ?? p.nombreNegocio }}</option>
-                        </select>
-                        } @else {
-                        {{ reserva.profesional?.usuario?.nombre ?? reserva.profesional?.nombreNegocio }}
-                        }
-                    </td>
+        @if (tabActivo() === 'reservas') {
+            @if (reservas().length === 0) {
+                <p class="text-gray-500">No hay reservas registradas.</p>
+            } @else {
+                <div class="overflow-x-auto border border-gray-200 rounded-lg">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="p-3">ID</th>
+                                <th class="p-3">Cliente</th>
+                                <th class="p-3">Profesional</th>
+                                <th class="p-3">Servicio</th>
+                                <th class="p-3">Fecha</th>
+                                <th class="p-3">Horario</th>
+                                <th class="p-3">Estado</th>
+                                <th class="p-3">Pago</th>
+                                <th class="p-3">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (reserva of reservas(); track reserva.idReserva) {
+                            <tr class="border-t border-gray-200">
+                                <td class="p-3">{{ reserva.idReserva }}</td>
+                                
+                                <td class="p-3">
+                                    @if (editingId() === reserva.idReserva) {
+                                    <select [(ngModel)]="editForm().idCliente" class="border rounded p-1 text-xs">
+                                        <option *ngFor="let c of clientes()" [value]="c.idUsuario">{{ c.usuario?.nombre }}</option>
+                                    </select>
+                                    } @else {
+                                    {{ reserva.cliente?.usuario?.nombre }}
+                                    }
+                                </td>
 
-                    <td class="p-3">
-                        @if (editingId() === reserva.idReserva) {
-                        <select [(ngModel)]="editForm().idServicio" class="border rounded p-1 text-xs">
-                            <option *ngFor="let s of servicios()" [value]="s.idServicio">{{ s.nombre }}</option>
-                        </select>
-                        } @else {
-                        {{ reserva.servicio?.nombre }}
-                        }
-                    </td>
+                                <td class="p-3">
+                                    @if (editingId() === reserva.idReserva) {
+                                    <select [(ngModel)]="editForm().idProfesional" class="border rounded p-1 text-xs">
+                                        <option *ngFor="let p of profesionales()" [value]="p.idUsuario">{{ p.usuario?.nombre ?? p.nombreNegocio }}</option>
+                                    </select>
+                                    } @else {
+                                    {{ reserva.profesional?.usuario?.nombre ?? reserva.profesional?.nombreNegocio }}
+                                    }
+                                </td>
 
-                    <td class="p-3">
-                        @if (editingId() === reserva.idReserva) {
-                        <input type="date" [(ngModel)]="editForm().fecha" class="border rounded p-1 text-xs">
-                        } @else {
-                        {{ reserva.horario?.fecha }}
-                        }
-                    </td>
-                    <td class="p-3">
-                        @if (editingId() === reserva.idReserva) {
-                        <input type="time" [(ngModel)]="editForm().horaInicio" class="border rounded p-1 text-xs">
-                        } @else {
-                        {{ reserva.horario?.horaInicio }} - {{ reserva.horario?.horaFin }}
-                        }
-                    </td>
+                                <td class="p-3">
+                                    @if (editingId() === reserva.idReserva) {
+                                    <select [(ngModel)]="editForm().idServicio" class="border rounded p-1 text-xs">
+                                        <option *ngFor="let s of servicios()" [value]="s.idServicio">{{ s.nombre }}</option>
+                                    </select>
+                                    } @else {
+                                    {{ reserva.servicio?.nombre }}
+                                    }
+                                </td>
 
-                    <td class="p-3">
-                        @if (editingId() === reserva.idReserva) {
-                        <select [(ngModel)]="editForm().estado" class="border rounded p-1 text-xs">
-                            <option *ngFor="let est of estadosDisponibles" [value]="est">{{ est | uppercase }}</option>
-                        </select>
-                        } @else {
-                        <span class="px-2 py-1 rounded-full text-xs font-medium"
-                            [ngClass]="estadoClase(reserva.estado)">
-                            {{ reserva.estado | uppercase }}
-                        </span>
-                        }
-                    </td>
+                                <td class="p-3">
+                                    @if (editingId() === reserva.idReserva) {
+                                    <input type="date" [(ngModel)]="editForm().fecha" class="border rounded p-1 text-xs">
+                                    } @else {
+                                    {{ reserva.horario?.fecha }}
+                                    }
+                                </td>
+                                <td class="p-3">
+                                    @if (editingId() === reserva.idReserva) {
+                                    <input type="time" [(ngModel)]="editForm().horaInicio" class="border rounded p-1 text-xs">
+                                    } @else {
+                                    {{ reserva.horario?.horaInicio }} - {{ reserva.horario?.horaFin }}
+                                    }
+                                </td>
 
-                    <td class="p-3">
-                        <div class="flex gap-2">
-                            @if (editingId() === reserva.idReserva) {
-                            <button class="px-3 py-1 rounded bg-green-600 text-white text-xs disabled:opacity-50"
-                                [disabled]="procesandoId() === reserva.idReserva" (click)="guardarEdicion(reserva.idReserva)">
-                                {{ procesandoId() === reserva.idReserva ? '...' : 'Guardar' }}
-                            </button>
-                            <button class="px-3 py-1 rounded bg-gray-400 text-white text-xs"
-                                [disabled]="procesandoId() === reserva.idReserva" (click)="cancelarEdicion()">
-                                Cancelar
-                            </button>
-                            } @else {
-                            <button class="px-2 py-1 rounded bg-blue-600 text-white text-xs"
-                                (click)="iniciarEdicion(reserva)">
-                                Editar
-                            </button>
-                            @if (puedeFinalizar(reserva)) {
-                            <button class="px-2 py-1 rounded bg-green-600 text-white text-xs disabled:opacity-50"
-                                [disabled]="procesandoId() === reserva.idReserva" (click)="marcarComoFinalizada(reserva)">
-                                Finalizar
-                            </button>
+                                <td class="p-3">
+                                    @if (editingId() === reserva.idReserva) {
+                                    <select [(ngModel)]="editForm().estado" class="border rounded p-1 text-xs">
+                                        <option *ngFor="let est of estadosDisponibles" [value]="est">{{ est | uppercase }}</option>
+                                    </select>
+                                    } @else {
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium"
+                                        [ngClass]="estadoClase(reserva.estado)">
+                                        {{ reserva.estado | uppercase }}
+                                    </span>
+                                    }
+                                </td>
+
+                                <td class="p-3">
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium"
+                                        [ngClass]="reserva.pago?.estado === 'aprobado' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'">
+                                        {{ (reserva.pago?.estado === 'aprobado' ? 'PAGADO' : 'PENDIENTE') }}
+                                    </span>
+                                </td>
+
+                                <td class="p-3">
+                                    <div class="flex gap-2">
+                                        @if (editingId() === reserva.idReserva) {
+                                        <button class="px-3 py-1 rounded bg-green-600 text-white text-xs disabled:opacity-50 cursor-pointer"
+                                            [disabled]="procesandoId() === reserva.idReserva" (click)="guardarEdicion(reserva.idReserva)">
+                                            {{ procesandoId() === reserva.idReserva ? '...' : 'Guardar' }}
+                                        </button>
+                                        <button class="px-3 py-1 rounded bg-gray-400 text-white text-xs cursor-pointer"
+                                            [disabled]="procesandoId() === reserva.idReserva" (click)="cancelarEdicion()">
+                                            Cancelar
+                                        </button>
+                                        } @else {
+                                        <button class="px-2 py-1 rounded bg-blue-600 text-white text-xs cursor-pointer"
+                                            (click)="iniciarEdicion(reserva)">
+                                            Editar
+                                        </button>
+                                        @if (puedeFinalizar(reserva)) {
+                                        <button class="px-2 py-1 rounded bg-green-600 text-white text-xs disabled:opacity-50 cursor-pointer"
+                                            [disabled]="procesandoId() === reserva.idReserva" (click)="marcarComoFinalizada(reserva)">
+                                            Finalizar
+                                        </button>
+                                        }
+                                        @if (reserva.pago?.estado !== 'aprobado' && reserva.estado !== 'cancelada') {
+                                        <button class="px-2 py-1 rounded bg-teal-600 text-white text-xs disabled:opacity-50 cursor-pointer"
+                                            [disabled]="procesandoId() === reserva.idReserva" (click)="marcarReservaComoPagada(reserva.idReserva)">
+                                            Pagar
+                                        </button>
+                                        }
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
                             }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        } @else if (tabActivo() === 'paquetes') {
+            @if (paquetes().length === 0) {
+                <p class="text-gray-500">No hay paquetes adquiridos registrados.</p>
+            } @else {
+                <div class="overflow-x-auto border border-gray-200 rounded-lg">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="p-3">ID</th>
+                                <th class="p-3">Cliente</th>
+                                <th class="p-3">Servicio / Paquete</th>
+                                <th class="p-3">Precio</th>
+                                <th class="p-3">Sesiones Restantes</th>
+                                <th class="p-3">Estado</th>
+                                <th class="p-3">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (paquete of paquetes(); track paquete.idPaqueteComprado) {
+                            <tr class="border-t border-gray-200">
+                                <td class="p-3">{{ paquete.idPaqueteComprado }}</td>
+                                <td class="p-3">{{ paquete.cliente?.usuario?.nombre }}</td>
+                                <td class="p-3">{{ paquete.paqueteServicio?.nombre ?? paquete.paquete_servicio?.nombre ?? paquete.paqueteServicio?.servicio?.nombre ?? 'Paquete de Servicio' }}</td>
+                                <td class="p-3">${{ paquete.precioCompra }}</td>
+                                <td class="p-3">{{ paquete.sesionesRestantes }} / {{ paquete.totalSesiones }}</td>
+                                <td class="p-3">
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium"
+                                        [ngClass]="{
+                                            'bg-yellow-100 text-yellow-800': paquete.estado === 'pendiente',
+                                            'bg-green-100 text-green-800': paquete.estado === 'activo',
+                                            'bg-gray-100 text-gray-800': paquete.estado === 'agotado',
+                                            'bg-red-100 text-red-800': paquete.estado === 'cancelado'
+                                        }">
+                                        {{ paquete.estado | uppercase }}
+                                    </span>
+                                </td>
+                                <td class="p-3">
+                                    @if (paquete.estado === 'pendiente') {
+                                        <button class="px-3 py-1 rounded bg-green-600 text-white text-xs disabled:opacity-50 cursor-pointer"
+                                            [disabled]="procesandoId() === paquete.idPaqueteComprado"
+                                            (click)="marcarPaqueteComoPagado(paquete.idPaqueteComprado)">
+                                            {{ procesandoId() === paquete.idPaqueteComprado ? '...' : 'Marcar como Pagado' }}
+                                        </button>
+                                    } @else {
+                                        <span class="text-xs text-gray-400">-</span>
+                                    }
+                                </td>
+                            </tr>
                             }
-                        </div>
-                    </td>
-                </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+                        </tbody>
+                    </table>
+                </div>
+            }
+        }
     }
 </div>

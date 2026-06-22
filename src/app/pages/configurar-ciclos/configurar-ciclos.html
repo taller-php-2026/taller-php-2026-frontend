@@ -40,9 +40,14 @@
               </div>
             </div>
           </div>
-          <button (click)="goToEdit(ciclo.id)" class="p-2 rounded-full text-slate-400 hover:bg-slate-200 transition-colors cursor-pointer flex items-center justify-center bg-white border border-slate-100">
-            <span class="material-symbols-outlined">edit</span>
-          </button>
+          <div class="flex gap-2">
+            <button (click)="goToEdit(ciclo.id)" class="p-2 rounded-full text-slate-400 hover:bg-slate-200 transition-colors cursor-pointer flex items-center justify-center bg-white border border-slate-100" aria-label="Editar ciclo">
+              <span class="material-symbols-outlined">edit</span>
+            </button>
+            <button (click)="borrarCiclo(ciclo.id)" class="p-2 rounded-full text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors cursor-pointer flex items-center justify-center bg-white border border-slate-100" aria-label="Eliminar ciclo">
+              <span class="material-symbols-outlined">delete</span>
+            </button>
+          </div>
         </div>
       } @empty {
         @if (cargando()) {
@@ -54,3 +59,41 @@
     </div>
   </div>
 </main>
+
+<!-- Modal de Confirmación de Borrado -->
+<div *ngIf="mostrarConfirmacion()" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+  <div class="bg-white rounded-3xl p-6 md:p-8 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] border border-slate-100 max-w-md w-full space-y-6 animate-scale-up relative overflow-hidden">
+    <!-- Top accent bar -->
+    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-red-500 via-rose-500 to-amber-500"></div>
+
+    <div class="flex flex-col items-center text-center space-y-4">
+      <!-- Icon Wrapper with soft pulsing warning styling -->
+      <div class="w-16 h-16 rounded-full bg-rose-50 flex items-center justify-center text-rose-500 border border-rose-100/50 shadow-inner relative">
+        <span class="material-symbols-outlined text-3xl">delete_sweep</span>
+      </div>
+      
+      <div class="space-y-2">
+        <h3 class="font-extrabold text-xl text-slate-800 tracking-tight">¿Eliminar Ciclo de Agenda?</h3>
+        <p class="text-sm text-slate-500 leading-relaxed">
+          Esta acción eliminará de forma permanente el ciclo y todos sus bloques horarios. No afectará citas previamente reservadas, pero no se podrán agendar nuevos turnos.
+        </p>
+      </div>
+    </div>
+
+    <!-- Error Banner (Elegant inline alert) -->
+    <div *ngIf="errorMensaje()" class="bg-rose-50 border border-rose-100 text-rose-700 text-xs px-4 py-3 rounded-xl flex items-start gap-2.5 shadow-sm">
+      <span class="material-symbols-outlined text-lg flex-shrink-0 mt-0.5">error</span>
+      <span class="font-medium">{{ errorMensaje() }}</span>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex gap-3 pt-2">
+      <button (click)="cancelarBorrado()" class="flex-1 py-3 px-4 border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 hover:border-slate-300 font-bold text-sm cursor-pointer transition-all active:scale-[0.98]">
+        Cancelar
+      </button>
+      <button (click)="confirmarBorrado()" class="flex-1 py-3 px-4 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-sm cursor-pointer transition-all shadow-md active:scale-[0.98]">
+        Confirmar
+      </button>
+    </div>
+  </div>
+</div>

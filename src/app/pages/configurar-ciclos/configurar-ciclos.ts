@@ -16,6 +16,9 @@ export class ConfigurarCiclosComponent implements OnInit {
 
   ciclos = signal<any[]>([]);
   cargando = signal<boolean>(true);
+  mostrarConfirmacion = signal<boolean>(false);
+  cicloIdABorrar = signal<number | null>(null);
+  errorMensaje = signal<string | null>(null);
 
   ngOnInit(): void {
     this.cargarDatos();
@@ -90,5 +93,32 @@ export class ConfigurarCiclosComponent implements OnInit {
   formatBloques(bloques: any[]): string {
     if (!bloques || bloques.length === 0) return 'Sin bloques';
     return bloques.map((b) => `${b.inicio} - ${b.fin}`).join(', ');
+  }
+
+  borrarCiclo(id: number): void {
+    this.cicloIdABorrar.set(id);
+    this.mostrarConfirmacion.set(true);
+  }
+
+  cancelarBorrado(): void {
+    this.cicloIdABorrar.set(null);
+    this.mostrarConfirmacion.set(false);
+    this.errorMensaje.set(null);
+  }
+
+  confirmarBorrado(): void {
+    const id = this.cicloIdABorrar();
+    if (id !== null) {
+      this.agendaService.eliminarCiclo(id).subscribe({
+        next: () => {
+          this.cargarDatos();
+          this.cancelarBorrado();
+        },
+        error: (err) => {
+          console.error('Error al eliminar ciclo:', err);
+          this.errorMensaje.set(err.error?.message ?? 'No se pudo eliminar el ciclo de agenda.');
+        }
+      });
+    }
   }
 }

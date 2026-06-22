@@ -140,4 +140,36 @@ export class AdminService {
       { headers: this.getHeaders() }
     );
   }
+
+  // Obtener paquetes comprados.
+  getPaquetes(filtros: { perPage?: number; page?: number } = {}): Observable<any> {
+    let params = new HttpParams();
+    Object.entries(filtros).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && (value as any) !== '') {
+        params = params.set(key, String(value));
+      }
+    });
+    return this.http.get<any>(`${this.baseUrl}/paquetes`, {
+      params,
+      headers: this.getHeaders(),
+    });
+  }
+
+  // Registrar pago manual de un paquete.
+  pagarPaquete(id: number): Observable<any> {
+    return this.http.post<any>(
+      `${this.apiUrl}/paquetes-comprados/${id}/pagar`,
+      { metodoPago: 'Manual' },
+      { headers: this.getHeaders() }
+    );
+  }
+
+  // Registrar pago manual de una reserva.
+  pagarReserva(id: number): Observable<any> {
+    return this.http.post<any>(
+      `${this.apiUrl}/reservas/${id}/pagar`,
+      { metodoPago: 'Manual' },
+      { headers: this.getHeaders() }
+    );
+  }
 }

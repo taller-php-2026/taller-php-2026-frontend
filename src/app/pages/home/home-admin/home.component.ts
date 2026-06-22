@@ -14,6 +14,8 @@ export class HomeAdminComponent implements OnInit {
   private adminService = inject(AdminService);
 
   reservas = signal<Reserva[]>([]);
+  paquetes = signal<any[]>([]);
+  tabActivo = signal<'reservas' | 'paquetes'>('reservas');
   loading = signal<boolean>(true);
   error = signal<string>('');
   procesandoId = signal<number | null>(null);
@@ -30,6 +32,7 @@ export class HomeAdminComponent implements OnInit {
   // Inicializar componente.
   ngOnInit(): void {
     this.cargarReservas();
+    this.cargarPaquetes();
     this.cargarDatosAuxiliares();
   }
 
@@ -46,6 +49,62 @@ export class HomeAdminComponent implements OnInit {
       error: () => {
         this.error.set('No se pudieron cargar las reservas.');
         this.loading.set(false);
+      },
+    });
+  }
+
+  // Cargar lista de paquetes comprados.
+  cargarPaquetes(): void {
+    this.loading.set(true);
+    this.error.set('');
+
+    this.adminService.getPaquetes({ perPage: 50 }).subscribe({
+      next: (res) => {
+        this.paquetes.set(res.data);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.error.set('No se pudieron cargar los paquetes.');
+        this.loading.set(false);
+      },
+    });
+  }
+
+  // Cambiar pestaña activa.
+  setTab(tab: 'reservas' | 'paquetes'): void {
+    this.tabActivo.set(tab);
+  }
+
+  // Marcar paquete comprado como pagado.
+  marcarPaqueteComoPagado(id: number): void {
+    if (!confirm('¿Estás seguro de que deseas marcar este paquete como pagado?')) return;
+    this.procesandoId.set(id);
+
+    this.adminService.pagarPaquete(id).subscribe({
+      next: () => {
+        this.cargarPaquetes();
+        this.procesandoId.set(null);
+      },
+      error: (err) => {
+        alert(err.error?.message ?? 'No se pudo registrar el pago del paquete.');
+        this.procesandoId.set(null);
+      },
+    });
+  }
+
+  // Marcar reserva como pagada.
+  marcarReservaComoPagada(id: number): void {
+    if (!confirm('¿Estás seguro de que deseas marcar esta reserva como pagada?')) return;
+    this.procesandoId.set(id);
+
+    this.adminService.pagarReserva(id).subscribe({
+      next: () => {
+        this.cargarReservas();
+        this.procesandoId.set(null);
+      },
+      error: (err) => {
+        alert(err.error?.message ?? 'No se pudo registrar el pago de la reserva.');
+        this.procesandoId.set(null);
       },
     });
   }
